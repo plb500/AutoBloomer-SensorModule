@@ -5,7 +5,7 @@
 #include <string.h>
 
 
-UserInputInt read_int_input(int input, UserInputBuffer *inputBuffer) {
+UserInputInt read_int_input(int input, uint16_t defaultValue, UserInputBuffer *inputBuffer) {
     if(input == PICO_ERROR_TIMEOUT) {
         return (UserInputInt) {INPUT_INCOMPLETE, -1};
     }
@@ -16,7 +16,12 @@ UserInputInt read_int_input(int input, UserInputBuffer *inputBuffer) {
         case '\n':
         case '\r':
             {
-                int32_t argumentValue = buffer_to_int(inputBuffer);
+                // If there is nothing in the input buffer, use the default value
+                int32_t argumentValue = defaultValue;
+                if(inputBuffer->mCurrentInputPos) {
+                    argumentValue = buffer_to_int(inputBuffer);
+                }
+
                 return (UserInputInt) {INPUT_COMPLETE, argumentValue};
             }
 

@@ -19,7 +19,7 @@ uint32_t get_current_time_ms() {
 }
 
 menu_return_behavior handle_reading_input(int input, ContinuousMeasurementMenuObject *menuObject) {
-    UserInputInt userResponse = read_int_input(input, &menuObject->mInputStateHolder.mArgumentBuffer);
+    UserInputInt userResponse = read_int_input(input, 0, &menuObject->mInputStateHolder.mArgumentBuffer);
 
     switch(userResponse.mInputState) {
         case INPUT_COMPLETE:

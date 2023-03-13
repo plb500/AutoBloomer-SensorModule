@@ -18,14 +18,11 @@ project(SensorPodController C CXX ASM)
 pico_sdk_init()
 
 add_executable(SensorPodController 
-SensorPodController.c
+        SensorPodController.c
+        menu/user_int_input_menu.c
         menu/menu_interface.c
         menu/main_menu.c
         menu/continuous_measurement_menu.c
-        menu/measurement_interval_menu.c
-        menu/forced_recalibration_menu.c
-        menu/temperature_offset_menu.c
-        menu/altitude_compensation_menu.c
         sensor/sensor_i2c_interface.c
         sensor/stemma_soil_sensor.c
         sensor/scd30_sensor.c

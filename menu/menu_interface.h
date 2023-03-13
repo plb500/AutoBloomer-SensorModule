@@ -41,7 +41,7 @@ typedef struct {
 } UserInputStateHolder;
 
 // Read incoming user input and attempt to coerce it into an integer value
-UserInputInt read_int_input(int input, UserInputBuffer *inputBuffer);
+UserInputInt read_int_input(int input, uint16_t defaultValue, UserInputBuffer *inputBuffer);
 
 // Generic menu input handler function
 typedef menu_return_behavior (*input_handler)(int, void*);

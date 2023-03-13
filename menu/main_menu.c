@@ -4,10 +4,7 @@
 #include "pico/stdlib.h"
 
 #include "continuous_measurement_menu.h"
-#include "measurement_interval_menu.h"
-#include "forced_recalibration_menu.h"
-#include "temperature_offset_menu.h"
-#include "altitude_compensation_menu.h"
+#include "user_int_input_menu.h"
 
 const char* MAIN_MENU_TEXT = 
     "\n"
@@ -40,7 +37,6 @@ void menu_do_set_altitude_compensation(SCD30Sensor *sensor);
 void menu_do_get_scd30_firmware_version(SCD30Sensor *sensor);
 void menu_do_get_scd30_serial_number(SCD30Sensor *sensor);
 void menu_do_soft_reset_scd30(SCD30Sensor *sensor);
-
 void menu_do_get_soil_sensor_moisture_reading(StemmaSoilSensor *sensor);
 
 
@@ -132,12 +128,30 @@ void menu_do_start_scd30_continuous_readings(SCD30Sensor *sensor) {
 }
 
 void menu_do_set_scd30_measurement_interval(SCD30Sensor *sensor) {
-    // Switch to measurement interval sub-menu
-    MeasurementIntervalMenuObject measurementIntervalMenuObject = {
-        .mSCD30Sensor = sensor
+    UserIntInputMenuObject menuObject = {
+        .mMenuText      = "\nSetting measurement interval.\n",
+        .mUserPrompt    = "Enter the measurement interval (in seconds), hit Enter for default (2) or 'q' to quit: ",
+        .mMinValue      = 2,
+        .mMaxValue      = 1800,
+        .mDefaultValue  = 2
     };
-    reset_measurement_interval_menu_object(&measurementIntervalMenuObject);
-    do_menu(MEASUREMENT_INTERVAL_MENU_TEXT, measurement_interval_menu_handler, &measurementIntervalMenuObject);
+
+    reset_user_int_input_menu_object(&menuObject);
+    do_menu(menuObject.mMenuText, user_int_input_menu_handler, &menuObject);
+
+    // Handle response
+    if(menuObject.mEnteredValue == NO_USER_INPUT_VALUE) {
+        return;
+    }
+
+    // Set interval value                
+    uint16_t measurementInterval = (uint16_t) menuObject.mEnteredValue;
+    printf("Setting interval to %d....", measurementInterval);
+    if(set_scd30_measurement_interval(sensor, measurementInterval)) {
+        printf("Success\n");
+    } else {
+        printf("Failed\n");
+    }
 }
 
 void menu_activate_scd30_asc(SCD30Sensor *sensor) {
@@ -159,30 +173,84 @@ void menu_deactivate_scd30_asc(SCD30Sensor *sensor) {
 }
 
 void menu_do_set_forced_recalibration_value(SCD30Sensor *sensor) {
-    // Switch to forced recalibration sub-menu
-    ForcedRecalibrationMenuObject forcedRecalibrationMenuObject = {
-        .mSCD30Sensor = sensor
+    UserIntInputMenuObject menuObject = {
+        .mMenuText      = "\nRecalibrating CO2 reference.\n",
+        .mUserPrompt    = "Enter the reference CO2 concentration (in PPM), hit Enter for default (400) or 'q' to quit: ",
+        .mMinValue      = 400,
+        .mMaxValue      = 2000,
+        .mDefaultValue  = 400,
     };
-    reset_forced_recalibration_menu_object(&forcedRecalibrationMenuObject);
-    do_menu(FORCED_RECALIBRATION_MENU_TEXT, forced_recalibration_menu_handler, &forcedRecalibrationMenuObject);
+
+    reset_user_int_input_menu_object(&menuObject);
+    do_menu(menuObject.mMenuText, user_int_input_menu_handler, &menuObject);
+
+    // Handle response
+    if(menuObject.mEnteredValue == NO_USER_INPUT_VALUE) {
+        return;
+    }
+
+    // Set reference value                
+    uint16_t referenceValue = (uint16_t) menuObject.mEnteredValue;
+    printf("Setting reference value to %d....", referenceValue);
+    if(set_scd30_forced_recalibration_value(sensor, referenceValue)) {
+        printf("Success\n");
+    } else {
+        printf("Failed\n");
+    }
 }
 
 void menu_do_set_temperature_offset(SCD30Sensor *sensor) {
-    // Switch to temperature offset sub-menu
-    TemperatureOffsetMenuObject temperatureOffsetMenuObject = {
-        .mSCD30Sensor = sensor
+    UserIntInputMenuObject menuObject = {
+        .mMenuText      = "\nSet temperature offset\n",
+        .mUserPrompt    = "Enter the temperature offset (°C x 100), hit Enter for default (2400/24°C) or 'q' to quit: ",
+        .mMinValue      = 0,
+        .mMaxValue      = 65535,
+        .mDefaultValue  = 2400,
     };
-    reset_temperature_offset_menu_object(&temperatureOffsetMenuObject);
-    do_menu(TEMPERATURE_OFFSET_MENU_TEXT, temperature_offset_menu_handler, &temperatureOffsetMenuObject);
+
+    reset_user_int_input_menu_object(&menuObject);
+    do_menu(menuObject.mMenuText, user_int_input_menu_handler, &menuObject);
+
+    // Handle response
+    if(menuObject.mEnteredValue == NO_USER_INPUT_VALUE) {
+        return;
+    }
+
+    // Set temperature offset                
+    uint16_t temperatureValue = (uint16_t) menuObject.mEnteredValue;
+    printf("Setting temperature offset to %d....", temperatureValue);
+    if(set_scd30_temperature_offset(sensor, temperatureValue)) {
+        printf("Success\n");
+    } else {
+        printf("Failed\n");
+    }
 }
 
 void menu_do_set_altitude_compensation(SCD30Sensor *sensor) {
-    // Switch to altitude compensation sub-menu
-    AltitudeCompensationMenuObject altitudeCompensationtMenuObject = {
-        .mSCD30Sensor = sensor
+    UserIntInputMenuObject menuObject = {
+        .mMenuText      = "\nSet altitude compensation\n",
+        .mUserPrompt    = "Enter the current altitude (m above sea level), hit Enter for none or 'q' to quit: ",
+        .mMinValue      = 0,
+        .mMaxValue      = 65535,
+        .mDefaultValue  = 0,
     };
-    reset_altitude_compensation_menu_object(&altitudeCompensationtMenuObject);
-    do_menu(ALTITUDE_COMPENSATION_MENU_TEXT, altitude_compensation_menu_handler, &altitudeCompensationtMenuObject);
+
+    reset_user_int_input_menu_object(&menuObject);
+    do_menu(menuObject.mMenuText, user_int_input_menu_handler, &menuObject);
+
+    // Handle response
+    if(menuObject.mEnteredValue == NO_USER_INPUT_VALUE) {
+        return;
+    }
+
+    // Set altitude
+    uint16_t altitudeValue = (uint16_t) menuObject.mEnteredValue;
+    printf("Setting altitude to %d....", altitudeValue);
+    if(set_scd30_altitude_compensation(sensor, altitudeValue)) {
+        printf("Success\n");
+    } else {
+        printf("Failed\n");
+    }
 }
 
 void menu_do_get_scd30_firmware_version(SCD30Sensor *sensor) {

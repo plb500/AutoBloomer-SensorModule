@@ -45,13 +45,15 @@ SCD30Sensor scd30Sensor = {
 };
 
 
-int main(){
+int main() {
     char scd30Serial[SCD30_SERIAL_BYTE_SIZE];
     uint8_t scd30Firmware[2];
 
     // Setup UART
-    // gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-    // gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
+#if LIB_PICO_STDIO_UART
+    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
+    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
+#endif
 
     // Setup I2C
     init_sensor_bus(&mainInterface);
