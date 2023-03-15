@@ -23,6 +23,7 @@ add_executable(SensorPodController
         menu/menu_interface.c
         menu/main_menu.c
         menu/continuous_measurement_menu.c
+        sensor/sensor_pod.c
         sensor/sensor_i2c_interface.c
         sensor/stemma_soil_sensor.c
         sensor/scd30_sensor.c
@@ -31,8 +32,8 @@ add_executable(SensorPodController
 pico_set_program_name(SensorPodController "SensorPodController")
 pico_set_program_version(SensorPodController "0.1")
 
-pico_enable_stdio_uart(SensorPodController 0)
-pico_enable_stdio_usb(SensorPodController 1)
+pico_enable_stdio_uart(SensorPodController 1)
+pico_enable_stdio_usb(SensorPodController 0)
 
 target_include_directories(SensorPodController
         PRIVATE menu

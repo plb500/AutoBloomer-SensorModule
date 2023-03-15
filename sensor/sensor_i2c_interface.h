@@ -4,6 +4,8 @@
 #include "hardware/i2c.h"
 
 
+#define DEFAULT_MULTIPLEXER_ADDRESS     (0x70)
+
 typedef struct {
     i2c_inst_t *mI2C;               // The underlying I2C access struct
     int mBaud;                      // I2C baud rate
@@ -21,12 +23,14 @@ typedef enum {
     I2C_CHANNEL_4 = (1 << 4),
     I2C_CHANNEL_5 = (1 << 5),
     I2C_CHANNEL_6 = (1 << 6),
-    I2C_CHANNEL_7 = (1 << 7)
+    I2C_CHANNEL_7 = (1 << 7),
+
+    NO_I2C_CHANNEL = -1
 } I2CChannel;
 
 
 void init_sensor_bus(I2CInterface *i2cInterface);
-void select_i2c_channel(I2CInterface *i2cInterface, I2CChannel channel);
+bool select_i2c_channel(I2CInterface *i2cInterface, I2CChannel channel);
 bool check_i2c_address(I2CInterface *i2cInterface, const uint8_t address);
 bool write_i2c_data(
     I2CInterface *i2cInterface, 

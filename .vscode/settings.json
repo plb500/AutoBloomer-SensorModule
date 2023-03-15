@@ -17,4 +17,5 @@
       "main_menu.h": "c",
       "menu_interface.h": "c"
     },
+    "cortex-debug.variableUseNaturalFormat": false,
 }

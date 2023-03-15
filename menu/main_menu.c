@@ -5,6 +5,8 @@
 
 #include "continuous_measurement_menu.h"
 #include "user_int_input_menu.h"
+#include "scd30_sensor.h"
+#include "stemma_soil_sensor.h"
 
 const char* MAIN_MENU_TEXT = 
     "\n"
@@ -27,17 +29,17 @@ const char* MAIN_MENU_TEXT =
 
 
 // Menu functions
-void menu_do_start_scd30_continuous_readings(SCD30Sensor *sensor);
-void menu_do_set_scd30_measurement_interval(SCD30Sensor *sensor);
-void menu_activate_scd30_asc(SCD30Sensor *sensor);
-void menu_deactivate_scd30_asc(SCD30Sensor *sensor);
-void menu_do_set_forced_recalibration_value(SCD30Sensor *sensor);
-void menu_do_set_temperature_offset(SCD30Sensor *sensor);
-void menu_do_set_altitude_compensation(SCD30Sensor *sensor);
-void menu_do_get_scd30_firmware_version(SCD30Sensor *sensor);
-void menu_do_get_scd30_serial_number(SCD30Sensor *sensor);
-void menu_do_soft_reset_scd30(SCD30Sensor *sensor);
-void menu_do_get_soil_sensor_moisture_reading(StemmaSoilSensor *sensor);
+void menu_do_start_scd30_continuous_readings(SensorPod *sensorPod);
+void menu_do_set_scd30_measurement_interval(SensorPod *sensorPod);
+void menu_activate_scd30_asc(SensorPod *sensorPod);
+void menu_deactivate_scd30_asc(SensorPod *sensorPod);
+void menu_do_set_forced_recalibration_value(SensorPod *sensorPod);
+void menu_do_set_temperature_offset(SensorPod *sensorPod);
+void menu_do_set_altitude_compensation(SensorPod *sensorPod);
+void menu_do_get_scd30_firmware_version(SensorPod *sensorPod);
+void menu_do_get_scd30_serial_number(SensorPod *sensorPod);
+void menu_do_soft_reset_scd30(SensorPod *sensorPod);
+void menu_do_get_soil_sensor_moisture_reading(SensorPod *sensorPod);
 
 
 menu_return_behavior main_menu_handler(int input, void* menuObject) {
@@ -63,48 +65,48 @@ menu_return_behavior main_menu_handler(int input, void* menuObject) {
             break;
         case 'B':
         case 'b':
-            menu_do_start_scd30_continuous_readings(mainMenuObject->mSCDSensor);
+            menu_do_start_scd30_continuous_readings(mainMenuObject->mSensorPod);
             break;
         case 'C':
         case 'c':
-            menu_do_set_scd30_measurement_interval(mainMenuObject->mSCDSensor);
+            menu_do_set_scd30_measurement_interval(mainMenuObject->mSensorPod);
             break;
         case 'D':
         case 'd':
-            menu_activate_scd30_asc(mainMenuObject->mSCDSensor);
+            menu_activate_scd30_asc(mainMenuObject->mSensorPod);
             break;
         case 'E':
         case 'e':
-            menu_deactivate_scd30_asc(mainMenuObject->mSCDSensor);
+            menu_deactivate_scd30_asc(mainMenuObject->mSensorPod);
             break;
         case 'F':
         case 'f':
-            menu_do_set_forced_recalibration_value(mainMenuObject->mSCDSensor);
+            menu_do_set_forced_recalibration_value(mainMenuObject->mSensorPod);
             break;
         case 'G':
         case 'g':
-            menu_do_set_temperature_offset(mainMenuObject->mSCDSensor);
+            menu_do_set_temperature_offset(mainMenuObject->mSensorPod);
             break;
         case 'H':
         case 'h':
-            menu_do_set_altitude_compensation(mainMenuObject->mSCDSensor);
+            menu_do_set_altitude_compensation(mainMenuObject->mSensorPod);
             break;
         case 'I':
         case 'i':
-            menu_do_get_scd30_firmware_version(mainMenuObject->mSCDSensor);
+            menu_do_get_scd30_firmware_version(mainMenuObject->mSensorPod);
             break;
         case 'J':
         case 'j':
-            menu_do_get_scd30_serial_number(mainMenuObject->mSCDSensor);
+            menu_do_get_scd30_serial_number(mainMenuObject->mSensorPod);
             break;
         case 'K':
         case 'k':
             printf("\n\nPerforming SCD30 soft reset...\n");
-            menu_do_soft_reset_scd30(mainMenuObject->mSCDSensor);
+            menu_do_soft_reset_scd30(mainMenuObject->mSensorPod);
             break;
         case 'L':
         case 'l':
-            menu_do_get_soil_sensor_moisture_reading(mainMenuObject->mStemmaSoilSensor);
+            menu_do_get_soil_sensor_moisture_reading(mainMenuObject->mSensorPod);
             break;
         default:
             printf("\nInvalid Input!\n");
@@ -118,16 +120,16 @@ menu_return_behavior main_menu_handler(int input, void* menuObject) {
 
         // INTERNAL MENU FUNCTIONS
 
-void menu_do_start_scd30_continuous_readings(SCD30Sensor *sensor) {
+void menu_do_start_scd30_continuous_readings(SensorPod *sensorPod) {
     // Switch to continuous measurement sub-menu
     ContinuousMeasurementMenuObject continuousMenuObject = {
-        .mSCD30Sensor = sensor
+        .mSensorPod = sensorPod
     };
     reset_continuous_measurement_menu_object(&continuousMenuObject);
     do_menu(CONTINUOUS_MEASUREMENT_TEXT, continuous_measurement_handler, &continuousMenuObject);
 }
 
-void menu_do_set_scd30_measurement_interval(SCD30Sensor *sensor) {
+void menu_do_set_scd30_measurement_interval(SensorPod *sensorPod) {
     UserIntInputMenuObject menuObject = {
         .mMenuText      = "\nSetting measurement interval.\n",
         .mUserPrompt    = "Enter the measurement interval (in seconds), hit Enter for default (2) or 'q' to quit: ",
@@ -147,32 +149,32 @@ void menu_do_set_scd30_measurement_interval(SCD30Sensor *sensor) {
     // Set interval value                
     uint16_t measurementInterval = (uint16_t) menuObject.mEnteredValue;
     printf("Setting interval to %d....", measurementInterval);
-    if(set_scd30_measurement_interval(sensor, measurementInterval)) {
+    if(set_scd30_measurement_interval(sensorPod, measurementInterval)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
     }
 }
 
-void menu_activate_scd30_asc(SCD30Sensor *sensor) {
+void menu_activate_scd30_asc(SensorPod *sensorPod) {
     printf("\n\nActivating Automatic Self-Calibration (ASC)...");
-    if(set_scd30_automatic_self_calibration(sensor, true)) {
+    if(set_scd30_automatic_self_calibration(sensorPod, true)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
     }
 }
 
-void menu_deactivate_scd30_asc(SCD30Sensor *sensor) {
+void menu_deactivate_scd30_asc(SensorPod *sensorPod) {
     printf("\n\nDeactivating Automatic Self-Calibration (ASC)...");
-    if(set_scd30_automatic_self_calibration(sensor, false)) {
+    if(set_scd30_automatic_self_calibration(sensorPod, false)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
     }
 }
 
-void menu_do_set_forced_recalibration_value(SCD30Sensor *sensor) {
+void menu_do_set_forced_recalibration_value(SensorPod *sensorPod) {
     UserIntInputMenuObject menuObject = {
         .mMenuText      = "\nRecalibrating CO2 reference.\n",
         .mUserPrompt    = "Enter the reference CO2 concentration (in PPM), hit Enter for default (400) or 'q' to quit: ",
@@ -192,14 +194,14 @@ void menu_do_set_forced_recalibration_value(SCD30Sensor *sensor) {
     // Set reference value                
     uint16_t referenceValue = (uint16_t) menuObject.mEnteredValue;
     printf("Setting reference value to %d....", referenceValue);
-    if(set_scd30_forced_recalibration_value(sensor, referenceValue)) {
+    if(set_scd30_forced_recalibration_value(sensorPod, referenceValue)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
     }
 }
 
-void menu_do_set_temperature_offset(SCD30Sensor *sensor) {
+void menu_do_set_temperature_offset(SensorPod *sensorPod) {
     UserIntInputMenuObject menuObject = {
         .mMenuText      = "\nSet temperature offset\n",
         .mUserPrompt    = "Enter the temperature offset (°C x 100), hit Enter for default (2400/24°C) or 'q' to quit: ",
@@ -219,14 +221,14 @@ void menu_do_set_temperature_offset(SCD30Sensor *sensor) {
     // Set temperature offset                
     uint16_t temperatureValue = (uint16_t) menuObject.mEnteredValue;
     printf("Setting temperature offset to %d....", temperatureValue);
-    if(set_scd30_temperature_offset(sensor, temperatureValue)) {
+    if(set_scd30_temperature_offset(sensorPod, temperatureValue)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
     }
 }
 
-void menu_do_set_altitude_compensation(SCD30Sensor *sensor) {
+void menu_do_set_altitude_compensation(SensorPod *sensorPod) {
     UserIntInputMenuObject menuObject = {
         .mMenuText      = "\nSet altitude compensation\n",
         .mUserPrompt    = "Enter the current altitude (m above sea level), hit Enter for none or 'q' to quit: ",
@@ -246,42 +248,42 @@ void menu_do_set_altitude_compensation(SCD30Sensor *sensor) {
     // Set altitude
     uint16_t altitudeValue = (uint16_t) menuObject.mEnteredValue;
     printf("Setting altitude to %d....", altitudeValue);
-    if(set_scd30_altitude_compensation(sensor, altitudeValue)) {
+    if(set_scd30_altitude_compensation(sensorPod, altitudeValue)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
     }
 }
 
-void menu_do_get_scd30_firmware_version(SCD30Sensor *sensor) {
+void menu_do_get_scd30_firmware_version(SensorPod *sensorPod) {
     uint8_t scd30Firmware[2];
 
     printf("\n\nGetting SCD30 firmware version...\n");
-    if(read_scd30_firmware_version(sensor, scd30Firmware)) {
+    if(read_scd30_firmware_version(sensorPod, scd30Firmware)) {
         printf("  Firmware: 0x%02X - 0x%02X\n", scd30Firmware[0], scd30Firmware[1]);
     } else {
         printf("Could not obtain SCD30 firmware version\n");
     }
 }
 
-void menu_do_get_scd30_serial_number(SCD30Sensor *sensor) {
+void menu_do_get_scd30_serial_number(SensorPod *sensorPod) {
     char scd30Serial[SCD30_SERIAL_BYTE_SIZE];
 
     printf("\n\nGetting SCD30 serial number...\n");
-    if(read_scd30_serial(sensor, scd30Serial)) {
+    if(read_scd30_serial(sensorPod, scd30Serial)) {
         printf("  Serial: %s\n", scd30Serial);
     } else {
         printf("Could not obtain SCD30 serial number\n");
     }
 }
 
-void menu_do_soft_reset_scd30(SCD30Sensor *sensor) {
-    do_scd30_soft_reset(sensor);
+void menu_do_soft_reset_scd30(SensorPod *sensorPod) {
+    do_scd30_soft_reset(sensorPod);
 }
 
-void menu_do_get_soil_sensor_moisture_reading(StemmaSoilSensor *sensor) {
+void menu_do_get_soil_sensor_moisture_reading(SensorPod *sensorPod) {
     printf("\n\nGetting moisture sensor value...\n");
-    uint16_t capValue = get_soil_sensor_capacitive_value(sensor);
+    uint16_t capValue = get_soil_sensor_capacitive_value(sensorPod);
     printf("  Capacitive value: %u\n", capValue);
 }
 

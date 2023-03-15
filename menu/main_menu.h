@@ -3,13 +3,12 @@
 
 #include "menu_interface.h"
 #include "scd30_sensor.h"
-#include "stemma_soil_sensor.h"
+#include "sensor_pod.h"
 
 
 typedef struct {
     int mLEDPin;
-    SCD30Sensor *mSCDSensor;
-    StemmaSoilSensor *mStemmaSoilSensor;
+    SensorPod *mSensorPod;
 } MainMenuObject;
 
 extern const char* MAIN_MENU_TEXT;

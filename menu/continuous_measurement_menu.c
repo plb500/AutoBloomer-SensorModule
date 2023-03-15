@@ -1,5 +1,7 @@
 #include "continuous_measurement_menu.h"
 
+#include "scd30_sensor.h"
+
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/time.h"
@@ -28,7 +30,7 @@ menu_return_behavior handle_reading_input(int input, ContinuousMeasurementMenuOb
             
             // Start the sensor
             uint16_t pressureCompensation = (uint16_t) userResponse.mIntValue;
-            trigger_scd30_continuous_measurement(menuObject->mSCD30Sensor, pressureCompensation);
+            trigger_scd30_continuous_measurement(menuObject->mSensorPod, pressureCompensation);
 
             menuObject->mInputStateHolder.mState = INPUT_COMPLETED;
         } else {
@@ -55,12 +57,12 @@ menu_return_behavior handle_reading_input(int input, ContinuousMeasurementMenuOb
 menu_return_behavior handle_doing_reading(int input, ContinuousMeasurementMenuObject *menuObject) {
     if(input != PICO_ERROR_TIMEOUT) {
         // Stop the sensor and exit
-        stop_scd30_continuous_measurement(menuObject->mSCD30Sensor);
+        stop_scd30_continuous_measurement(menuObject->mSensorPod);
         return EXIT_MENU;
     }
 
-    if(get_scd30_data_ready_status(menuObject->mSCD30Sensor)) {
-        SCD30SensorData data = get_scd30_reading(menuObject->mSCD30Sensor);
+    if(get_scd30_data_ready_status(menuObject->mSensorPod)) {
+        SCD30SensorData data = get_scd30_reading(menuObject->mSensorPod);
         if(data.mValidReading) {
             printf("Sensor reading:\n");
             printf("   CO2: %f\n", data.mCO2Reading);

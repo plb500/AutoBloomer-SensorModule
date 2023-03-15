@@ -2,7 +2,6 @@
 #include "hardware/gpio.h"
 
 
-const int DEFAULT_MULTIPLEXER_ADDRESS = 0x70;
 const bool I2C_NOSTOP = false;
 
 void init_sensor_bus(I2CInterface *i2cInterface) {
@@ -18,17 +17,19 @@ void init_sensor_bus(I2CInterface *i2cInterface) {
     gpio_pull_up(i2cInterface->mSCL);
 }
 
-void select_i2c_channel(I2CInterface *i2cInterface, I2CChannel channel) {
+bool select_i2c_channel(I2CInterface *i2cInterface, I2CChannel channel) {
     if(i2cInterface->mMultiplexerAddress < 0) {
-        return;
+        return false;
+    }
+
+    if(channel == NO_I2C_CHANNEL) {
+        return false;
     }
 
     uint8_t data = (uint8_t) channel;
 
-    // Since this is not a multi-master system we don't need to worry about losing control of the bus so it 
-    // technically shouldn't matter if we specify sending a STOP condition or not in the last parameter.
-    // Since we are never relinquishing control of the bus though, we will not bother with the STOP.
-    i2c_write_blocking(i2cInterface->mI2C, i2cInterface->mMultiplexerAddress, &data, 1, I2C_NOSTOP);
+    int bytesWritten = i2c_write_blocking(i2cInterface->mI2C, i2cInterface->mMultiplexerAddress, &data, 1, I2C_NOSTOP);
+    return (bytesWritten == 1);
 }
 
 bool check_i2c_address(I2CInterface *i2cInterface, const uint8_t address) {

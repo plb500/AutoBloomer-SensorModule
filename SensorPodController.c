@@ -8,17 +8,16 @@
 
 // Hardware files
 #include "sensor/sensor_i2c_interface.h"
+#include "sensor_pod.h"
 #include "sensor/stemma_soil_sensor.h"
 #include "sensor/scd30_sensor.h"
 
 
 // Hardware defines
 #define I2C_PORT                        (i2c1)
-static const uint8_t I2C_SCL            = 27;
-static const uint8_t I2C_SDA            = 26;
+static const uint8_t I2C_SDA            = 10;
+static const uint8_t I2C_SCL            = 11;
 static const uint SENSOR_I2C_BAUDRATE   = (100 * 1000);
-static const uint8_t STEMMA_ADDRESS     = 0x38;
-static const uint8_t SCD_30_ADDRESS     = 0x61;
 
 static const uint8_t LED_PIN            = 25;
 
@@ -31,19 +30,15 @@ I2CInterface mainInterface = {
     SENSOR_I2C_BAUDRATE,
     I2C_SDA,
     I2C_SCL,
-    -1
+    DEFAULT_MULTIPLEXER_ADDRESS
 };
 
-StemmaSoilSensor soilSensor = {
-    &mainInterface,
-    STEMMA_ADDRESS
+SensorPod sensorPod = {
+    .mInterface = &mainInterface,
+    .mI2CChannel = I2C_CHANNEL_7,
+    .mSCD30Address = SCD30_I2C_ADDRESS,
+    .mSoilSensorAddress = SOIL_SENSOR_3_ADDRESS
 };
-
-SCD30Sensor scd30Sensor = {
-    &mainInterface,
-    SCD_30_ADDRESS
-};
-
 
 int main() {
     char scd30Serial[SCD30_SERIAL_BYTE_SIZE];
@@ -69,9 +64,9 @@ int main() {
 
     // Initialize soil sensor
     printf("Initializing soil sensor....");
-    if(soil_sensor_begin(&soilSensor)) {
-        if(reset_soil_sensor(&soilSensor)) {
-            uint32_t ver = get_soil_sensor_version(&soilSensor);
+    if(init_soil_sensor(&sensorPod)) {
+        if(reset_soil_sensor(&sensorPod)) {
+            uint32_t ver = get_soil_sensor_version(&sensorPod);
             printf("\nSoil sensor initialized. Version: 0x%04X\n", ver);
         } else {
             printf(("Failed to reset soil sensor\n"));
@@ -83,7 +78,7 @@ int main() {
 
     // Initialize SCD30 sensor
     printf("Initializing SCD30....");
-    if(read_scd30_serial(&scd30Sensor, scd30Serial) && read_scd30_firmware_version(&scd30Sensor, scd30Firmware)) {
+    if(read_scd30_serial(&sensorPod, scd30Serial) && read_scd30_firmware_version(&sensorPod, scd30Firmware)) {
         printf("\nSCD30 initialized\n");
         printf("  Serial: %s\n", scd30Serial);
         printf("  Firmware: 0x%02X  : 0x%02X\n", scd30Firmware[0], scd30Firmware[1]);
@@ -95,8 +90,7 @@ int main() {
 
     MainMenuObject menuObject = {
         .mLEDPin = LED_PIN,
-        .mSCDSensor = &scd30Sensor,
-        .mStemmaSoilSensor = &soilSensor
+        .mSensorPod = &sensorPod
     };
 
     // Instantiate main menu and loop

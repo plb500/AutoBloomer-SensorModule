@@ -3,12 +3,12 @@
 
 #include "menu_interface.h"
 #include "pico/stdlib.h"
-#include "scd30_sensor.h"
+#include "sensor_pod.h"
 
 
 typedef struct {
     UserInputStateHolder mInputStateHolder;
-    SCD30Sensor *mSCD30Sensor;
+    SensorPod *mSensorPod;
 } ContinuousMeasurementMenuObject;
 
 extern const char* CONTINUOUS_MEASUREMENT_TEXT;
