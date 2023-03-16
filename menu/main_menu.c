@@ -22,6 +22,7 @@ const char* MAIN_MENU_TEXT =
     " (J) Show SCD30 serial number\n"
     " (K) Perform SCD30 Soft Reset\n"
     " (L) Check moisture sensor\n"
+    " (M) Show PISO status\n"
     "\n\n"
     " Please select an option from above: ";
 
@@ -38,6 +39,7 @@ void menu_do_get_scd30_firmware_version(SensorPod *sensorPod);
 void menu_do_get_scd30_serial_number(SensorPod *sensorPod);
 void menu_do_soft_reset_scd30(SensorPod *sensorPod);
 void menu_do_get_soil_sensor_moisture_reading(SensorPod *sensorPod);
+void menu_do_show_piso_status(ShiftRegister *shiftRegister);
 
 
 menu_return_behavior main_menu_handler(int input, void* menuObject) {
@@ -105,6 +107,10 @@ menu_return_behavior main_menu_handler(int input, void* menuObject) {
         case 'L':
         case 'l':
             menu_do_get_soil_sensor_moisture_reading(mainMenuObject->mSensorPod);
+            break;
+        case 'M':
+        case 'm':
+            menu_do_show_piso_status(mainMenuObject->mShiftRegister);
             break;
         default:
             printf("\nInvalid Input!\n");
@@ -285,3 +291,18 @@ void menu_do_get_soil_sensor_moisture_reading(SensorPod *sensorPod) {
     printf("  Capacitive value: %u\n", capValue);
 }
 
+void menu_do_show_piso_status(ShiftRegister *shiftRegister) {
+    printf("\n\nGetting PISO shift register status...\n");
+    read_shift_register_states(shiftRegister);
+    printf("  Status: \n");
+    for(int i = 0; i < 8; ++i) {
+        printf("    Port %d: ", i);
+
+        if(get_shift_register_state(shiftRegister, i)) {
+            printf("CONNECTED\n");
+        } else {
+            printf("NOT CONNECTED\n");
+        }
+    }
+    printf("\n");
+}

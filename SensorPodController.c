@@ -9,6 +9,7 @@
 // Hardware files
 #include "sensor/sensor_i2c_interface.h"
 #include "sensor_pod.h"
+#include "hardware/shift_register.h"
 
 
 // Hardware defines
@@ -21,6 +22,11 @@ static const uint8_t LED_PIN            = 25;
 
 static const uint8_t UART_TX_PIN        = 12;
 static const uint8_t UART_RX_PIN        = 13;
+
+static const uint8_t PISO_LATCH_PIN     = 21;
+static const uint8_t PISO_CLOCK_PIN     = 14;
+static const uint8_t PISO_DATA_PIN      = 15;
+
 
 
 I2CInterface mainInterface = {
@@ -37,6 +43,14 @@ SensorPod sensorPod = {
     .mSCD30Address = SCD30_I2C_ADDRESS,
     .mSoilSensorAddress = SOIL_SENSOR_3_ADDRESS
 };
+
+ShiftRegister shiftRegister = {
+    .mLatchPin = PISO_LATCH_PIN,
+    .mClockPin = PISO_CLOCK_PIN,
+    .mDataPin = PISO_DATA_PIN,
+    .mType = PISO_SHIFT_REGISTER
+};
+
 
 int main() {
     char scd30Serial[SCD30_SERIAL_BYTE_SIZE];
@@ -57,6 +71,9 @@ int main() {
     // Initialise LED GPIO
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
+
+    // Initialise shift register
+    init_shift_register(&shiftRegister);
 
     sleep_ms(2000);
 
@@ -88,7 +105,8 @@ int main() {
 
     MainMenuObject menuObject = {
         .mLEDPin = LED_PIN,
-        .mSensorPod = &sensorPod
+        .mSensorPod = &sensorPod,
+        .mShiftRegister = &shiftRegister
     };
 
     // Instantiate main menu and loop

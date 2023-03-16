@@ -3,12 +3,12 @@
 
 #include "menu_interface.h"
 #include "sensor_pod.h"
-#include "sensor_pod.h"
-
+#include "shift_register.h"
 
 typedef struct {
     int mLEDPin;
     SensorPod *mSensorPod;
+    ShiftRegister *mShiftRegister;
 } MainMenuObject;
 
 extern const char* MAIN_MENU_TEXT;

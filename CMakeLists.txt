@@ -27,6 +27,7 @@ add_executable(SensorPodController
         sensor/sensor_i2c_interface.c
         sensor/stemma_soil_sensor.c
         sensor/scd30_sensor.c
+        hardware/shift_register.c
 )
 
 pico_set_program_name(SensorPodController "SensorPodController")
@@ -38,6 +39,7 @@ pico_enable_stdio_usb(SensorPodController 0)
 target_include_directories(SensorPodController
         PRIVATE menu
         PRIVATE sensor
+        PRIVATE hardware
 ) 
 
 # Add the standard library to the build
