@@ -1,6 +1,6 @@
 #include "continuous_measurement_menu.h"
 
-#include "scd30_sensor.h"
+#include "sensor_pod.h"
 
 #include <stdio.h>
 #include "pico/stdlib.h"

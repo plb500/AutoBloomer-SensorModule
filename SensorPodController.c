@@ -9,8 +9,6 @@
 // Hardware files
 #include "sensor/sensor_i2c_interface.h"
 #include "sensor_pod.h"
-#include "sensor/stemma_soil_sensor.h"
-#include "sensor/scd30_sensor.h"
 
 
 // Hardware defines
@@ -35,7 +33,7 @@ I2CInterface mainInterface = {
 
 SensorPod sensorPod = {
     .mInterface = &mainInterface,
-    .mI2CChannel = I2C_CHANNEL_7,
+    .mI2CChannel = I2C_CHANNEL_0,
     .mSCD30Address = SCD30_I2C_ADDRESS,
     .mSoilSensorAddress = SOIL_SENSOR_3_ADDRESS
 };

@@ -5,8 +5,6 @@
 
 #include "continuous_measurement_menu.h"
 #include "user_int_input_menu.h"
-#include "scd30_sensor.h"
-#include "stemma_soil_sensor.h"
 
 const char* MAIN_MENU_TEXT = 
     "\n"

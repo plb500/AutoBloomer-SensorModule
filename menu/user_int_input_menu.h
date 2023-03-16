@@ -3,7 +3,6 @@
 
 #include "menu_interface.h"
 #include "pico/stdlib.h"
-#include "scd30_sensor.h"
 
 
 extern const uint32_t NO_USER_INPUT_VALUE;

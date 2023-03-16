@@ -2,7 +2,7 @@
 #define _MAIN_MENU_H_
 
 #include "menu_interface.h"
-#include "scd30_sensor.h"
+#include "sensor_pod.h"
 #include "sensor_pod.h"
 
 

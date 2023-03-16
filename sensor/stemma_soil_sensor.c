@@ -1,4 +1,4 @@
-#include "stemma_soil_sensor.h"
+#include "sensor_pod.h"
 #include "hardware/gpio.h"
 
 #include <stdio.h>

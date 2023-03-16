@@ -1,4 +1,4 @@
-#include "scd30_sensor.h"
+#include "sensor_pod.h"
 
 #include <stdio.h>
 
