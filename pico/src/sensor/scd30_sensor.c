@@ -165,36 +165,20 @@ bool write_and_confirm_cmd_args(SensorPod *sensorPod, uint16_t commandCode, uint
         // Public functions
 
 bool trigger_scd30_continuous_measurement(SensorPod *sensorPod, uint16_t pressureCompensation) {
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
-
     return write_scd30_cmd(sensorPod, SCD30_CMD_START_CONTINUOUS_MEASUREMENT, &pressureCompensation, 1);
 }
 
 bool stop_scd30_continuous_measurement(SensorPod *sensorPod) {
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
-
     return write_scd30_cmd_no_args(sensorPod, SCD30_CMD_STOP_CONTINUOUS_MEASUREMENT);
 }
 
 bool set_scd30_measurement_interval(SensorPod *sensorPod, uint16_t measurementInterval) {
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
-
     return write_and_confirm_cmd_args(sensorPod, SCD30_CMD_SET_MEASUREMENT_INTERVAL, measurementInterval);
 }
 
 bool get_scd30_data_ready_status(SensorPod *sensorPod) {
     uint16_t response;
     uint8_t numResponseWords = 1;
-
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
 
     if(!write_scd30_cmd_no_args(sensorPod, SCD30_CMD_GET_DATA_READY)) {
         return false;
@@ -219,10 +203,6 @@ SCD30SensorData get_scd30_reading(SensorPod *sensorPod) {
         .mTemperatureReading    = -1.f,
         .mHumidityReading       = -1.f
     };
-
-    if(!select_sensor_pod(sensorPod)) {
-        return returnData;
-    }
 
     // Check whether there is a reading available
     if(!get_scd30_data_ready_status(sensorPod)) {
@@ -253,43 +233,23 @@ SCD30SensorData get_scd30_reading(SensorPod *sensorPod) {
 bool set_scd30_automatic_self_calibration(SensorPod *sensorPod, bool selfCalibrationOn) {
     uint16_t param = selfCalibrationOn ? 1 : 0;
 
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
-
     return write_and_confirm_cmd_args(sensorPod, SCD30_CMD_AUTO_SELF_CALIBRATION, param);
 }
 
 bool set_scd30_forced_recalibration_value(SensorPod *sensorPod, uint16_t referenceValue) {
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
-
     return write_and_confirm_cmd_args(sensorPod, SCD30_CMD_AUTO_SELF_CALIBRATION, referenceValue);
 }
 
 bool set_scd30_temperature_offset(SensorPod *sensorPod, uint16_t temperatureOffset) {
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
-
     return write_and_confirm_cmd_args(sensorPod, SCD30_CMD_SET_TEMPERATURE_OFFSET, temperatureOffset);
 }
 
 bool set_scd30_altitude_compensation(SensorPod *sensorPod, uint16_t altitude) {
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
-
     return write_and_confirm_cmd_args(sensorPod, SCD30_CMD_SET_ALTITUDE, altitude);
 }
 
 bool read_scd30_firmware_version(SensorPod *sensorPod, uint8_t *dst) {
     uint8_t numResponseWords = 1;
-
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
 
     if(!write_scd30_cmd_no_args(sensorPod, SCD30_CMD_READ_FIRMWARE_VERSION)) {
         return false;
@@ -305,18 +265,10 @@ bool read_scd30_firmware_version(SensorPod *sensorPod, uint8_t *dst) {
 }
 
 bool do_scd30_soft_reset(SensorPod *sensorPod) {
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
-
     return write_scd30_cmd_no_args(sensorPod, SCD30_CMD_SOFT_RESET);
 }
 
 bool read_scd30_serial(SensorPod *sensorPod, char *dst) {
-    if(!select_sensor_pod(sensorPod)) {
-        return false;
-    }
-
     if(!write_scd30_cmd_no_args(sensorPod, SCD30_CMD_READ_SERIAL)) {
         sprintf(dst, "NO SERIAL");
         return false;

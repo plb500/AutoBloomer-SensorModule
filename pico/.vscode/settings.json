@@ -15,7 +15,8 @@
     },
     "files.associations": {
       "main_menu.h": "c",
-      "menu_interface.h": "c"
+      "menu_interface.h": "c",
+      "i2c.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false,
 }

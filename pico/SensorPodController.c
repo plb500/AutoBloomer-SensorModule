@@ -9,13 +9,14 @@
 // Hardware files
 #include "sensor/sensor_i2c_interface.h"
 #include "sensor_pod.h"
+#include "userdata/userdata.h"
 
 
 // Hardware defines
 #define I2C_PORT                        (i2c1)
-static const uint8_t I2C_SDA            = 10;
-static const uint8_t I2C_SCL            = 11;
-static const uint SENSOR_I2C_BAUDRATE   = (100 * 1000);
+static const uint8_t I2C_SDA            = 6;
+static const uint8_t I2C_SCL            = 3;
+static const uint SENSOR_I2C_BAUDRATE   = (25 * 1000);
 
 static const uint8_t LED_PIN            = 25;
 
@@ -31,9 +32,10 @@ I2CInterface mainInterface = {
     DEFAULT_MULTIPLEXER_ADDRESS
 };
 
+UserData userData;
+
 SensorPod sensorPod = {
     .mInterface = &mainInterface,
-    .mI2CChannel = I2C_CHANNEL_0,
     .mSCD30Address = SCD30_I2C_ADDRESS,
     .mSoilSensorAddress = SOIL_SENSOR_3_ADDRESS
 };
@@ -54,9 +56,11 @@ int main() {
     // Initialise I/O
     stdio_init_all(); 
 
-    // Initialise LED GPIO
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
+    // Grab user data
+    if(!read_userdata_from_flash(&userData)) {
+        init_userdata(&userData);
+    }
+
 
     sleep_ms(2000);
 

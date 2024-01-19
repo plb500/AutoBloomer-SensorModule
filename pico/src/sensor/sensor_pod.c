@@ -5,5 +5,5 @@ bool select_sensor_pod(SensorPod *sensorPod) {
         return false;
     }
 
-    return select_i2c_channel(sensorPod->mInterface, sensorPod->mI2CChannel);
+    return true;
 }

@@ -12,7 +12,6 @@ extern const uint16_t SCD30_SERIAL_BYTE_SIZE;
 
 typedef struct {
     I2CInterface *mInterface;
-    I2CChannel mI2CChannel;
     uint8_t mSCD30Address;
     uint8_t mSoilSensorAddress;
 } SensorPod;
