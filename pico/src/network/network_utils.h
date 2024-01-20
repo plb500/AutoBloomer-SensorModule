@@ -13,7 +13,6 @@ typedef struct DNSResolutionRequest_t {
 } DNSResolutionRequest;
 
 
-void debug_ip_address();
 bool is_network_connected();
 void resolve_host_blocking(DNSResolutionRequest *request);
 int connect_to_wifi(const char * const ssid, const char * const password, const char * const hostname);

@@ -129,7 +129,6 @@ int main() {
                 }
 
                 if(mqtt_client_is_connected(mqttState.mqttClient)) {
-                    printf("CONNECTED TO BROKER\n");
                     pull_mqtt_data_from_queue(&mqttState);
                     disconnect_from_broker(&mqttState);
                     timeout = make_timeout_time_ms(MQTT_UPDATE_PERIOD_MS);

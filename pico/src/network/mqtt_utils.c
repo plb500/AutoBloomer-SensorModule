@@ -38,7 +38,7 @@ bool connect_to_broker_blocking(MQTTState *mqttState) {
     }
 
     memset(&ci, 0, sizeof(ci));
-    ci.client_id    = "SensorPod";
+    ci.client_id    = mqttState->mSensorName;
     ci.client_user  = NULL;
     ci.client_pass  = NULL;
     ci.keep_alive   = 10;
@@ -83,10 +83,6 @@ err_t publish_mqtt_data(MQTTState *mqttState, const char *topic, const char *pay
     cyw43_arch_lwip_begin();
     err = mqtt_publish(mqttState->mqttClient, topic, payload, strlen(payload), qos, retain, mqtt_pub_request_cb, mqttState);
     cyw43_arch_lwip_end();
-
-    if(err != ERR_OK) {
-        // DEBUG_PRINT("Publish err: %d\n", err);
-    }
 
     return err; 
 }

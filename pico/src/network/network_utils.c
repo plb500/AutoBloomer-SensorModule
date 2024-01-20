@@ -3,10 +3,6 @@
 #include "lwip/dns.h"
 #include "pico/cyw43_arch.h"
 
-void debug_ip_address() {
-    // DEBUG_PRINT("Pico IP address: %s\n", ip4addr_ntoa(&(cyw43_state.netif[0].ip_addr)));    
-}
-
 bool is_network_connected() {
     return (cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA) == CYW43_LINK_UP);
 }

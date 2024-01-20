@@ -18,7 +18,6 @@ typedef struct {
 
 
 void data_update_to_mqtt_message(MQTTState *mqttState, SensorDataUpdateMessage *dataUpdate, MQTTMessage *mqttMsg) {
-    char statusString[16];
     // Sanity check
     if(!dataUpdate || !mqttMsg || !mqttState) {
         return;
@@ -33,11 +32,9 @@ void data_update_to_mqtt_message(MQTTState *mqttState, SensorDataUpdateMessage *
         sensorName
     );
 
-    snprintf(statusString, 16, "\"%s\":%d", SENSOR_STATUS_JSON_KEY, dataUpdate->mSensorStatus);
-    
     snprintf(mqttMsg->mPayload, MQTT_MAX_PAYLOAD_LENGTH, 
-        "{%s, \"%s\":%.2f, \"%s\":%.2f, \"%s\":%.2f, \"%s\":%d}",
-        statusString,
+        "{\"%s\":%d, \"%s\":%.2f, \"%s\":%.2f, \"%s\":%.2f, \"%s\":%d}",
+        SENSOR_STATUS_JSON_KEY, dataUpdate->mSensorStatus,
         CO2_LEVEL_JSON_KEY, dataUpdate->mCO2Level,
         TEMPERATURE_JSON_KEY, dataUpdate->mTemperature,
         HUMIDITY_JSON_KEY, dataUpdate->mHumidity,
