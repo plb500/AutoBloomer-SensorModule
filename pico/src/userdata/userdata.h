@@ -29,7 +29,7 @@ typedef struct UserData_t {
 void init_userdata(UserData *userData);
 bool is_userdata_valid(UserData *userData);
 bool has_network_userdata(UserData *userData);
-bool has_broker_details(UserData *userData);
+bool has_mqtt_userdata(UserData *userData);
 void write_userdata_to_flash(UserData *userData);
 bool read_userdata_from_flash(UserData *destUserData);
 

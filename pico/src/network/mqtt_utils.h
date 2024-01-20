@@ -14,6 +14,8 @@ typedef struct MQTTState_t {
     mqtt_client_t *mqttClient;
     ip_addr_t mBrokerAddress;
     uint16_t mBrokerPort;
+    const char *mSensorName;
+    const char *mSensorLocation;
     queue_t *mSensorUpdateQueue;
 } MQTTState;
 

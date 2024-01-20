@@ -6,6 +6,7 @@
 
 #include "userdata/userdata.h"
 #include "cores/sensor_pod_core_1.h"
+#include "cores/sensor_multicore_utils.h"
 #include "serial_control/serial_controller.h"
 #include "network/network_utils.h"
 #include "network/mqtt_utils.h"
@@ -14,12 +15,17 @@
 static const uint8_t UART_TX_PIN        = 0;
 static const uint8_t UART_RX_PIN        = 1;
 
-const uint16_t MQTT_UPDATE_PERIOD_MS = 750;
+const uint16_t MQTT_UPDATE_PERIOD_MS    = 750;
+
+// Queue used for sending sensor updates from core0 to core1
+queue_t sensorUpdateQueue;
 
 // extern queue_t sensorUpdateQueue;
 MQTTState mqttState = {
     .mqttClient = 0,
-    .mSensorUpdateQueue = 0
+    .mSensorName = 0,
+    .mSensorLocation = 0,
+    .mSensorUpdateQueue = &sensorUpdateQueue
 };
 
 DNSResolutionRequest brokerRequest = {
@@ -55,6 +61,9 @@ int main() {
 
     // Initialise I/O
     stdio_init_all(); 
+
+    // Initialize the cross-core queue
+    intitialize_sensor_data_queue(&sensorUpdateQueue, 4);
 
     // Grab user data
     if(!read_userdata_from_flash(userData)) {
@@ -99,7 +108,7 @@ int main() {
         absolute_time_t now = get_absolute_time();
         if(
             (is_nil_time(timeout) || absolute_time_diff_us(now, timeout) <= 0) && 
-            has_broker_details(userData)
+            has_mqtt_userdata(userData)
         ) {
             brokerRequest.mResolvedAddress.addr = 0;
             brokerRequest.mHost = userData->m_brokerAddress;
@@ -112,13 +121,16 @@ int main() {
                 mqttState.mBrokerAddress = brokerRequest.mResolvedAddress;
                 mqttState.mBrokerPort = MQTT_PORT;
 
+                mqttState.mSensorName = userData->m_sensorName;
+                mqttState.mSensorLocation = userData->m_locationName;
+
                 if(!mqtt_client_is_connected(mqttState.mqttClient)) {
                     connect_to_broker_blocking(&mqttState);
                 }
 
                 if(mqtt_client_is_connected(mqttState.mqttClient)) {
                     printf("CONNECTED TO BROKER\n");
-                    // pull_mqtt_data_from_queue(&mqttState);
+                    pull_mqtt_data_from_queue(&mqttState);
                     disconnect_from_broker(&mqttState);
                     timeout = make_timeout_time_ms(MQTT_UPDATE_PERIOD_MS);
                 } else {

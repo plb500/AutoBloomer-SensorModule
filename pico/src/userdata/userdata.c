@@ -43,12 +43,16 @@ bool has_network_userdata(UserData *userData) {
     );
 }
 
-bool has_broker_details(UserData *userData) {
+bool has_mqtt_userdata(UserData *userData) {
     if(!userData) {
         return false;
     }
 
-    return strlen(userData->m_brokerAddress);
+    return (
+        strlen(userData->m_brokerAddress) &&
+        strlen(userData->m_locationName) &&
+        strlen(userData->m_sensorName)
+    );
 }
 
 

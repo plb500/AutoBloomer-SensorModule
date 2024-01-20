@@ -20,9 +20,15 @@ add_executable(SensorPodController
 
     src/cores/sensor_pod_core_0.c
     src/cores/sensor_pod_core_1.c
+    src/cores/sensor_multicore_utils.c
 
     src/network/network_utils.c
     src/network/mqtt_utils.c
+
+    src/sensor/sensor_i2c_interface.c
+    src/sensor/sensor_pod.c
+    src/sensor/scd30_sensor.c
+    src/sensor/stemma_soil_sensor.c
 )
 
 pico_set_linker_script(SensorPodController ${CMAKE_SOURCE_DIR}/memmap_custom.ld)

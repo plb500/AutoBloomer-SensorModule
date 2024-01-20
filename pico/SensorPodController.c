@@ -66,7 +66,7 @@ int main() {
 
     // Initialize soil sensor
     printf("Initializing soil sensor....");
-    if(init_soil_sensor(&sensorPod)) {
+    if(init_soil_sensor(&sensorPod)) {x
         if(reset_soil_sensor(&sensorPod)) {
             uint32_t ver = get_soil_sensor_version(&sensorPod);
             printf("\nSoil sensor initialized. Version: 0x%04X\n", ver);
