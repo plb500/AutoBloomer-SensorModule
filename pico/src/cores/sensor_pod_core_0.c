@@ -12,10 +12,10 @@
 #include "network/mqtt_utils.h"
 
 
-static const uint8_t UART_TX_PIN        = 0;
-static const uint8_t UART_RX_PIN        = 1;
+static const uint8_t UART_TX_PIN            = 0;
+static const uint8_t UART_RX_PIN            = 1;
 
-const uint16_t MQTT_UPDATE_PERIOD_MS    = 750;
+const uint16_t MQTT_UPDATE_CHECK_PERIOD_MS  = 750;
 
 // Queue used for sending sensor updates from core0 to core1
 queue_t sensorUpdateQueue;
@@ -105,18 +105,20 @@ int main() {
             wifi_led_off();
         }
 
+        // Check iff we have MQTT connection parameters and it's time to check for new sensor data
         absolute_time_t now = get_absolute_time();
         if(
             (is_nil_time(timeout) || absolute_time_diff_us(now, timeout) <= 0) && 
             has_mqtt_userdata(userData)
         ) {
+            // DNS lookup the broker
             brokerRequest.mResolvedAddress.addr = 0;
             brokerRequest.mHost = userData->m_brokerAddress;
-
             if(is_network_connected()) {
                 resolve_host_blocking(&brokerRequest);
             }
 
+            // If we have the broker's address, send data from our queue
             if(brokerRequest.mResolvedAddress.addr) {
                 mqttState.mBrokerAddress = brokerRequest.mResolvedAddress;
                 mqttState.mBrokerPort = MQTT_PORT;
@@ -131,7 +133,7 @@ int main() {
                 if(mqtt_client_is_connected(mqttState.mqttClient)) {
                     pull_mqtt_data_from_queue(&mqttState);
                     disconnect_from_broker(&mqttState);
-                    timeout = make_timeout_time_ms(MQTT_UPDATE_PERIOD_MS);
+                    timeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
                 } else {
                     forceReconnect = true;
                 }

@@ -10,6 +10,8 @@ const char * const SOIL_MOISTURE_JSON_KEY           = "Soil Moisture";
 
 typedef struct {
     int mSensorStatus;
+    bool mHasSoilReding;
+    bool mHasSCD30Reading;
     float mCO2Level;
     float mTemperature;
     float mHumidity;
@@ -18,6 +20,9 @@ typedef struct {
 
 
 void data_update_to_mqtt_message(MQTTState *mqttState, SensorDataUpdateMessage *dataUpdate, MQTTMessage *mqttMsg) {
+    char soilReadingString[32];
+    char scd30ReadingString[64];
+
     // Sanity check
     if(!dataUpdate || !mqttMsg || !mqttState) {
         return;
@@ -32,13 +37,32 @@ void data_update_to_mqtt_message(MQTTState *mqttState, SensorDataUpdateMessage *
         sensorName
     );
 
+    if(dataUpdate->mHasSoilReding) {
+        snprintf(soilReadingString, 32,
+            ", \"%s\":%d",
+            SOIL_MOISTURE_JSON_KEY, dataUpdate->mSoilSensorData
+        );
+    } else {
+        soilReadingString[0] = 0;
+    }
+
+    if(dataUpdate->mHasSCD30Reading) {
+        snprintf(scd30ReadingString, 64,
+            ", \"%s\":%.2f, \"%s\":%.2f, \"%s\":%.2f",
+            CO2_LEVEL_JSON_KEY, dataUpdate->mCO2Level,
+            TEMPERATURE_JSON_KEY, dataUpdate->mTemperature,
+            HUMIDITY_JSON_KEY, dataUpdate->mHumidity
+        );
+    } else {
+        scd30ReadingString[0] = 0;
+    }
+
+
     snprintf(mqttMsg->mPayload, MQTT_MAX_PAYLOAD_LENGTH, 
-        "{\"%s\":%d, \"%s\":%.2f, \"%s\":%.2f, \"%s\":%.2f, \"%s\":%d}",
+        "{\"%s\":%d%s%s}",
         SENSOR_STATUS_JSON_KEY, dataUpdate->mSensorStatus,
-        CO2_LEVEL_JSON_KEY, dataUpdate->mCO2Level,
-        TEMPERATURE_JSON_KEY, dataUpdate->mTemperature,
-        HUMIDITY_JSON_KEY, dataUpdate->mHumidity,
-        SOIL_MOISTURE_JSON_KEY, dataUpdate->mSoilSensorData
+        scd30ReadingString,
+        soilReadingString
     );
 }
 
@@ -54,6 +78,8 @@ void push_sensor_data_to_queue(queue_t *sensorDataQueue, SensorPodData *sensorPo
     }
 
     SensorDataUpdateMessage newData;
+    newData.mHasSCD30Reading = sensorPodData->mSCD30SensorDataValid;
+    newData.mHasSoilReding =  sensorPodData->mSoilSensorDataValid;
     newData.mSensorStatus = sensorPodData->mStatus;
     newData.mCO2Level = sensorPodData->mCO2Level;
     newData.mTemperature = sensorPodData->mTemperature;
@@ -88,6 +114,8 @@ void pull_mqtt_data_from_queue(MQTTState *mqttState) {
         }
     } while(msgRead);
 
-    data_update_to_mqtt_message(mqttState, &updateMsg, &mqttMsg);
-    publish_mqtt_message(mqttState, &mqttMsg);
+    if(haveMessage) {
+        data_update_to_mqtt_message(mqttState, &updateMsg, &mqttMsg);
+        publish_mqtt_message(mqttState, &mqttMsg);
+    }
 }
