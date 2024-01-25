@@ -1,7 +1,7 @@
 #include "serial_controller.h"
 
-#include "pico/stdio.h"
-#include <stdio.h>
+#include "util/debug_io.h"
+
 #include <string.h>
 
 
@@ -60,27 +60,27 @@ bool process_serial_command(UserData *userData, SerialCommandBuffer *buffer) {
 
     switch(command) {
         case CMD_SSID:
-            printf("Setting SSID\n");
+            DEBUG_PRINT("Setting SSID");
             memset(userData->m_ssid, 0, MAX_SSID_LENGTH + 1);
             destToSet = userData->m_ssid;
             break;
         case CMD_PASS:
-            printf("Setting private key\n");
+            DEBUG_PRINT("Setting private key");
             memset(userData->m_psk, 0, MAX_PSK_LENGTH + 1);
             destToSet = userData->m_psk;
             break;
         case CMD_LOCN:
-            printf("Setting location\n");
+            DEBUG_PRINT("Setting location");
             memset(userData->m_locationName, 0, MAX_LOCATION_LENGTH + 1);
             destToSet = userData->m_locationName;
             break;
         case CMD_NAME:
-            printf("Setting name\n");
+            DEBUG_PRINT("Setting name");
             memset(userData->m_sensorName, 0, MAX_SENSOR_NAME_LENGTH + 1);
             destToSet = userData->m_sensorName;
             break;
         case CMD_BRKR:
-            printf("Setting MQTT broker\n");
+            DEBUG_PRINT("Setting MQTT broker");
             memset(userData->m_brokerAddress, 0, MAX_SENSOR_NAME_LENGTH + 1);
             destToSet = userData->m_brokerAddress;
             break;

@@ -37,8 +37,8 @@ add_executable(SensorPodController
 
 pico_set_linker_script(SensorPodController ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
 
-pico_enable_stdio_usb(SensorPodController 1)
-pico_enable_stdio_uart(SensorPodController 0)
+pico_enable_stdio_usb(SensorPodController 0)
+pico_enable_stdio_uart(SensorPodController 1)
 pico_add_extra_outputs(SensorPodController)
 
 target_include_directories(SensorPodController PRIVATE

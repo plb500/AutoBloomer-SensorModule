@@ -52,7 +52,7 @@ void reset_interface_watchdog(I2CInterface *i2cInterface) {
 
 void check_interface_watchdog(I2CInterface *i2cInterface) {
     if(i2cInterface && (absolute_time_diff_us(i2cInterface->mInterfaceResetTimeout, get_absolute_time()) > 0)) {
-        // DEBUG_PRINT("**** I2C interface timed out, resetting ****\n");
+        DEBUG_PRINT("**** I2C interface timed out, resetting ****");
         reset_sensor_bus(i2cInterface, true);
     }
 }

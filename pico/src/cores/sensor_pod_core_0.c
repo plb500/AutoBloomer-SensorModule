@@ -2,8 +2,7 @@
 #include "pico/multicore.h"
 #include "hardware/watchdog.h"
 
-#include <stdio.h>
-
+#include "util/debug_io.h"
 #include "userdata/userdata.h"
 #include "cores/sensor_pod_core_1.h"
 #include "cores/sensor_multicore_utils.h"
@@ -11,9 +10,6 @@
 #include "network/network_utils.h"
 #include "network/mqtt_utils.h"
 
-
-static const uint8_t UART_TX_PIN            = 0;
-static const uint8_t UART_RX_PIN            = 1;
 
 const uint16_t MQTT_UPDATE_CHECK_PERIOD_MS  = 750;
 
@@ -54,10 +50,7 @@ int main() {
     absolute_time_t timeout = nil_time;
 
     // Setup UART
-#if LIB_PICO_STDIO_UART
-    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
-#endif
+    DEBUG_PRINT_INIT()
 
     // Initialise I/O
     stdio_init_all(); 
@@ -69,12 +62,12 @@ int main() {
     if(!read_userdata_from_flash(userData)) {
         init_userdata(userData);
     } else {
-        printf("Flash contents:\n");
-        printf("  +- NAME: %s\n", userData->m_sensorName);
-        printf("  +- LOCN: %s\n", userData->m_locationName);
-        printf("  +- SSID: %s\n", userData->m_ssid);
-        printf("  +- PKEY: %s\n", userData->m_psk);
-        printf("  +- MQTT: %s\n", userData->m_brokerAddress);
+        DEBUG_PRINT("Flash contents:");
+        DEBUG_PRINT("  +- NAME: %s", userData->m_sensorName);
+        DEBUG_PRINT("  +- LOCN: %s", userData->m_locationName);
+        DEBUG_PRINT("  +- SSID: %s", userData->m_ssid);
+        DEBUG_PRINT("  +- PKEY: %s", userData->m_psk);
+        DEBUG_PRINT("  +- MQTT: %s\n", userData->m_brokerAddress);
     }
 
     init_serial_command_buffer(&serialCommand);
@@ -92,7 +85,7 @@ int main() {
 
         // Check to see if we need to (re)connect to the network
         if(has_network_userdata(userData) && (!is_network_connected() || forceReconnect)) {
-            printf("Network is not connected, connecting....\n");
+            DEBUG_PRINT("Network is not connected, connecting....");
             connect_to_wifi(userData->m_ssid, userData->m_psk, userData->m_sensorName);
             forceReconnect = false;
             init_mqtt_state(&mqttState);
@@ -105,7 +98,7 @@ int main() {
             wifi_led_off();
         }
 
-        // Check iff we have MQTT connection parameters and it's time to check for new sensor data
+        // Check if we have MQTT connection parameters and it's time to check for new sensor data
         absolute_time_t now = get_absolute_time();
         if(
             (is_nil_time(timeout) || absolute_time_diff_us(now, timeout) <= 0) && 

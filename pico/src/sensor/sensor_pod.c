@@ -4,9 +4,10 @@
 #include "sensirion/scd30_i2c.h"
 #include "sensirion/sensirion_i2c_hal.h"
 
-#include <stdio.h>
+#include "util/debug_io.h"
 
-#define SENSOR_POD_TIMEOUT_MS                   (5000)
+#define SENSOR_POD_TIMEOUT_MS                   (10000)
+#define SCD30_MEASUREMENT_INTERVAL_SECONDS      (2)
 
 typedef struct {
     bool mValidReading;
@@ -55,7 +56,7 @@ void initialize_scd30_connection(SensorPod *sensorPod) {
     sleep_ms(2);
 
     sensorPod->mSCD30SensorActive = !scd30_read_firmware_version(&major, &minor);
-    printf("Firmware: 0x%2X - 0x%2X\n");
+    DEBUG_PRINT("Firmware: 0x%2X - 0x%2X");
 }
 
 void reset_soil_sensor_connection(SensorPod *sensorPod) {
@@ -67,6 +68,8 @@ void reset_soil_sensor_connection(SensorPod *sensorPod) {
 }
 
 void reset_scd30_connection(SensorPod *sensorPod) {
+    uint8_t major, minor;
+
     if(!sensorPod || !sensorPod->mSCD30Interface) {
         return;
     }
@@ -79,6 +82,8 @@ void reset_scd30_connection(SensorPod *sensorPod) {
     }
 
     sleep_ms(1);
+
+    sensorPod->mSCD30SensorActive = !scd30_read_firmware_version(&major, &minor);
 }
 
 bool initialize_sensor_pod(SensorPod *sensorPod) {
@@ -130,29 +135,16 @@ void start_sensor_pod(SensorPod *sensorPod) {
     }
 
     if(sensorPod->mSCD30Interface && sensorPod->mSCD30SensorActive) {
-        scd30_set_measurement_interval(2);
+        scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
         scd30_start_periodic_measurement(0);
     }
 }
 
-
-void update_sensor_pod(SensorPod *sensorPod) {
-    if(!sensorPod) {
-        return;
-    }
-
+bool update_soil_sensor(SensorPod *sensorPod) {
     bool soilSensorGood = true;
-    bool scd30Good = true;
-
-    if(absolute_time_diff_us(sensorPod->mPodResetTimeout, get_absolute_time()) > 0) {
-        reset_sensor_pod(sensorPod);
-        sensorPod->mPodResetTimeout = make_timeout_time_ms(SENSOR_POD_TIMEOUT_MS);
-        sensorPod->mCurrentData.mStatus = SENSOR_CONNECTED_MALFUNCTIONING;
-        return;
-    }
 
     // Read soil sensor
-    if(sensorPod->mSoilSensor && sensorPod->mSCD30SensorActive) {
+    if(sensorPod->mSoilSensor && sensorPod->mSoilSensorActive) {
         uint16_t capValue = get_soil_sensor_capacitive_value(sensorPod->mSoilSensor);
         if(capValue != STEMMA_SOIL_SENSOR_INVALID_READING) {
             sensorPod->mCurrentData.mSoilSensorData = capValue;
@@ -161,11 +153,19 @@ void update_sensor_pod(SensorPod *sensorPod) {
         } else {
             // Got an invalid reading, might be something up with the port
             soilSensorGood = false;
-            reset_soil_sensor_connection(sensorPod);
         }
+    } else if(sensorPod->mSoilSensor) {
+        // We have the interface defined but it's not active, this is not a good sign
+        soilSensorGood = false;   
     }
 
-    // Read SCD30 (if we have a valid reading)
+    return soilSensorGood;
+}
+
+bool update_scd30_sensor(SensorPod *sensorPod) {
+    bool scd30Good = true;
+
+    // Read SCD30 (if we have a valid reading ready)
     sensorPod->mCurrentData.mSCD30SensorDataValid = false;
     if(sensorPod->mSCD30Interface && sensorPod->mSCD30SensorActive) {
         uint16_t dataReady;
@@ -189,13 +189,34 @@ void update_sensor_pod(SensorPod *sensorPod) {
         } else {
             // The actual data ready command failed, might be something up with the port
             scd30Good = false;
-            reset_scd30_connection(sensorPod);
         }
+    } else if(sensorPod->mSCD30Interface) {
+        // We have the interface defined but it's not active, this is not a good sign
+        scd30Good = false;
     }
+
+    return scd30Good;
+}
+
+void update_sensor_pod(SensorPod *sensorPod) {
+    if(!sensorPod) {
+        return;
+    }
+
+    if(absolute_time_diff_us(sensorPod->mPodResetTimeout, get_absolute_time()) > 0) {
+        reset_sensor_pod(sensorPod);
+        sensorPod->mPodResetTimeout = make_timeout_time_ms(SENSOR_POD_TIMEOUT_MS);
+        sensorPod->mCurrentData.mStatus = SENSOR_CONNECTED_MALFUNCTIONING;
+        return;
+    }
+
+    bool soilSensorGood = update_soil_sensor(sensorPod);
+    bool scd30Good = update_scd30_sensor(sensorPod);
+
 
     // It's common for there to not be both readings available, so as long as we have at least one, we are
     // good to reset the watchdog timer
-    if(scd30Good || soilSensorGood) {
+    if(scd30Good && soilSensorGood) {
         // Reset pod and interface timeouts
         sensorPod->mPodResetTimeout = make_timeout_time_ms(SENSOR_POD_TIMEOUT_MS);
         sensorPod->mCurrentData.mStatus = SENSOR_CONNECTED_VALID_DATA;

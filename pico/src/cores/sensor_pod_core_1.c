@@ -3,7 +3,7 @@
 #include "pico/multicore.h"
 #include "pico/util/queue.h"
 
-#include <stdio.h>
+#include "util/debug_io.h"
 
 #include "sensor/sensirion/sensirion_i2c_hal.h"
 #include "sensor/sensirion/scd30_i2c.h"
@@ -38,22 +38,26 @@ void sensor_pod_core_1_main() {
 
     // Initialize the main container
     if(initialize_sensor_pod(&sensorPod)) {
-        printf("Sensor pod initialized\n");
+        DEBUG_PRINT("Sensor pod initialized");
         start_sensor_pod(&sensorPod);
     } else {
-        printf("Sensor pod initialization failed\n");
+        DEBUG_PRINT("Sensor pod initialization failed");
     }
 
     while(1) {
         update_sensor_pod(&sensorPod);
         if(sensor_pod_has_valid_data(&sensorPod)) {
-            printf("+--------------------------------+\n");
-            printf("|         SCD30 CO2: %04.2f PPM |\n", sensorPod.mCurrentData.mCO2Level);
-            printf("| SCD30 Temperature: %02.2fC      |\n", sensorPod.mCurrentData.mTemperature);
-            printf("|    SCD30 Humidity: %02.2f%%      |\n", sensorPod.mCurrentData.mHumidity);
-            printf("+--------------------------------+\n\n");
+            DEBUG_PRINT("+--------------------------------+");
+            DEBUG_PRINT("|         SCD30 CO2: %04.2f PPM |", sensorPod.mCurrentData.mCO2Level);
+            DEBUG_PRINT("| SCD30 Temperature: %02.2fC      |", sensorPod.mCurrentData.mTemperature);
+            DEBUG_PRINT("|    SCD30 Humidity: %02.2f%%      |", sensorPod.mCurrentData.mHumidity);
+            DEBUG_PRINT("+--------------------------------+\n");
 
             push_sensor_data_to_queue(&sensorUpdateQueue, &sensorPod.mCurrentData);
+        } else {
+            DEBUG_PRINT("+---------+");
+            DEBUG_PRINT("| NO DATA |", sensorPod.mCurrentData.mCO2Level);
+            DEBUG_PRINT("+---------+\n");
         }
 
         sleep_ms(500);
