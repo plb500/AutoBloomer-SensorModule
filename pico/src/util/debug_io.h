@@ -37,13 +37,14 @@ static char DEBUG_PRINT_BUF[DEBUG_PRINT_BUF_SIZE];
 #       define DEBUG_PRINT(format, ...) {                                                       \
             snprintf(DEBUG_PRINT_BUF, DEBUG_PRINT_BUF_SIZE, format __VA_OPT__(,) __VA_ARGS__);  \
             uart_puts(STDIO_UART, DEBUG_PRINT_BUF);                                             \
+            uart_puts(STDIO_UART, "\n");                                                        \
         }
 #   else
 #       define DEBUG_PRINT(format, ...) {                                                       \
             snprintf(DEBUG_PRINT_BUF, DEBUG_PRINT_BUF_SIZE, format __VA_OPT__(,) __VA_ARGS__);  \
             puts(DEBUG_PRINT_BUF);                                                              \
         }                                                   
-#   endif
+#   endif   
 
 // Shut down the debug logging UART
 #   define DEBUG_PRINT_DEINIT()                            {    \

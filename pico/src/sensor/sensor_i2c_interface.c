@@ -1,6 +1,8 @@
 #include "sensor_i2c_interface.h"
 #include "hardware/gpio.h"
 
+#include "util/debug_io.h"
+
 #define DEFAULT_I2C_TIMEOUT_MS      (100)
 #define I2C_WATCHDOG_TIMEOUT_MS     (5000)
 const bool I2C_NOSTOP = false;
