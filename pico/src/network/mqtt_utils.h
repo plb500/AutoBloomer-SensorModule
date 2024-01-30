@@ -1,7 +1,7 @@
 #ifndef _MQTT_UTILS_H
 #define _MQTT_UTILS_H
 
-#include "messages/sensor_pod_messages.h"
+#include "messages/multicore_mailbox.h"
 
 #include "pico/types.h"
 #include "pico/util/queue.h"
@@ -21,8 +21,7 @@ typedef struct MQTTState_t {
     uint16_t mBrokerPort;
     const char *mSensorName;
     const char *mSensorLocation;
-    queue_t *mSensorUpdateQueue;
-    queue_t *mSensorControlQueue;
+    MulticoreMailbox *mCoreMailbox;
     MQTTMessageBuffer mIncomingMessageBuffer;
 } MQTTState;
 

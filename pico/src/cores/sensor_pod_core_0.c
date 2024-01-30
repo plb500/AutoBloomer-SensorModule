@@ -5,7 +5,7 @@
 #include "util/debug_io.h"
 #include "userdata/userdata.h"
 #include "cores/sensor_pod_core_1.h"
-#include "cores/sensor_multicore_utils.h"
+#include "messages/multicore_mailbox.h"
 #include "serial_control/serial_controller.h"
 #include "network/network_utils.h"
 #include "network/mqtt_utils.h"
@@ -13,19 +13,14 @@
 
 const uint16_t MQTT_UPDATE_CHECK_PERIOD_MS  = 750;
 
-// Queue used for sending sensor updates from core1 to core0
-queue_t sensorUpdateQueue;
-
-// Queue used for sending sensor control commands from core0 to core1
-queue_t sensorControlQueue;
+MulticoreMailbox coreMailbox;
 
 // extern queue_t sensorUpdateQueue;
 MQTTState mqttState = {
     .mqttClient = 0,
     .mSensorName = 0,
     .mSensorLocation = 0,
-    .mSensorUpdateQueue = &sensorUpdateQueue,
-    .mSensorControlQueue = &sensorControlQueue
+    .mCoreMailbox = &coreMailbox
 };
 
 DNSResolutionRequest brokerRequest = {
@@ -62,6 +57,21 @@ void get_sensor_control_topic(MQTTState *state, char *topicBuffer) {
     );
 }
 
+void transmit_sensor_data(MQTTState *state) {
+    SensorDataUpdateMessage dataUpdateMsg;
+    MQTTMessage mqttMsg;
+
+    if(!state) {
+        return;
+    }
+
+    // Process any sensor data waiting for us in the mailbox
+    if(get_latest_sensor_data_message(state->mCoreMailbox, &dataUpdateMsg)) {
+        data_update_to_mqtt_message(state->mSensorName, state->mSensorLocation, &dataUpdateMsg, &mqttMsg);
+        publish_mqtt_message(state, &mqttMsg);
+    }
+}
+
 int main() {
     bool forceReconnect = false;
     absolute_time_t timeout = nil_time;
@@ -73,9 +83,8 @@ int main() {
     // Initialise I/O
     stdio_init_all(); 
 
-    // Initialize the cross-core queues
-    intitialize_sensor_data_queue(&sensorUpdateQueue, 4);
-    intitialize_sensor_control_queue(&sensorControlQueue, 4);
+    // Initialize the mailbox
+    init_multicore_mailbox(&coreMailbox);
 
     // Grab user data
     if(!read_userdata_from_flash(userData)) {
@@ -147,9 +156,8 @@ int main() {
                 }
 
                 if(mqtt_client_is_connected(mqttState.mqttClient)) {
-
-                    // Process any sensor data
-                    pull_mqtt_data_from_queue(&mqttState);
+                    // Process any sensor data waiting for us in the mailbox
+                    transmit_sensor_data(&mqttState);
                     timeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
                 } else {
                     disconnect_from_broker(&mqttState);

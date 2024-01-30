@@ -20,8 +20,8 @@ add_executable(SensorPodController
 
     src/cores/sensor_pod_core_0.c
     src/cores/sensor_pod_core_1.c
-    src/cores/sensor_multicore_utils.c
 
+    src/messages/multicore_mailbox.c
     src/messages/sensor_pod_messages.c
 
     src/network/network_utils.c
@@ -39,8 +39,8 @@ add_executable(SensorPodController
 
 pico_set_linker_script(SensorPodController ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
 
-pico_enable_stdio_usb(SensorPodController 1)
-pico_enable_stdio_uart(SensorPodController 0)
+pico_enable_stdio_usb(SensorPodController 0)
+pico_enable_stdio_uart(SensorPodController 1)
 pico_add_extra_outputs(SensorPodController)
 
 target_include_directories(SensorPodController PRIVATE

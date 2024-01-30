@@ -240,9 +240,8 @@ void set_sensor_pod_temperature_offset(SensorPod *sensorPod, double offset) {
     // Pause readings while we set the offset (not sure if we need to do this but it seems like a good idea)
     scd30_stop_periodic_measurement();
 
-    // TODO: Turn this on when you are ready
-    // scd30_set_temperature_offset(offsetInt);
     DEBUG_PRINT(" -- Setting temperature offset to: %d", offsetInt);
+    scd30_set_temperature_offset(offsetInt);
 
     // Restart readings
     scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
@@ -258,9 +257,8 @@ void set_sensor_pod_forced_recalibration_value(SensorPod *sensorPod, uint16_t fr
     // Pause readings while we set the offset (not sure if we need to do this but it seems like a good idea)
     scd30_stop_periodic_measurement();
 
-    // TODO: Turn this on when you are ready
-    // scd30_force_recalibration(frc);
     DEBUG_PRINT(" -- Setting FRC to: %d", frc);
+    scd30_force_recalibration(frc);
 
     // Restart readings
     scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);

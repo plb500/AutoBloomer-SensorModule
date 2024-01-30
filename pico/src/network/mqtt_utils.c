@@ -2,8 +2,6 @@
 
 #include "util/debug_io.h"
 
-#include "cores/sensor_multicore_utils.h"
-
 #include <string.h>
 #include "lwip/pbuf.h"
 #include "lwip/apps/mqtt_priv.h"
@@ -197,10 +195,7 @@ void mqtt_publish_data_callback(void *arg, const u8_t *data, u16_t len, u8_t fla
         state->mIncomingMessageBuffer.mBufferIndex += len;
 
         if(state->mIncomingMessageBuffer.mBufferIndex >= state->mIncomingMessageBuffer.mPayloadSize) {
-            SensorControlMessage controlMessage;
-            if(mqtt_to_control_message(&(state->mIncomingMessageBuffer.mMessage), &controlMessage)) {
-                push_mqtt_control_data_to_queue(state->mSensorControlQueue, &controlMessage);
-            }
+            send_sensor_control_message_to_core1(state->mCoreMailbox, &state->mIncomingMessageBuffer.mMessage);
         }
     } else {
         // Payload would overflow buffer
