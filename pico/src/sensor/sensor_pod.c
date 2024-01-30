@@ -228,3 +228,41 @@ void update_sensor_pod(SensorPod *sensorPod) {
 bool sensor_pod_has_valid_data(SensorPod *sensorPod) {
     return (sensorPod->mCurrentData.mSoilSensorDataValid || sensorPod->mCurrentData.mSCD30SensorDataValid);
 }
+
+void set_sensor_pod_temperature_offset(SensorPod *sensorPod, double offset) {
+    // We can only do this on a valid sensor pod with a valid, active SCD30 interface
+    if(!sensorPod || !sensorPod->mSCD30Interface || !sensorPod->mSCD30SensorActive) {
+        return;
+    }
+
+    uint16_t offsetInt = (uint16_t) (offset * 100);
+
+    // Pause readings while we set the offset (not sure if we need to do this but it seems like a good idea)
+    scd30_stop_periodic_measurement();
+
+    // TODO: Turn this on when you are ready
+    // scd30_set_temperature_offset(offsetInt);
+    DEBUG_PRINT(" -- Setting temperature offset to: %d", offsetInt);
+
+    // Restart readings
+    scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
+    scd30_start_periodic_measurement(0);
+}
+
+void set_sensor_pod_forced_recalibration_value(SensorPod *sensorPod, uint16_t frc) {
+    // We can only do this on a valid sensor pod with a valid, active SCD30 interface
+    if(!sensorPod || !sensorPod->mSCD30Interface || !sensorPod->mSCD30SensorActive) {
+        return;
+    }
+
+    // Pause readings while we set the offset (not sure if we need to do this but it seems like a good idea)
+    scd30_stop_periodic_measurement();
+
+    // TODO: Turn this on when you are ready
+    // scd30_force_recalibration(frc);
+    DEBUG_PRINT(" -- Setting FRC to: %d", frc);
+
+    // Restart readings
+    scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
+    scd30_start_periodic_measurement(0);
+}

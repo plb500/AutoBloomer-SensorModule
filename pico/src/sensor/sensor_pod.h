@@ -40,6 +40,7 @@ bool reset_sensor_pod(SensorPod *sensorPod);
 void start_sensor_pod(SensorPod *sensorPod);
 void update_sensor_pod(SensorPod *sensorPod);
 bool sensor_pod_has_valid_data(SensorPod *sensorPod);
-
+void set_sensor_pod_temperature_offset(SensorPod *sensorPod, double offset);
+void set_sensor_pod_forced_recalibration_value(SensorPod *sensorPod, uint16_t frc);
 
 #endif

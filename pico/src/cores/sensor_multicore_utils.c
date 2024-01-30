@@ -1,75 +1,14 @@
 #include "cores/sensor_multicore_utils.h"
 
-const char * const AUTOBLOOMER_TOPIC_NAME           = "AutoBloomer";
-const char * const SENSOR_STATUS_JSON_KEY           = "Status";
-const char * const FEED_LEVEL_JSON_KEY              = "Feed Level";
-const char * const CO2_LEVEL_JSON_KEY               = "CO2 Level";
-const char * const TEMPERATURE_JSON_KEY             = "Temperature";
-const char * const HUMIDITY_JSON_KEY                = "Humidity";
-const char * const SOIL_MOISTURE_JSON_KEY           = "Soil Moisture";
-
-typedef struct {
-    int mSensorStatus;
-    bool mHasSoilReding;
-    bool mHasSCD30Reading;
-    float mCO2Level;
-    float mTemperature;
-    float mHumidity;
-    uint16_t mSoilSensorData;
-} SensorDataUpdateMessage;
-
-
-void data_update_to_mqtt_message(MQTTState *mqttState, SensorDataUpdateMessage *dataUpdate, MQTTMessage *mqttMsg) {
-    char soilReadingString[32];
-    char scd30ReadingString[64];
-
-    // Sanity check
-    if(!dataUpdate || !mqttMsg || !mqttState) {
-        return;
-    }
-
-    const char *sensorName = mqttState->mSensorName;
-    const char *sensorLocation = mqttState->mSensorLocation;
-
-    snprintf(mqttMsg->mTopic, MQTT_MAX_TOPIC_LENGTH, "%s/%s/%s",
-        AUTOBLOOMER_TOPIC_NAME,
-        sensorLocation,
-        sensorName
-    );
-
-    if(dataUpdate->mHasSoilReding) {
-        snprintf(soilReadingString, 32,
-            ", \"%s\":%d",
-            SOIL_MOISTURE_JSON_KEY, dataUpdate->mSoilSensorData
-        );
-    } else {
-        soilReadingString[0] = 0;
-    }
-
-    if(dataUpdate->mHasSCD30Reading) {
-        snprintf(scd30ReadingString, 64,
-            ", \"%s\":%.2f, \"%s\":%.2f, \"%s\":%.2f",
-            CO2_LEVEL_JSON_KEY, dataUpdate->mCO2Level,
-            TEMPERATURE_JSON_KEY, dataUpdate->mTemperature,
-            HUMIDITY_JSON_KEY, dataUpdate->mHumidity
-        );
-    } else {
-        scd30ReadingString[0] = 0;
-    }
-
-
-    snprintf(mqttMsg->mPayload, MQTT_MAX_PAYLOAD_LENGTH, 
-        "{\"%s\":%d%s%s}",
-        SENSOR_STATUS_JSON_KEY, dataUpdate->mSensorStatus,
-        scd30ReadingString,
-        soilReadingString
-    );
-}
 
         // PUBLIC FUNCTIONS //
 
 void intitialize_sensor_data_queue(queue_t *sensorDataQueue, int numMessages) {
     queue_init(sensorDataQueue, sizeof(SensorDataUpdateMessage), numMessages);
+}
+
+void intitialize_sensor_control_queue(queue_t *sensorControlQueue, int numMessages) {
+    queue_init(sensorControlQueue, sizeof(SensorControlMessage), numMessages);
 }
 
 void push_sensor_data_to_queue(queue_t *sensorDataQueue, SensorPodData *sensorPodData) {
@@ -115,7 +54,11 @@ void pull_mqtt_data_from_queue(MQTTState *mqttState) {
     } while(msgRead);
 
     if(haveMessage) {
-        data_update_to_mqtt_message(mqttState, &updateMsg, &mqttMsg);
+        data_update_to_mqtt_message(mqttState->mSensorName, mqttState->mSensorLocation, &updateMsg, &mqttMsg);
         publish_mqtt_message(mqttState, &mqttMsg);
     }
+}
+
+bool push_mqtt_control_data_to_queue(queue_t *sensorControlQueue, SensorControlMessage *controlMessage) {
+    return queue_try_add(sensorControlQueue, controlMessage);
 }

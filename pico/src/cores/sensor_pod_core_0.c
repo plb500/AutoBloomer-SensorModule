@@ -13,15 +13,19 @@
 
 const uint16_t MQTT_UPDATE_CHECK_PERIOD_MS  = 750;
 
-// Queue used for sending sensor updates from core0 to core1
+// Queue used for sending sensor updates from core1 to core0
 queue_t sensorUpdateQueue;
+
+// Queue used for sending sensor control commands from core0 to core1
+queue_t sensorControlQueue;
 
 // extern queue_t sensorUpdateQueue;
 MQTTState mqttState = {
     .mqttClient = 0,
     .mSensorName = 0,
     .mSensorLocation = 0,
-    .mSensorUpdateQueue = &sensorUpdateQueue
+    .mSensorUpdateQueue = &sensorUpdateQueue,
+    .mSensorControlQueue = &sensorControlQueue
 };
 
 DNSResolutionRequest brokerRequest = {
@@ -45,9 +49,23 @@ void stop_core_1_and_write_user_data(UserData *userData) {
     multicore_lockout_end_blocking();
 }
 
+void get_sensor_control_topic(MQTTState *state, char *topicBuffer) {
+    if(!state || !topicBuffer) {
+        return;
+    }
+
+    snprintf(
+        topicBuffer,
+        MQTT_MAX_TOPIC_LENGTH,
+        "%s/%s/%s/control",
+        AUTOBLOOMER_TOPIC_NAME, state->mSensorLocation, state->mSensorName
+    );
+}
+
 int main() {
     bool forceReconnect = false;
     absolute_time_t timeout = nil_time;
+    char controlTopic[MQTT_MAX_TOPIC_LENGTH];
 
     // Setup UART
     DEBUG_PRINT_INIT()
@@ -55,8 +73,9 @@ int main() {
     // Initialise I/O
     stdio_init_all(); 
 
-    // Initialize the cross-core queue
+    // Initialize the cross-core queues
     intitialize_sensor_data_queue(&sensorUpdateQueue, 4);
+    intitialize_sensor_control_queue(&sensorControlQueue, 4);
 
     // Grab user data
     if(!read_userdata_from_flash(userData)) {
@@ -121,13 +140,19 @@ int main() {
 
                 if(!mqtt_client_is_connected(mqttState.mqttClient)) {
                     connect_to_broker_blocking(&mqttState);
+
+                    // Subscribe to our control topic
+                    get_sensor_control_topic(&mqttState, controlTopic);
+                    subscribe_to_topic(&mqttState, controlTopic);
                 }
 
                 if(mqtt_client_is_connected(mqttState.mqttClient)) {
+
+                    // Process any sensor data
                     pull_mqtt_data_from_queue(&mqttState);
-                    disconnect_from_broker(&mqttState);
                     timeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
                 } else {
+                    disconnect_from_broker(&mqttState);
                     forceReconnect = true;
                 }
             } else {
