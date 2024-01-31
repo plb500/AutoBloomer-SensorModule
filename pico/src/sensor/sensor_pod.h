@@ -10,7 +10,6 @@ typedef enum {
     SENSOR_CONNECTED_MALFUNCTIONING     = 1,
     SENSOR_CONNECTED_NO_DATA            = 2,
     SENSOR_CONNECTED_VALID_DATA         = 3
-
 } SensorPodStatus;
 
 typedef struct {
@@ -31,7 +30,7 @@ typedef struct {
     bool mSCD30SensorActive;
 
     SensorPodData mCurrentData;
-    absolute_time_t mPodResetTimeout;
+    absolute_time_t mSCD30ResetTimeout;
 } SensorPod;
 
 

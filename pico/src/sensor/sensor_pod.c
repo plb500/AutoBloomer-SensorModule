@@ -21,6 +21,9 @@ extern int sensirion_i2c_baud;
 extern int sensirion_sda_pin;
 extern int sensirion_scl_pin;
 
+
+            // Init functions //
+
 void initialize_soil_sensor_connection(SensorPod *sensorPod) {
     if(!sensorPod || !sensorPod->mSoilSensor) {
         return;
@@ -32,15 +35,17 @@ void initialize_soil_sensor_connection(SensorPod *sensorPod) {
 void initialize_scd30_connection(SensorPod *sensorPod) {
     uint8_t major, minor;
 
+    if(!sensorPod || !sensorPod->mSCD30Interface) {
+        return;
+    }
+
+    // I2C hardware init
     sensirion_i2c_inst = sensorPod->mSCD30Interface->mI2C;
     sensirion_i2c_baud = sensorPod->mSCD30Interface->mBaud;
     sensirion_sda_pin = sensorPod->mSCD30Interface->mSDA;
     sensirion_scl_pin = sensorPod->mSCD30Interface->mSCL;
-
     init_driver(SCD30_I2C_ADDR_61);
     sensirion_i2c_hal_init();
-
-    sleep_ms(2);
 
     // It's possible the SCD30 might still be in continuous measurement mode, do a stop-reset anyway
     if(scd30_stop_periodic_measurement() != 0) {
@@ -56,34 +61,8 @@ void initialize_scd30_connection(SensorPod *sensorPod) {
     sleep_ms(2);
 
     sensorPod->mSCD30SensorActive = !scd30_read_firmware_version(&major, &minor);
+    sensorPod->mSCD30ResetTimeout = make_timeout_time_ms(SENSOR_POD_TIMEOUT_MS);
     DEBUG_PRINT("Firmware: 0x%2X - 0x%2X");
-}
-
-void reset_soil_sensor_connection(SensorPod *sensorPod) {
-    if(!sensorPod || !sensorPod->mSoilSensor) {
-        return;
-    }
-
-    reset_soil_sensor(sensorPod->mSoilSensor);
-}
-
-void reset_scd30_connection(SensorPod *sensorPod) {
-    uint8_t major, minor;
-
-    if(!sensorPod || !sensorPod->mSCD30Interface) {
-        return;
-    }
-
-    if(scd30_stop_periodic_measurement() != 0) {
-        return;
-    }
-    if(scd30_soft_reset() != 0) {
-        return;
-    }
-
-    sleep_ms(1);
-
-    sensorPod->mSCD30SensorActive = !scd30_read_firmware_version(&major, &minor);
 }
 
 bool initialize_sensor_pod(SensorPod *sensorPod) {
@@ -108,9 +87,52 @@ bool initialize_sensor_pod(SensorPod *sensorPod) {
 
     sensorPod->mCurrentData.mSCD30SensorDataValid = false;
     sensorPod->mCurrentData.mSoilSensorDataValid = false;
-    sensorPod->mPodResetTimeout = make_timeout_time_ms(SENSOR_POD_TIMEOUT_MS);
 
     return (soilSensorGood && scd30Good);
+}
+
+            // Shutdown functions //
+
+void shutdown_soil_sensor_connection(SensorPod *sensorPod) {
+    if(!sensorPod || !sensorPod->mSoilSensor) {
+        return;
+    }
+
+    // Nothing to do yet
+}
+
+void shutdown_scd30_connection(SensorPod *sensorPod) {
+    if(!sensorPod || !sensorPod->mSCD30Interface) {
+        return;
+    }
+
+
+    scd30_stop_periodic_measurement();
+
+    sleep_ms(1);
+
+    sensirion_i2c_hal_free();
+}
+            // Reset functions //
+
+void reset_soil_sensor_connection(SensorPod *sensorPod) {
+    if(!sensorPod || !sensorPod->mSoilSensor) {
+        return;
+    }
+
+    reset_soil_sensor(sensorPod->mSoilSensor);
+}
+
+void reset_scd30_connection(SensorPod *sensorPod) {
+    if(!sensorPod || !sensorPod->mSCD30Interface) {
+        return;
+    }
+
+    shutdown_scd30_connection(sensorPod);
+
+    sleep_ms(1);
+
+    initialize_scd30_connection(sensorPod);
 }
 
 bool reset_sensor_pod(SensorPod *sensorPod) {
@@ -129,7 +151,18 @@ bool reset_sensor_pod(SensorPod *sensorPod) {
     return true;
 }
 
-void start_sensor_pod(SensorPod *sensorPod) {
+
+            // Start functions //
+
+void start_soil_sensor_readings(SensorPod *sensorPod) {
+    if(!sensorPod) {
+        return;
+    }
+
+    // Nothing to do here yet (or ever, maybe)
+}
+
+void start_scd30_readings(SensorPod *sensorPod) {
     if(!sensorPod) {
         return;
     }
@@ -139,6 +172,14 @@ void start_sensor_pod(SensorPod *sensorPod) {
         scd30_start_periodic_measurement(0);
     }
 }
+
+void start_sensor_pod(SensorPod *sensorPod) {
+    start_soil_sensor_readings(sensorPod);
+    start_scd30_readings(sensorPod);
+}
+
+
+            // Update functions //
 
 bool update_soil_sensor(SensorPod *sensorPod) {
     bool soilSensorGood = true;
@@ -165,6 +206,17 @@ bool update_soil_sensor(SensorPod *sensorPod) {
 bool update_scd30_sensor(SensorPod *sensorPod) {
     bool scd30Good = true;
 
+    // Check if we maybe need to bounce the port
+    if(absolute_time_diff_us(sensorPod->mSCD30ResetTimeout, get_absolute_time()) > 0) {
+        DEBUG_PRINT("SCD30 has not responded within the timeout period. Resetting.");
+        reset_scd30_connection(sensorPod);
+        start_scd30_readings(sensorPod);
+
+        sensorPod->mSCD30ResetTimeout = make_timeout_time_ms(SENSOR_POD_TIMEOUT_MS);
+        sensorPod->mCurrentData.mStatus = SENSOR_CONNECTED_MALFUNCTIONING;
+        return false;
+    }
+
     // Read SCD30 (if we have a valid reading ready)
     sensorPod->mCurrentData.mSCD30SensorDataValid = false;
     if(sensorPod->mSCD30Interface && sensorPod->mSCD30SensorActive) {
@@ -185,6 +237,10 @@ bool update_scd30_sensor(SensorPod *sensorPod) {
                     sensorPod->mCurrentData.mHumidity = tmpData.mHumidityReading;
                     sensorPod->mCurrentData.mSCD30SensorDataValid = true;
                 }
+            } else {
+                // There was no data available. If this goes on too long it might indicate
+                // an issue with the sensor
+                scd30Good = false;
             }
         } else {
             // The actual data ready command failed, might be something up with the port
@@ -195,6 +251,10 @@ bool update_scd30_sensor(SensorPod *sensorPod) {
         scd30Good = false;
     }
 
+    if(scd30Good) {
+        sensorPod->mSCD30ResetTimeout = make_timeout_time_ms(SENSOR_POD_TIMEOUT_MS);
+    }
+
     return scd30Good;
 }
 
@@ -203,27 +263,12 @@ void update_sensor_pod(SensorPod *sensorPod) {
         return;
     }
 
-    if(absolute_time_diff_us(sensorPod->mPodResetTimeout, get_absolute_time()) > 0) {
-        reset_sensor_pod(sensorPod);
-        sensorPod->mPodResetTimeout = make_timeout_time_ms(SENSOR_POD_TIMEOUT_MS);
-        sensorPod->mCurrentData.mStatus = SENSOR_CONNECTED_MALFUNCTIONING;
-        return;
-    }
-
-    bool soilSensorGood = update_soil_sensor(sensorPod);
-    bool scd30Good = update_scd30_sensor(sensorPod);
-
-
-    // It's common for there to not be both readings available, so as long as we have at least one, we are
-    // good to reset the watchdog timer
-    if(scd30Good && soilSensorGood) {
-        // Reset pod and interface timeouts
-        sensorPod->mPodResetTimeout = make_timeout_time_ms(SENSOR_POD_TIMEOUT_MS);
-        sensorPod->mCurrentData.mStatus = SENSOR_CONNECTED_VALID_DATA;
-    } else {
-        sensorPod->mCurrentData.mStatus = SENSOR_CONNECTED_NO_DATA;
-    }
+    update_soil_sensor(sensorPod);
+    update_scd30_sensor(sensorPod);
 }
+
+
+            // Management functions //
 
 bool sensor_pod_has_valid_data(SensorPod *sensorPod) {
     return (sensorPod->mCurrentData.mSoilSensorDataValid || sensorPod->mCurrentData.mSCD30SensorDataValid);

@@ -106,16 +106,18 @@ void sensor_pod_core_1_main() {
         
         if(sensor_pod_has_valid_data(&sensorPod)) {
             DEBUG_PRINT("+--------------------------------+");
-            DEBUG_PRINT("|         SCD30 CO2: %04.2f PPM |", sensorPod.mCurrentData.mCO2Level);
-            DEBUG_PRINT("| SCD30 Temperature: %02.2fC      |", sensorPod.mCurrentData.mTemperature);
-            DEBUG_PRINT("|    SCD30 Humidity: %02.2f%%      |", sensorPod.mCurrentData.mHumidity);
+            DEBUG_PRINT("|         SCD30 CO2: %7.2f PPM |", sensorPod.mCurrentData.mCO2Level);
+            DEBUG_PRINT("| SCD30 Temperature: %5.2f °C    |", sensorPod.mCurrentData.mTemperature);
+            DEBUG_PRINT("|    SCD30 Humidity: %5.2f%%      |", sensorPod.mCurrentData.mHumidity);
             DEBUG_PRINT("+--------------------------------+\n");
 
             send_sensor_data_to_core0(&coreMailbox, &sensorPod.mCurrentData);
         } else {
-            DEBUG_PRINT("+---------+");
-            DEBUG_PRINT("| NO DATA |", sensorPod.mCurrentData.mCO2Level);
-            DEBUG_PRINT("+---------+\n");
+            DEBUG_PRINT("+---------------------------+");
+            DEBUG_PRINT("|           NO DATA         |");
+            DEBUG_PRINT("| Soil sensor active: %d [%c] |", sensorPod.mSoilSensorActive, sensorPod.mSoilSensor ? '*' : ' ');
+            DEBUG_PRINT("|       SCD30 active: %d [%c] |", sensorPod.mSCD30SensorActive, sensorPod.mSCD30Interface ? '*' : ' ');
+            DEBUG_PRINT("+---------------------------+\n");
         }
 
         sleep_ms(500);

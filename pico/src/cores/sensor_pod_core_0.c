@@ -75,6 +75,8 @@ void transmit_sensor_data(MQTTState *state) {
 int main() {
     bool forceReconnect = false;
     absolute_time_t timeout = nil_time;
+    absolute_time_t pingTimeout = nil_time;
+
     char controlTopic[MQTT_MAX_TOPIC_LENGTH];
 
     // Setup UART
@@ -104,6 +106,14 @@ int main() {
     multicore_launch_core1(sensor_pod_core_1_main);
 
     while(1) {
+        absolute_time_t now = get_absolute_time();
+
+        // Periodically send an update through the serial port just to show core0 is still functioning
+        if(is_nil_time(pingTimeout) || absolute_time_diff_us(now, pingTimeout) <= 0) {
+            DEBUG_PRINT("- core0 alive -")
+            pingTimeout = make_timeout_time_ms(2000);
+        }
+
         // Process any incoming serial data
         if(update_user_data(userData, &serialCommand)) {
             // If the flash data has changed we probably want to reboot the device
@@ -127,7 +137,6 @@ int main() {
         }
 
         // Check if we have MQTT connection parameters and it's time to check for new sensor data
-        absolute_time_t now = get_absolute_time();
         if(
             (is_nil_time(timeout) || absolute_time_diff_us(now, timeout) <= 0) && 
             has_mqtt_userdata(userData)
