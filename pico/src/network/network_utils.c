@@ -64,7 +64,7 @@ int init_wifi(
         netif_set_hostname(netif_default, hostname);
     }
 
-    return cyw43_arch_wifi_connect_timeout_ms(ssid, password, authType,10000);
+    return cyw43_arch_wifi_connect_timeout_ms(ssid, password, authType, 20000);
 }
 
 int connect_to_wifi(const char * const ssid, const char * const password, const char * const hostname) {
