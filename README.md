@@ -4,6 +4,10 @@
 
 Full plans and code for a sensor controller capable of publishing hydroponics sensor data via MQTT
 
+Raspberry Pico source code is [here](pico/src)
+
+PCB schematics, plans etc (KiCad format) are [here](PCB/SensorPod-Board)
+
 A brief overiew is on [YouTube](https://youtu.be/ilkXrpyaba0)
 
 Under the hood the sensor pod uses a Raspberry Pico W to communicate with an MQTT broker and transmit data it collates from the following sensors:
