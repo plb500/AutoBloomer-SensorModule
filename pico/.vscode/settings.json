@@ -1,0 +1,23 @@
+{
+  "cmake.configureOnOpen": false,
+  "cmake.statusbar.advanced": {
+    "debug" : {
+      "visibility": "hidden"
+              },    "launch" : {
+      "visibility": "hidden"
+               },
+    "build" : {
+      "visibility": "hidden"
+               },
+    "buildTarget" : {
+      "visibility": "hidden"
+               },
+    },
+    "files.associations": {
+      "main_menu.h": "c",
+      "menu_interface.h": "c",
+      "i2c.h": "c",
+      "sensor_multicore_utils.h": "c"
+    },
+    "cortex-debug.variableUseNaturalFormat": true,
+}
