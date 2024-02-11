@@ -33,15 +33,33 @@ UserData *userData = (UserData *) userDataMem;
 
 SerialCommandBuffer serialCommand;
 
+bool mqttTestMode = true;
+
+void test_pin_init(int pin) {
+    gpio_init(pin);
+    gpio_set_dir(pin, GPIO_OUT);
+}
+
+void flip_test_pin(int pin) {
+    bool newVal = !gpio_get(pin);
+    gpio_put(pin, newVal);
+}
+
 void software_reset() {
     watchdog_enable(1, 1);
     while(1);
 }
 
 void stop_core_1_and_write_user_data(UserData *userData) {
-    multicore_lockout_start_blocking();
+    if(!mqttTestMode) {
+        multicore_lockout_start_blocking();
+    }
+
     write_userdata_to_flash(userData);
-    multicore_lockout_end_blocking();
+
+    if(!mqttTestMode) {
+        multicore_lockout_end_blocking();
+    }
 }
 
 void get_sensor_control_topic(MQTTState *state, char *topicBuffer) {
@@ -72,8 +90,37 @@ void transmit_sensor_data(MQTTState *state) {
     }
 }
 
+void transmit_test_mqtt_message(MQTTState *state) {
+    MQTTMessage mqttMsg;
+    char message[64];
+    static int messageValue = 0;
+    sprintf(message, "TEST MESSAGE: %d", messageValue++);
+
+    if(!state) {
+        return;
+    }
+
+    DEBUG_PRINT("Publishing MQTT test message (# %d)", messageValue);
+
+    create_test_mqtt_message(
+        state->mSensorName, 
+        state->mSensorLocation, 
+        message, 
+        &mqttMsg
+    );
+
+    publish_mqtt_message(state, &mqttMsg);
+}
+
+void transmit_data(MQTTState *state) {
+    if(mqttTestMode) {
+        transmit_test_mqtt_message(state);
+    } else {
+        transmit_sensor_data(state);
+    }
+}
+
 int main() {
-    bool forceReconnect = false;
     absolute_time_t mqttUpdateTimeout = nil_time;
     absolute_time_t pingTimeout = nil_time;
 
@@ -84,6 +131,8 @@ int main() {
 
     // Initialise I/O
     stdio_init_all(); 
+
+    test_pin_init(6);
 
     // Initialize the mailbox
     init_multicore_mailbox(&coreMailbox);
@@ -103,7 +152,9 @@ int main() {
     init_serial_command_buffer(&serialCommand);
 
     // Launch secondary core (core 1) to process sensor data
-    multicore_launch_core1(sensor_pod_core_1_main);
+    if(!mqttTestMode) {
+        multicore_launch_core1(sensor_pod_core_1_main);
+    }
 
     while(1) {
         absolute_time_t now = get_absolute_time();
@@ -112,6 +163,7 @@ int main() {
         if(is_nil_time(pingTimeout) || absolute_time_diff_us(now, pingTimeout) <= 0) {
             DEBUG_PRINT("- core0 ping -")
             pingTimeout = make_timeout_time_ms(2000);
+            flip_test_pin(6);
         }
 
         // Process any incoming serial data
@@ -122,7 +174,8 @@ int main() {
         }
 
         // Check to see if we need to (re)connect to the network
-        if(has_network_userdata(userData) && (!is_network_connected() || forceReconnect)) {
+        if(has_network_userdata(userData) && !is_network_connected()) {
+            wifi_led_off();
             DEBUG_PRINT("Network is not connected, connecting....");
             int connectResponse = connect_to_wifi(userData->m_ssid, userData->m_psk, userData->m_sensorName);
             DEBUG_PRINT("...connect %s (%d)", 
@@ -131,59 +184,59 @@ int main() {
             );
 
             if(!connectResponse) {
-                forceReconnect = false;
+                wifi_led_on();
                 init_mqtt_state(&mqttState);
             }
         }
 
-        // Update network LED indicator
-        if(!is_network_connected()) {
-            wifi_led_off();
-        } else {
+        if(is_network_connected()) {
             wifi_led_on();
 
-            // Check if we have MQTT connection parameters and it's time to check for new sensor data
-            if(
-                (is_nil_time(mqttUpdateTimeout) || absolute_time_diff_us(now, mqttUpdateTimeout) <= 0) && 
-                has_mqtt_userdata(userData)
-            ) {
-                // DNS lookup the broker
+            // If we aren't connected to the broker yet, connect and subscribe
+            if(!mqtt_client_is_connected(mqttState.mqttClient) && has_mqtt_userdata(userData)) {
+                DEBUG_PRINT("Not connected to MQTT broker, opening connection...");
+
+                // Lookup the broker's IP
                 brokerRequest.mResolvedAddress.addr = 0;
                 brokerRequest.mHost = userData->m_brokerAddress;
                 resolve_host_blocking(&brokerRequest);
 
-                // If we have the broker's address, send data from our queue
+                // If we have the broker's address, proceed with the connection
                 if(brokerRequest.mResolvedAddress.addr) {
-                    DEBUG_PRINT("Broker resolved");
+                    char ip_string[16];
+                    ip_address_to_string(ip_string, &brokerRequest.mResolvedAddress);
+                    DEBUG_PRINT("Broker resolved (IP: %s). Connecting to broker...", ip_string);
+
                     mqttState.mBrokerAddress = brokerRequest.mResolvedAddress;
                     mqttState.mBrokerPort = MQTT_PORT;
 
                     mqttState.mSensorName = userData->m_sensorName;
                     mqttState.mSensorLocation = userData->m_locationName;
 
-                    if(!mqtt_client_is_connected(mqttState.mqttClient)) {
-                        DEBUG_PRINT("Connecting to MQTT broker");
-                        connect_to_broker_blocking(&mqttState);
-
-                        // Subscribe to our control topic
+                    if(!connect_to_broker_blocking(&mqttState)) {
+                        DEBUG_PRINT("Broker connection failed");
+                    } else {
+                        DEBUG_PRINT("Broker connection succeeded. Subscribing to control topic")
                         get_sensor_control_topic(&mqttState, controlTopic);
                         subscribe_to_topic(&mqttState, controlTopic);
                         DEBUG_PRINT("MQTT broker subscription complete");
-                    }
-
-                    if(mqtt_client_is_connected(mqttState.mqttClient)) {
-                        // Process any sensor data waiting for us in the mailbox
-                        transmit_sensor_data(&mqttState);
                         mqttUpdateTimeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
-                    } else {
-                        disconnect_from_broker(&mqttState);
-                        forceReconnect = true;
                     }
                 } else {
-                    DEBUG_PRINT("Broker resolution failed");
-                    forceReconnect = true;
+                    DEBUG_PRINT("Broker IP resolution failed");
                 }
             }
+
+            // If we are connected and it's time to publish sensor data, do so.
+            if(
+                (is_nil_time(mqttUpdateTimeout) || absolute_time_diff_us(now, mqttUpdateTimeout) <= 0) && 
+                mqtt_client_is_connected(mqttState.mqttClient)
+            ) {
+                transmit_data(&mqttState);
+                mqttUpdateTimeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
+            }
+        } else {
+            wifi_led_off();
         }
 
         // Chill

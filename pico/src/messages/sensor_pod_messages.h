@@ -49,5 +49,7 @@ bool mqtt_to_control_message(MQTTMessage *mqttMessage, SensorControlMessage *con
 // Converts SensorUpdateMessage to outgoing MQTT message
 void data_update_to_mqtt_message(const char *sensorName, const char *sensorLocation, SensorDataUpdateMessage *dataUpdate, MQTTMessage *mqttMsg);
 
+// Creates a basic test message with the supplied message as payload contents
+void create_test_mqtt_message(const char *sensorName, const char *sensorLocation, const char *message, MQTTMessage *mqttMsg);
 
 #endif      // _SENSOR_POD_MESSAGES_H_

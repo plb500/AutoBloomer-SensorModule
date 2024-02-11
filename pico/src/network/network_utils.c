@@ -3,6 +3,21 @@
 #include "lwip/dns.h"
 #include "pico/cyw43_arch.h"
 
+void ip_address_to_string(char *dest, ip_addr_t *address) {
+    if(!dest || !address) {
+        return;
+    }
+
+    sprintf(
+        dest,
+        "%d.%d.%d.%d",
+        (address->addr & 0x000000FF),
+        ((address->addr & 0x0000FF00) >> 8),
+        ((address->addr & 0x00FF0000) >> 16),
+        ((address->addr & 0xFF000000) >> 24)
+    );
+}
+
 bool is_network_connected() {
     return (cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA) == CYW43_LINK_UP);
 }

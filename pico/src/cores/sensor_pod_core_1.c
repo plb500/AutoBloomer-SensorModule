@@ -14,9 +14,10 @@
 
 
 // Hardware defines for the SCD30
-#define SCD30_I2C_PORT                  (i2c1)
-static const uint8_t SCD30_I2C_SDA_PIN  = 6;
-static const uint8_t SCD30_I2C_SCL_PIN  = 3;
+#define SCD30_I2C_PORT                  (i2c0)
+static const uint8_t SCD30_I2C_SDA_PIN      = 4;
+static const uint8_t SCD30_I2C_SCL_PIN      = 5;
+static const uint8_t SCD30_POWER_CTL_PIN    = 6;
 static const uint SCD30_I2C_BAUDRATE    = (25 * 1000);
 
 extern MulticoreMailbox coreMailbox;
@@ -30,7 +31,8 @@ I2CInterface scd30Interface = {
 
 SensorPod sensorPod = {
     .mSoilSensor = 0,
-    .mSCD30Interface = &scd30Interface
+    .mSCD30Interface = &scd30Interface,
+    .mSCD30PowerControlPin = SCD30_POWER_CTL_PIN
 };
 
 void handle_set_temperature_offset_command(SensorPod *s, const char *commandParam) {

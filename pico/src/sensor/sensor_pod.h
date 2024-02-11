@@ -29,6 +29,8 @@ typedef struct {
     bool mSoilSensorActive;
     bool mSCD30SensorActive;
 
+    uint8_t mSCD30PowerControlPin;
+
     SensorPodData mCurrentData;
     absolute_time_t mSCD30ResetTimeout;
 } SensorPod;
