@@ -36,7 +36,7 @@ static char DEBUG_PRINT_BUF[DEBUG_PRINT_BUF_SIZE];
         }
 #   else                                                           
 #       define DEBUG_PRINT_INIT() {                                 \
-            stdio_init_all()                                        \
+            stdio_init_all();                                       \
 }
 #   endif
 

@@ -14,29 +14,29 @@ pico_sdk_init()
 string(APPEND CMAKE_EXE_LINKER_FLAGS "-Wl,--print-memory-usage")
 
 add_executable(SensorPodController
-    src_cpp/cores/core_0_executor.cpp
-    src_cpp/cores/core_1_executor.cpp
+    src/cores/core_0_executor.cpp
+    src/cores/core_1_executor.cpp
 
-    src_cpp/messaging/sensor_pod_messages.cpp
-    src_cpp/messaging/multicore_mailbox.cpp
+    src/messaging/sensor_pod_messages.cpp
+    src/messaging/multicore_mailbox.cpp
 
-    src_cpp/network/network_controller.cpp
-    src_cpp/network/mqtt_controller.cpp
+    src/network/network_controller.cpp
+    src/network/mqtt_controller.cpp
 
-    src_cpp/sensors/sensirion/scd30_i2c.c
-    src_cpp/sensors/sensirion/sensirion_common.c
-    src_cpp/sensors/sensirion/sensirion_i2c_hal.c
-    src_cpp/sensors/sensirion/sensirion_i2c.c
+    src/sensors/sensirion/scd30_i2c.c
+    src/sensors/sensirion/sensirion_common.c
+    src/sensors/sensirion/sensirion_i2c_hal.c
+    src/sensors/sensirion/sensirion_i2c.c
 
-    src_cpp/sensors/sensor_i2c_interface.cpp
-    src_cpp/sensors/stemma_soil_sensor.cpp
-    src_cpp/sensors/sensor_pod.cpp
+    src/sensors/sensor_i2c_interface.cpp
+    src/sensors/stemma_soil_sensor.cpp
+    src/sensors/sensor_pod.cpp
 
-    src_cpp/serial_control/serial_controller.cpp
+    src/serial_control/serial_controller.cpp
 
-    src_cpp/userdata/user_data.cpp
+    src/userdata/user_data.cpp
 
-    src_cpp/main.cpp
+    src/main.cpp
 )
 
 pico_set_linker_script(SensorPodController ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
@@ -48,8 +48,8 @@ pico_add_extra_outputs(SensorPodController)
 target_include_directories(SensorPodController PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}
 
-    ${PROJECT_SOURCE_DIR}/src_cpp
-    ${PROJECT_SOURCE_DIR}/src_cpp/network
+    ${PROJECT_SOURCE_DIR}/src
+    ${PROJECT_SOURCE_DIR}/src/network
     )
 
 target_link_libraries(SensorPodController
