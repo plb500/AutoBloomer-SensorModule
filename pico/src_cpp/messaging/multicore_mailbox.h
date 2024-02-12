@@ -13,7 +13,7 @@ class MulticoreMailbox {
         MulticoreMailbox();
 
         // core1 -> core0 functions
-        void sendSensorDataToCore0(SensorPod::Data& sensorPodData);
+        void sendSensorDataToCore0(const SensorPod::Data& sensorPodData);
         optional<SensorPodMessages::SensorDataUpdateMessage> getLatestSensorDataMessage();
 
         // core0 -> core1 functions

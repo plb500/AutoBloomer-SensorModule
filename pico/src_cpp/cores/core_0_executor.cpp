@@ -150,15 +150,26 @@ void Core0Executor::stopCore1AndWriteUserData() {
 }
 
 void Core0Executor::transmitData() {
-    transmitTestMQTTMessage();
+    transmitSensorData();
 }
 
-void Core0Executor::transmitSensorData() {}
+void Core0Executor::transmitSensorData() {
+    // Process any sensor data waiting for us in the mailbox
+    if(auto msgOpt = mMailbox.getLatestSensorDataMessage()) {
+        if(auto mqttOpt = SensorPodMessages::dataUpdateToMQTTMessage(
+            mUserData.getSensorName().c_str(),
+            mUserData.getLocationName().c_str(),
+            *msgOpt
+        )) {
+            mMQTTController.publishMessage(*mqttOpt);
+        }
+    }
+}
 
 void Core0Executor::transmitTestMQTTMessage() {
     char message[64];
     static int messageValue = 0;
-    sprintf(message, "TOAST MESSAGE: %d", messageValue++);
+    sprintf(message, "TEST MESSAGE: %d", messageValue++);
 
     optional<SensorPodMessages::MQTTMessage> msg = SensorPodMessages::createTestMQTTMessage(
         mUserData.getSensorName().c_str(),

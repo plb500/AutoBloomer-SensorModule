@@ -12,7 +12,7 @@ class SensorPodMessages {
     public:
         constexpr static int MQTT_MAX_TOPIC_LENGTH              = 128;
         constexpr static int MQTT_MAX_PAYLOAD_LENGTH            = 256;
-        constexpr static string_view AUTOBLOOMER_TOPIC_NAME     = "AutoBloomer";
+        constexpr static const char* AUTOBLOOMER_TOPIC_NAME     = "AutoBloomer";
 
 
         // Type of incoming control command

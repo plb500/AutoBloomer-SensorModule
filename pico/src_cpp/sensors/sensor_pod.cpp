@@ -78,6 +78,26 @@ bool SensorPod::hasValidData() {
     return (mCurrentData.mSoilSensorDataValid || mCurrentData.mSCD30SensorDataValid);
 }
 
+const SensorPod::Data& SensorPod::getCurrentData() {
+    return mCurrentData;
+}
+
+bool SensorPod::hasSoilSensor() {
+    return mSoilSensor.has_value();
+}
+
+bool SensorPod::hasSCD30Sensor() {
+    return mSCD30Interface.has_value();
+}
+
+bool SensorPod::isSoilSensorActive() {
+    return mSoilSensorActive;
+}
+
+bool SensorPod::isSCD30Active() {
+    return mSCD30SensorActive;
+}
+
 void SensorPod::setTemperatureOffset(double offset) {
     // We can only do this on a valid sensor pod with a valid, active SCD30 interface
     if(!mSCD30Interface || !mSCD30SensorActive) {
@@ -130,7 +150,7 @@ void SensorPod::initializeSCD30Connection() {
     }
 
     // I2C hardware init
-    sensirion_i2c_inst = &mSCD30Interface->mI2C;
+    sensirion_i2c_inst = mSCD30Interface->mI2C;
     sensirion_i2c_baud = mSCD30Interface->mBaud;
     sensirion_sda_pin = mSCD30Interface->mSDA;
     sensirion_scl_pin = mSCD30Interface->mSCL;

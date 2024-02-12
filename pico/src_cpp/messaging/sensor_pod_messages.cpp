@@ -8,12 +8,12 @@
 
 using std::nullopt;
 
-constexpr const string_view SENSOR_STATUS_JSON_KEY           = "Status";
-constexpr const string_view FEED_LEVEL_JSON_KEY              = "Feed Level";
-constexpr const string_view CO2_LEVEL_JSON_KEY               = "CO2 Level";
-constexpr const string_view TEMPERATURE_JSON_KEY             = "Temperature";
-constexpr const string_view HUMIDITY_JSON_KEY                = "Humidity";
-constexpr const string_view SOIL_MOISTURE_JSON_KEY           = "Soil Moisture";
+constexpr const char* SENSOR_STATUS_JSON_KEY           = "Status";
+constexpr const char* FEED_LEVEL_JSON_KEY              = "Feed Level";
+constexpr const char* CO2_LEVEL_JSON_KEY               = "CO2 Level";
+constexpr const char* TEMPERATURE_JSON_KEY             = "Temperature";
+constexpr const char* HUMIDITY_JSON_KEY                = "Humidity";
+constexpr const char* SOIL_MOISTURE_JSON_KEY           = "Soil Moisture";
 
 
 optional<SensorPodMessages::SensorControlMessage> SensorPodMessages::mqttToControlMessage(MQTTMessage& mqttMessage) {
@@ -111,7 +111,7 @@ optional<SensorPodMessages::MQTTMessage> SensorPodMessages::createTestMQTTMessag
     }
 
     snprintf(mqttMsg.mTopic, MQTT_MAX_TOPIC_LENGTH, "%s/%s/%s",
-        std::string(AUTOBLOOMER_TOPIC_NAME).c_str(),
+        AUTOBLOOMER_TOPIC_NAME,
         sensorLocation,
         sensorName
     );

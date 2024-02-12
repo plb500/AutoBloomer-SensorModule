@@ -38,6 +38,11 @@ class SensorPod {
         void update();
 
         bool hasValidData();
+        const Data& getCurrentData();
+        bool hasSoilSensor();
+        bool hasSCD30Sensor();
+        bool isSoilSensorActive();
+        bool isSCD30Active();
         void setTemperatureOffset(double offset);
         void setForcedRecalibrationValue(uint16_t frc);
 

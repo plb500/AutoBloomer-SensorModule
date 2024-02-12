@@ -18,7 +18,7 @@ class I2CInterface {
         };
 
         I2CInterface(
-            i2c_inst_t &i2c,
+            i2c_inst_t* i2c,
             int baud,
             int sdaPin,
             int sclPin
@@ -68,7 +68,7 @@ class I2CInterface {
         constexpr static int I2C_WATCHDOG_TIMEOUT_MS       = 5000;
 
 
-        i2c_inst_t &mI2C;                           // The underlying I2C access struct
+        i2c_inst_t *mI2C;                           // The underlying I2C access struct
         int mBaud;                                  // I2C baud rate
         int mSDA;                                   // I2C SDA pin
         int mSCL;                                   // I2C SCL pin

@@ -8,7 +8,7 @@ MulticoreMailbox::MulticoreMailbox() {
     queue_init(&mSensorControlQueue, sizeof(SensorPodMessages::SensorControlMessage), NUM_SENSOR_CONTROL_MESSAGES);
 }
 
-void MulticoreMailbox::sendSensorDataToCore0(SensorPod::Data& sensorPodData) {
+void MulticoreMailbox::sendSensorDataToCore0(const SensorPod::Data& sensorPodData) {
     SensorPodMessages::SensorDataUpdateMessage newData;
     newData.mHasSCD30Reading = sensorPodData.mSCD30SensorDataValid;
     newData.mHasSoilReding =  sensorPodData.mSoilSensorDataValid;
