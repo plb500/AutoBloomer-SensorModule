@@ -26,6 +26,11 @@ class Core1Executor {
     private:
         void doLoop(); 
 
+        void processSensorControlCommands();
+        void handleSetTemperatureOffsetCommand(const char *commandParam);
+        void handleSetFRCCommand(const char *commandParam);
+
+
         static Core1Executor* sExecutor;
 
         MulticoreMailbox& mMailbox;

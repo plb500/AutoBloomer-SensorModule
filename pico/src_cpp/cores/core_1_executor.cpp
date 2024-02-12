@@ -2,6 +2,7 @@
 #include "util/debug_io.h"
 
 #include "pico/multicore.h"
+#include <cstdlib>
 
 
 Core1Executor* Core1Executor::sExecutor = nullptr;
@@ -40,6 +41,9 @@ void Core1Executor::doLoop() {
     multicore_lockout_victim_init();
 
     while(1) {
+        // Check for sensor control messages
+        processSensorControlCommands();
+
         // Update sensors and push any data to core0 if necessary
         mSensorPod.update();
 
@@ -63,4 +67,53 @@ void Core1Executor::doLoop() {
 
         sleep_ms(500);
     }
+}
+
+void Core1Executor::processSensorControlCommands() {
+    optional<SensorPodMessages::SensorControlMessage> msgOpt;
+
+    do {
+        if(msgOpt = mMailbox.getWaitingSensorControlMessage()) {
+            switch(msgOpt->mCommand) {
+                case SensorPodMessages::SensorControlCommandType::SCD30_SET_TEMP_OFFSET:
+                    handleSetTemperatureOffsetCommand(msgOpt->mCommandParams);
+                    break;
+
+                case SensorPodMessages::SensorControlCommandType::SCD30_SET_FRC:
+                    handleSetFRCCommand(msgOpt->mCommandParams);
+                    break;
+            }
+        }
+    } while(msgOpt);
+}
+
+
+void Core1Executor::handleSetTemperatureOffsetCommand(const char *commandParam) {
+    double val;
+    char *end;
+
+    val = strtod(commandParam, &end);
+    if(end == commandParam) {
+        // Could not convert supplied value
+        DEBUG_PRINT("Conversion error while setting temperature offset.");
+        return;
+    }
+
+    DEBUG_PRINT("SETTING TEMPERATURE OFFSET (%f)", val);
+    mSensorPod.setTemperatureOffset(val);
+}
+
+void Core1Executor::handleSetFRCCommand(const char *commandParam) {
+    long val;
+    char *end;
+
+    val = strtol(commandParam, &end, 10);
+    if(end == commandParam) {
+        // Could not convert supplied value
+        DEBUG_PRINT("Conversion error while setting FRC.");
+        return;
+    }
+
+    DEBUG_PRINT("SETTING FRC: %d", val);
+    mSensorPod.setForcedRecalibrationValue(val);
 }
