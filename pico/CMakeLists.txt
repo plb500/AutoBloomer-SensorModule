@@ -14,27 +14,25 @@ pico_sdk_init()
 string(APPEND CMAKE_EXE_LINKER_FLAGS "-Wl,--print-memory-usage")
 
 add_executable(SensorPodController
-    src/userdata/userdata.c
+    src_cpp/messaging/sensor_pod_messages.cpp
+    src_cpp/messaging/multicore_mailbox.cpp
 
-    src/serial_control/serial_controller.c
+    src_cpp/network/network_controller.cpp
 
-    src/cores/sensor_pod_core_0.c
-    src/cores/sensor_pod_core_1.c
+    src_cpp/sensors/sensirion/scd30_i2c.c
+    src_cpp/sensors/sensirion/sensirion_common.c
+    src_cpp/sensors/sensirion/sensirion_i2c_hal.c
+    src_cpp/sensors/sensirion/sensirion_i2c.c
 
-    src/messages/multicore_mailbox.c
-    src/messages/sensor_pod_messages.c
+    src_cpp/sensors/sensor_i2c_interface.cpp
+    src_cpp/sensors/stemma_soil_sensor.cpp
+    src_cpp/sensors/sensor_pod.cpp
 
-    src/network/network_utils.c
-    src/network/mqtt_utils.c
+    src_cpp/serial_control/serial_controller.cpp
 
-    src/sensor/sensor_i2c_interface.c
-    src/sensor/sensor_pod.c
-    src/sensor/stemma_soil_sensor.c
+    src_cpp/userdata/user_data.cpp
 
-    src/sensor/sensirion/scd30_i2c.c
-    src/sensor/sensirion/sensirion_common.c
-    src/sensor/sensirion/sensirion_i2c_hal.c
-    src/sensor/sensirion/sensirion_i2c.c
+    src_cpp/main.cpp
 )
 
 pico_set_linker_script(SensorPodController ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
@@ -45,10 +43,10 @@ pico_add_extra_outputs(SensorPodController)
 
 target_include_directories(SensorPodController PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}
-    ${CMAKE_CURRENT_LIST_DIR}/.. # for our common lwipopts
-    ${PROJECT_SOURCE_DIR}/src
-    ${PROJECT_SOURCE_DIR}/src/network
-)
+
+    ${PROJECT_SOURCE_DIR}/src_cpp
+    ${PROJECT_SOURCE_DIR}/src_cpp/network
+    )
 
 target_link_libraries(SensorPodController
     pico_stdlib
