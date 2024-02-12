@@ -50,7 +50,7 @@ void UserData::setSSID(const char* ssid) {
     mSSID = ssid;
 }
 
-void UserData:: setPSK(const char* psk) {
+void UserData::setPSK(const char* psk) {
     mPSK = psk;
 }
 
