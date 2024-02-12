@@ -2,6 +2,7 @@
 #define _MULTICORE_MAILBOX_H_
 
 #include "sensor_pod_messages.h"
+#include "sensors/sensor_pod.h"
 #include "pico/util/queue.h"
 #include <optional>
 
@@ -12,8 +13,7 @@ class MulticoreMailbox {
         MulticoreMailbox();
 
         // core1 -> core0 functions
-        // TODO: DO THIS DON'T FORGET
-        // void sendSensorDataToCore0(SensorPodData& sensorPodData);
+        void sendSensorDataToCore0(SensorPod::Data& sensorPodData);
         optional<SensorPodMessages::SensorDataUpdateMessage> getLatestSensorDataMessage();
 
         // core0 -> core1 functions

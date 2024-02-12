@@ -2,7 +2,9 @@
 
 #include <cstring>
 #include <cstdio>
+#include <string>
 
+#include "util/debug_io.h"
 
 using std::nullopt;
 
@@ -103,13 +105,13 @@ optional<SensorPodMessages::MQTTMessage> SensorPodMessages::createTestMQTTMessag
 ) {
     MQTTMessage mqttMsg;
 
-    // Sanity check
+    // // Sanity check
     if(!sensorName || !sensorLocation || !message) {
         return nullopt;
     }
 
     snprintf(mqttMsg.mTopic, MQTT_MAX_TOPIC_LENGTH, "%s/%s/%s",
-        AUTOBLOOMER_TOPIC_NAME,
+        std::string(AUTOBLOOMER_TOPIC_NAME).c_str(),
         sensorLocation,
         sensorName
     );

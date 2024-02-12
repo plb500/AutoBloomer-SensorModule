@@ -8,8 +8,27 @@ MulticoreMailbox::MulticoreMailbox() {
     queue_init(&mSensorControlQueue, sizeof(SensorPodMessages::SensorControlMessage), NUM_SENSOR_CONTROL_MESSAGES);
 }
 
-// TODO: THIS
-// void MulticoreMailbox::sendSensorDataToCore0(SensorPodData& sensorPodData) {}
+void MulticoreMailbox::sendSensorDataToCore0(SensorPod::Data& sensorPodData) {
+    SensorPodMessages::SensorDataUpdateMessage newData;
+    newData.mHasSCD30Reading = sensorPodData.mSCD30SensorDataValid;
+    newData.mHasSoilReding =  sensorPodData.mSoilSensorDataValid;
+    newData.mSensorStatus = sensorPodData.mStatus;
+    newData.mCO2Level = sensorPodData.mCO2Level;
+    newData.mTemperature = sensorPodData.mTemperature;
+    newData.mHumidity = sensorPodData.mHumidity;
+    newData.mSoilSensorData = sensorPodData.mSoilSensorData;
+
+    bool added = false;
+    do {
+        // We prefer new data to old data, so if the queue is full, pop off the oldest data to create space
+        if(queue_is_full(&mSensorUpdateQueue)) {
+            SensorPodMessages::SensorDataUpdateMessage tmp;
+            queue_remove_blocking(&mSensorUpdateQueue, &tmp);
+        }
+        added = queue_try_add(&mSensorUpdateQueue, &newData);
+
+    } while(!added);
+}
 
 optional<SensorPodMessages::SensorDataUpdateMessage> MulticoreMailbox::getLatestSensorDataMessage() {
     SensorPodMessages::SensorDataUpdateMessage dataUpdateMsg;

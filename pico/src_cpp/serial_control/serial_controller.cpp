@@ -6,8 +6,6 @@ SerialController::SerialController() :
     mBufferLength(0)
 {}
 
-void SerialController::initializeController() {}
-
 bool SerialController::updateUserData(UserData& userData) {
     bool userDataUpdated = false;
 

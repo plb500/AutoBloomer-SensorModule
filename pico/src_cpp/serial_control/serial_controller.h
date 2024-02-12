@@ -24,7 +24,6 @@ class SerialController {
     public:
         SerialController();
     
-        void initializeController();
         bool updateUserData(UserData& userData);
 
     private:

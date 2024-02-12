@@ -14,10 +14,14 @@ pico_sdk_init()
 string(APPEND CMAKE_EXE_LINKER_FLAGS "-Wl,--print-memory-usage")
 
 add_executable(SensorPodController
+    src_cpp/cores/core_0_executor.cpp
+    src_cpp/cores/core_1_executor.cpp
+
     src_cpp/messaging/sensor_pod_messages.cpp
     src_cpp/messaging/multicore_mailbox.cpp
 
     src_cpp/network/network_controller.cpp
+    src_cpp/network/mqtt_controller.cpp
 
     src_cpp/sensors/sensirion/scd30_i2c.c
     src_cpp/sensors/sensirion/sensirion_common.c
@@ -37,8 +41,8 @@ add_executable(SensorPodController
 
 pico_set_linker_script(SensorPodController ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
 
-pico_enable_stdio_usb(SensorPodController 0)
-pico_enable_stdio_uart(SensorPodController 1)
+pico_enable_stdio_usb(SensorPodController 1)
+pico_enable_stdio_uart(SensorPodController 0)
 pico_add_extra_outputs(SensorPodController)
 
 target_include_directories(SensorPodController PRIVATE

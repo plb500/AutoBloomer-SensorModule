@@ -90,6 +90,26 @@ bool UserData::readFromFlash() {
     return serializeFromByteArray(flashContents, USER_DATA_FLASH_SIZE);
 }
 
+const string& UserData::getLocationName() const {
+    return mLocationName;
+}
+
+const string& UserData::getSensorName() const {
+    return mSensorName;
+}
+
+const string& UserData::getSSID() const {
+    return mSSID;
+}
+
+const string& UserData::getPSK() const {
+    return mPSK;
+}
+
+const string& UserData::getBrokerAddress() const {
+    return mBrokerAddress;
+}
+
 int UserData::serializeToByteArray(char *bytes, int bytesSize) {
     if(!bytes || (bytesSize < USER_DATA_FLASH_SIZE)) {
         return 0;
@@ -100,19 +120,19 @@ int UserData::serializeToByteArray(char *bytes, int bytesSize) {
     memset(writePtr, 0, USER_DATA_FLASH_SIZE);
     
     memcpy(writePtr, mLocationName.c_str(), mLocationName.length());
-    writePtr += (mLocationName.length() + 1);
+    writePtr += (MAX_LOCATION_LENGTH + 1);
 
     memcpy(writePtr, mSensorName.c_str(), mSensorName.length());
-    writePtr += (mSensorName.length() + 1);
+    writePtr += (MAX_SENSOR_NAME_LENGTH + 1);
 
     memcpy(writePtr, mSSID.c_str(), mSSID.length());
-    writePtr += (mSSID.length() + 1);
+    writePtr += (MAX_SSID_LENGTH + 1);
 
     memcpy(writePtr, mPSK.c_str(), mPSK.length());
-    writePtr += (mPSK.length() + 1);
+    writePtr += (MAX_PSK_LENGTH + 1);
 
     memcpy(writePtr, mBrokerAddress.c_str(), mBrokerAddress.length());
-    writePtr += (mBrokerAddress.length() + 1);
+    writePtr += (MAX_BROKER_LENGTH + 1);
 
     memcpy(writePtr, VALID_DATA_KEY, VALID_DATA_KEY_LENGTH);
     writePtr += (VALID_DATA_KEY_LENGTH + 1);
@@ -128,22 +148,20 @@ bool UserData::serializeFromByteArray(const char *bytes, int bytesSize) {
     int locationNameLen, sensorNameLen, ssidLen, pskLen, brokerAddressLen, dataKeyLen = 0;
     const char *readPtr = bytes;
 
-    // Each string in the byte array should be separated by a 0 so we should be able to repeatedly
-    // call strlen on the supplied array to get each individual string
     locationNameLen = strlen(readPtr);
-    readPtr += (locationNameLen + 1);
+    readPtr += MAX_LOCATION_LENGTH + 1;
 
     sensorNameLen = strlen(readPtr);
-    readPtr += (sensorNameLen + 1);
+    readPtr += MAX_SENSOR_NAME_LENGTH + 1;
 
     ssidLen = strlen(readPtr);
-    readPtr += (ssidLen + 1);
+    readPtr += MAX_SSID_LENGTH + 1;
 
     pskLen = strlen(readPtr);
-    readPtr += (pskLen + 1);
+    readPtr += MAX_PSK_LENGTH + 1;
 
     brokerAddressLen = strlen(readPtr);
-    readPtr += (brokerAddressLen + 1);
+    readPtr += MAX_BROKER_LENGTH + 1;
 
     // Check key
     dataKeyLen = strlen(readPtr);
@@ -161,19 +179,18 @@ bool UserData::serializeFromByteArray(const char *bytes, int bytesSize) {
     readPtr = bytes;
     
     mLocationName = readPtr;
-    readPtr += (locationNameLen + 1);
+    readPtr += (MAX_LOCATION_LENGTH + 1);
 
     mSensorName = readPtr;
-    readPtr += (sensorNameLen + 1);
+    readPtr += (MAX_SENSOR_NAME_LENGTH + 1);
 
     mSSID = readPtr;
-    readPtr += (ssidLen + 1);
+    readPtr += (MAX_SSID_LENGTH + 1);
 
     mPSK = readPtr;
-    readPtr += (pskLen + 1);
+    readPtr += (MAX_PSK_LENGTH + 1);
 
     mBrokerAddress = readPtr;
-    readPtr += (brokerAddressLen + 1);
 
     return true;
 }
