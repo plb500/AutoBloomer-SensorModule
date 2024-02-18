@@ -1,5 +1,7 @@
 #include "stemma_soil_sensor.h"
 
+#include "util/debug_io.h"
+
 #include <tuple>
 #include <cstring>
 #include <cstdio>
@@ -106,10 +108,19 @@ Sensor::SensorUpdateResponse StemmaSoilSensor::doUpdate(absolute_time_t currentT
 
     uint16_t capValue = getCapacitiveValue();
     if(capValue != StemmaSoilSensor::STEMMA_SOIL_SENSOR_INVALID_READING) {
+        DEBUG_PRINT("+--------------------------------+");
+        DEBUG_PRINT("|      Stemma Soil Sensor        |");
+        DEBUG_PRINT("| Soil moisture: %4d            |", capValue);
+        DEBUG_PRINT("+--------------------------------+\n");
+
         memcpy(dataStorageBuffer, &capValue, sizeof(uint16_t));
         return make_tuple(SENSOR_OK, sizeof(uint16_t));
     } else {
         // Got an invalid reading, might be something up with the port
+        DEBUG_PRINT("+--------------------------------+");
+        DEBUG_PRINT("|      Stemma Soil Sensor        |");
+        DEBUG_PRINT("|       * MALFUNCTION *          |", capValue);
+        DEBUG_PRINT("+--------------------------------+\n");
         return make_tuple(SENSOR_MALFUNCTIONING, 0);
     }
 

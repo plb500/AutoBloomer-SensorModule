@@ -170,17 +170,35 @@ Sensor::SensorUpdateResponse SCD30Sensor::doUpdate(absolute_time_t currentTime, 
                 get<0>(response) = SENSOR_OK;
                 get<1>(response) = sizeof(float) * 3;
 
+                DEBUG_PRINT("+--------------------------------+");
+                DEBUG_PRINT("|             SCD30              |");
+                DEBUG_PRINT("|         SCD30 CO2: %7.2f PPM |", co2Reading);
+                DEBUG_PRINT("| SCD30 Temperature: %5.2f °C    |", temperatureReading);
+                DEBUG_PRINT("|    SCD30 Humidity: %5.2f%%      |", humidityReading);
+                DEBUG_PRINT("+--------------------------------+\n");
             } else {
                 // No data when we were told there was data available. This may indiciate a sensor issue
                 get<0>(response) = SENSOR_MALFUNCTIONING;
+                DEBUG_PRINT("+--------------------------------+");
+                DEBUG_PRINT("|             SCD30              |");
+                DEBUG_PRINT("|       * MALFUNCTION *          |");
+                DEBUG_PRINT("+--------------------------------+");
             }
         } else {
             // There was no data available. If this goes on too long it might indicate
             // an issue with the sensor
+            DEBUG_PRINT("+--------------------------------+");
+            DEBUG_PRINT("|             SCD30              |");
+            DEBUG_PRINT("|          * nothing *           |");
+            DEBUG_PRINT("+--------------------------------+");
             get<0>(response) = SENSOR_OK_NO_DATA;
         }
     } else {
         // The actual data ready command failed, might be something up with the port
+        DEBUG_PRINT("+--------------------------------+");
+        DEBUG_PRINT("|             SCD30              |");
+        DEBUG_PRINT("|       * MALFUNCTION *          |");
+        DEBUG_PRINT("+--------------------------------+");
         get<0>(response) = SENSOR_MALFUNCTIONING;
     }
 

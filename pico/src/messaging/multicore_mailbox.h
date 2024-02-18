@@ -24,7 +24,7 @@ class MulticoreMailbox {
 
     private:
         constexpr static int NUM_SENSOR_UPDATE_MESSAGES     = 2;    // We only really need double-buffering
-        constexpr static int NUM_SENSOR_CONTROL_MESSAGES    = 4;
+        constexpr static int NUM_SENSOR_CONTROL_MESSAGES    = 4;    // We possibly may have a few of these coming in at once
 
         queue_t mSensorUpdateQueue;         // Queue used for sending sensor updates from core1 to core0
         queue_t mSensorControlQueue;        // Queue used for sending sensor control commands from core0 to core1

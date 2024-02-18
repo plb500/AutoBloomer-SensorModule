@@ -168,7 +168,7 @@ void Core0Executor::transmitSensorData() {
 
     memset(mOutgoingMQTTMessageBuffer.mPayload, 0, MQTTMessage::MQTT_MAX_PAYLOAD_LENGTH);
     if(mMailbox.latestSensorDataToJSON(mSensorGroups, mOutgoingMQTTMessageBuffer.mPayload, MQTTMessage::MQTT_MAX_PAYLOAD_LENGTH)) {
-        DEBUG_PRINT("%s\n\n\n", mOutgoingMQTTMessageBuffer.mPayload);
+        DEBUG_PRINT("* core0 publishing MQTT message *");
         mMQTTController.publishMessage(mOutgoingMQTTMessageBuffer);
     }
 }

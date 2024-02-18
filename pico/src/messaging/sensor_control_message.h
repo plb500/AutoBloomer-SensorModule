@@ -4,7 +4,7 @@
 #include "mqtt_message.h"
 #include "pico/types.h"
 
-// Incoming Sensor Control message
+// Incoming sensor control/calibration message
 struct SensorControlMessage {
     uint32_t mCommand;
     char mCommandParams[8];

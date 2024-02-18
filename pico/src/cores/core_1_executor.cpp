@@ -40,52 +40,22 @@ void Core1Executor::doLoop() {
         absolute_time_t currentTime = get_absolute_time();
 
         // Check for sensor control messages
+        DEBUG_PRINT("core1 checkpoint - processing control commands");
         processSensorControlCommands();
 
         // Perform sensor hardware updates
+        DEBUG_PRINT("core1 checkpoint - updating sensors");
         for(auto i = mSensorGroups.begin(); i != mSensorGroups.end(); ++i) {
             i->update(currentTime);
         }
 
         // Package sensor data to core0
+        DEBUG_PRINT("core1 checkpoint - updating core0");
         mMailbox.sendSensorDataToCore0(mSensorGroups);
 
         sleep_ms(500);
     }
 }
-
-// void Core1Executor::doLoop() {
-//     multicore_lockout_victim_init();
-
-//     while(1) {
-//         // Check for sensor control messages
-//         processSensorControlCommands();
-
-//         // Update sensors and push any data to core0 if necessary
-//         mSens
-//         mSensorPod.update();
-
-//         if(mSensorPod.hasValidData()) {
-//             const SensorPod::Data& currentData = mSensorPod.getCurrentData();
-
-//             DEBUG_PRINT("+--------------------------------+");
-//             DEBUG_PRINT("|         SCD30 CO2: %7.2f PPM |", currentData.mCO2Level);
-//             DEBUG_PRINT("| SCD30 Temperature: %5.2f °C    |", currentData.mTemperature);
-//             DEBUG_PRINT("|    SCD30 Humidity: %5.2f%%      |", currentData.mHumidity);
-//             DEBUG_PRINT("+--------------------------------+\n");
-
-//             mMailbox.sendSensorDataToCore0(currentData);
-//         } else {
-//             DEBUG_PRINT("+---------------------------+");
-//             DEBUG_PRINT("|           NO DATA         |");
-//             DEBUG_PRINT("| Soil sensor active: %d [%c] |", mSensorPod.isSoilSensorActive(), mSensorPod.hasSoilSensor() ? '*' : ' ');
-//             DEBUG_PRINT("|       SCD30 active: %d [%c] |", mSensorPod.isSCD30Active(), mSensorPod.hasSCD30Sensor() ? '*' : ' ');
-//             DEBUG_PRINT("+---------------------------+\n");
-//         }
-
-//         sleep_ms(500);
-//     }
-// }
 
 void Core1Executor::processSensorControlCommands() {
     optional<SensorControlMessage> msgOpt;
