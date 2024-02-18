@@ -5,8 +5,8 @@ using std::nullopt;
 
 
 MulticoreMailbox::MulticoreMailbox() {
-    queue_init(&mSensorUpdateQueue, sizeof(SensorPodMessages::CurrentSensorDataMessage), NUM_SENSOR_UPDATE_MESSAGES);
-    queue_init(&mSensorControlQueue, sizeof(SensorPodMessages::SensorControlMessage), NUM_SENSOR_CONTROL_MESSAGES);
+    queue_init(&mSensorUpdateQueue, sizeof(SensorDataMessage), NUM_SENSOR_UPDATE_MESSAGES);
+    queue_init(&mSensorControlQueue, sizeof(SensorControlMessage), NUM_SENSOR_CONTROL_MESSAGES);
 }
 
 void MulticoreMailbox::sendSensorDataToCore0(const vector<SensorGroup>& sensorGroups) {
@@ -17,7 +17,7 @@ void MulticoreMailbox::sendSensorDataToCore0(const vector<SensorGroup>& sensorGr
         if(queue_is_full(&mSensorUpdateQueue)) {
             queue_remove_blocking(&mSensorUpdateQueue, &mSensorUpdateWriteScratch);
         }
-        mSensorUpdateWriteScratch.fromSensors(sensorGroups);
+        mSensorUpdateWriteScratch.fillFromSensors(sensorGroups);
         added = queue_try_add(&mSensorUpdateQueue, &mSensorUpdateWriteScratch);
 
     } while(!added);
@@ -45,14 +45,15 @@ bool MulticoreMailbox::latestSensorDataToJSON(const vector<SensorGroup>& sensorG
     return true;
 }
 
-void MulticoreMailbox::sendSensorControlMessageToCore1(SensorPodMessages::MQTTMessage& mqttMessage) {
-    if(auto controlMessage = SensorPodMessages::mqttToControlMessage(mqttMessage)) {
-        queue_try_add(&mSensorControlQueue, &controlMessage);
+void MulticoreMailbox::sendSensorControlMessageToCore1(MQTTMessage& mqttMessage) {
+    SensorControlMessage msg;
+    if(msg.fillFromMQTT(mqttMessage)) {
+        queue_try_add(&mSensorControlQueue, &msg);
     }
 }
 
-optional<SensorPodMessages::SensorControlMessage> MulticoreMailbox::getWaitingSensorControlMessage() {
-    SensorPodMessages::SensorControlMessage controlMessage;
+optional<SensorControlMessage> MulticoreMailbox::getWaitingSensorControlMessage() {
+    SensorControlMessage controlMessage;
 
     if(queue_try_remove(&mSensorControlQueue, &controlMessage)) {
         return controlMessage;

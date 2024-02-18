@@ -2,10 +2,12 @@
 #define _CORE_0_EXECUTOR_H_
 
 #include "messaging/multicore_mailbox.h"
+#include "messaging/mqtt_message.h"
 #include "userdata/user_data.h"
 #include "serial_control/serial_controller.h"
 #include "network/network_controller.h"
 #include "network/mqtt_controller.h"
+
 
 
 class Core0Executor {
@@ -32,6 +34,7 @@ class Core0Executor {
 
         constexpr static int STDIO_PING_TIMEOUT                 = 2000;
         constexpr static uint16_t MQTT_UPDATE_CHECK_PERIOD_MS   = 750;
+        constexpr static int JSON_BUFFER_SIZE                   = 256;
 
         static Core0Executor* sExecutor;
 
@@ -41,7 +44,7 @@ class Core0Executor {
         NetworkController mNetworkController;
         MQTTController mMQTTController;
         const vector<SensorGroup>& mSensorGroups;
-
+        MQTTMessage mOutgoingMQTTMessageBuffer;
 };
 
 #endif      // _CORE_0_EXECUTOR_H_

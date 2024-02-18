@@ -39,8 +39,8 @@ void Core1Executor::doLoop() {
     while(1) {
         absolute_time_t currentTime = get_absolute_time();
 
-//         // Check for sensor control messages
-//         processSensorControlCommands();
+        // Check for sensor control messages
+        processSensorControlCommands();
 
         // Perform sensor hardware updates
         for(auto i = mSensorGroups.begin(); i != mSensorGroups.end(); ++i) {
@@ -88,19 +88,20 @@ void Core1Executor::doLoop() {
 // }
 
 void Core1Executor::processSensorControlCommands() {
-    optional<SensorPodMessages::SensorControlMessage> msgOpt;
+    optional<SensorControlMessage> msgOpt;
 
     do {
         if(msgOpt = mMailbox.getWaitingSensorControlMessage()) {
-            switch(msgOpt->mCommand) {
-                case SensorPodMessages::SensorControlCommandType::SCD30_SET_TEMP_OFFSET:
-                    handleSetTemperatureOffsetCommand(msgOpt->mCommandParams);
-                    break;
+            DEBUG_PRINT("THERE'S SOMETHING");
+            // switch(msgOpt->mCommand) {
+            //     case SensorPodMessages::SensorControlCommandType::SCD30_SET_TEMP_OFFSET:
+            //         handleSetTemperatureOffsetCommand(msgOpt->mCommandParams);
+            //         break;
 
-                case SensorPodMessages::SensorControlCommandType::SCD30_SET_FRC:
-                    handleSetFRCCommand(msgOpt->mCommandParams);
-                    break;
-            }
+            //     case SensorPodMessages::SensorControlCommandType::SCD30_SET_FRC:
+            //         handleSetFRCCommand(msgOpt->mCommandParams);
+            //         break;
+            // }
         }
     } while(msgOpt);
 }

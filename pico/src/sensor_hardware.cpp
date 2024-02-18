@@ -9,7 +9,7 @@ using std::vector;
 #if SENSOR_HARDWARE == DUMMY
 #include "sensors/dummy_sensor.h"
 
-const int NUM_SENSOR_GROUPS = 1;
+extern const int NUM_SENSOR_GROUPS = 1;
 
 DummySensor _dummySensor;
 vector<SensorGroup> _SENSOR_GROUPS = {
@@ -60,6 +60,7 @@ StemmaSoilSensor _stemmaSensor(
     StemmaSoilSensor::SOIL_SENSOR_3_ADDRESS
 );
 
+extern const int NUM_SENSOR_GROUPS = 1;
 vector<SensorGroup> _SENSOR_GROUPS = {
     SensorGroup(
         {
@@ -72,7 +73,7 @@ vector<SensorGroup> _SENSOR_GROUPS = {
 // Hardware Interface Board sensor collection (RTC battery, feed level sensors)
 #elif SENSOR_HARDWARE == HIB
 #else
-const int NUM_SENSOR_GROUPS = 1;
+extern const int NUM_SENSOR_GROUPS = 1;
 vector<SensorGroup> _SENSOR_GROUPS = {};
 #endif
 

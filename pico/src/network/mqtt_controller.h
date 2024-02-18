@@ -1,7 +1,7 @@
 #ifndef _MQTT_CONTROLLER_H_
 #define _MQTT_CONTROLLER_H_
 
-#include "messaging/sensor_pod_messages.h"
+#include "messaging/mqtt_message.h"
 #include "messaging/multicore_mailbox.h"
 
 #include "pico/types.h"
@@ -12,7 +12,7 @@
 class MQTTController {
     public:
         struct MQTTMessageBuffer {
-            SensorPodMessages::MQTTMessage mMessage;
+            MQTTMessage mMessage;
             uint32_t mPayloadSize;
             uint32_t mBufferIndex;
 
@@ -32,11 +32,11 @@ class MQTTController {
         void setClientParameters(const char* sensorName, const char *sensorLocation);
 
         MQTTMessageBuffer& getBuffer();
-        void handleIncomingControlMessage(SensorPodMessages::MQTTMessage& mMessage);
+        void handleIncomingControlMessage(MQTTMessage& mMessage);
 
         void getSensorControlTopic(char *dest);
-        void initializeMessage(SensorPodMessages::MQTTMessage& message);
-        err_t publishMessage(SensorPodMessages::MQTTMessage& message);
+        void initializeMessage(MQTTMessage& message);
+        err_t publishMessage(MQTTMessage& message);
 
     private:
         mqtt_client_t* mMQTTClient;

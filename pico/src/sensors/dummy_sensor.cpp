@@ -13,7 +13,7 @@ constexpr const char* DUMMY_INT_JSON_KEY               = "dummyInt";
 constexpr const char* DUMMY_FLOAT_JSON_KEY             = "dummyFloat";
 
 DummySensor::DummySensor() :
-    Sensor(0xFF, &DummySensor::serializeDataToJSON),
+    Sensor(DUMMY_SENSOR, &DummySensor::serializeDataToJSON),
     mDummyInt(0),
     mDummyFloat(0.f),
     mNextUpdateTime(nil_time)

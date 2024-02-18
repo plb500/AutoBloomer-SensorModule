@@ -47,7 +47,7 @@ void MQTTController::initMQTTClient() {
 bool MQTTController::connectToBrokerBlocking(uint16_t timeoutMS) {
     struct mqtt_connect_client_info_t ci;
     err_t err;
-    char controlTopic[SensorPodMessages::MQTT_MAX_TOPIC_LENGTH];
+    char controlTopic[MQTTMessage::MQTT_MAX_TOPIC_LENGTH];
 
     memset(&ci, 0, sizeof(ci));
     ci.client_id    = mSensorName;
@@ -126,7 +126,7 @@ MQTTController::MQTTMessageBuffer& MQTTController::getBuffer() {
     return mIncomingMessageBuffer;
 }
 
-void MQTTController::handleIncomingControlMessage(SensorPodMessages::MQTTMessage& message) {
+void MQTTController::handleIncomingControlMessage(MQTTMessage& message) {
     mCoreMailbox.sendSensorControlMessageToCore1(message);
 }
 
@@ -137,21 +137,21 @@ void MQTTController::getSensorControlTopic(char *dest) {
 
     snprintf(
         dest,
-        SensorPodMessages::MQTT_MAX_TOPIC_LENGTH,
+        MQTTMessage::MQTT_MAX_TOPIC_LENGTH,
         "%s/%s/%s/control",
-        SensorPodMessages::AUTOBLOOMER_TOPIC_NAME,
+        MQTTMessage::AUTOBLOOMER_TOPIC_NAME,
         mSensorLocation,
         mSensorName
     );
 }
 
 
-void MQTTController::initializeMessage(SensorPodMessages::MQTTMessage& message) {
-    memset(message.mTopic, 0, SensorPodMessages::MQTT_MAX_PAYLOAD_LENGTH);
-    memset(message.mPayload, 0, SensorPodMessages::MQTT_MAX_PAYLOAD_LENGTH);
+void MQTTController::initializeMessage(MQTTMessage& message) {
+    memset(message.mTopic, 0, MQTTMessage::MQTT_MAX_PAYLOAD_LENGTH);
+    memset(message.mPayload, 0, MQTTMessage::MQTT_MAX_PAYLOAD_LENGTH);
 }
 
-err_t MQTTController::publishMessage(SensorPodMessages::MQTTMessage& message) {
+err_t MQTTController::publishMessage(MQTTMessage& message) {
     err_t err;
     u8_t qos = 0;
     u8_t retain = 0;
@@ -182,7 +182,7 @@ void mqtt_connection_callback(mqtt_client_t *client, void *arg, mqtt_connection_
 
 // Callback when a new publish has started on a subscribed topic
 void mqtt_publish_start_callback(void *arg, const char *topic, u32_t tot_len) {
-    char expectedTopic[SensorPodMessages::MQTT_MAX_TOPIC_LENGTH];
+    char expectedTopic[MQTTMessage::MQTT_MAX_TOPIC_LENGTH];
 
     if(!arg) {
         return;
@@ -191,7 +191,7 @@ void mqtt_publish_start_callback(void *arg, const char *topic, u32_t tot_len) {
     MQTTController* controller = (MQTTController *) arg;
     MQTTController::MQTTMessageBuffer& buffer = controller->getBuffer();
 
-    if(tot_len > SensorPodMessages::MQTT_MAX_PAYLOAD_LENGTH) {
+    if(tot_len > MQTTMessage::MQTT_MAX_PAYLOAD_LENGTH) {
         // This is unfortunate - our payload is larger than our buffer
         DEBUG_PRINT("Incoming publish is too large (%d bytes)", tot_len);
         buffer.initialize(0);

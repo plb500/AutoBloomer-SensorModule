@@ -18,7 +18,7 @@ extern int sensirion_sda_pin;
 extern int sensirion_scl_pin;
 
 SCD30Sensor::SCD30Sensor(I2CInterface& i2c, uint8_t powerPin) :
-    Sensor(0, &SCD30Sensor::serializeDataToJSON),
+    Sensor(SCD30_SENSOR, &SCD30Sensor::serializeDataToJSON),
     mI2C(i2c),
     mActive(false),
     mPowerControlPin(powerPin)

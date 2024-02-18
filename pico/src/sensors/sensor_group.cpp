@@ -91,3 +91,7 @@ int SensorGroup::unpackSensorDataToJSON(uint8_t* sensorDataBuffer, int bufferSiz
 
     return (writePtr - jsonBuffer);
 }
+
+bool SensorGroup::handleSensorControlCommand(SensorControlMessage& message) {
+    return false;
+}

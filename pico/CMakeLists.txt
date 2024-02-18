@@ -17,7 +17,10 @@ add_executable(SensorPodController
     src/cores/core_0_executor.cpp
     src/cores/core_1_executor.cpp
 
-    src/messaging/sensor_pod_messages.cpp
+    # src/messaging/sensor_pod_messages.cpp
+    src/messaging/sensor_data_message.cpp
+    src/messaging/sensor_control_message.cpp
+    src/messaging/mqtt_message.cpp
     src/messaging/multicore_mailbox.cpp
 
     src/network/network_controller.cpp
