@@ -1,18 +1,19 @@
 #ifndef _SENSOR_POD_MESSAGES_H_
 #define _SENSOR_POD_MESSAGES_H_
 
+#include "sensors/sensor_group.h"
 #include "pico/types.h"
 #include <optional>
-#include <string_view>
 
 using std::optional;
-using std::string_view;
+
+const int NUM_SENSOR_GROUPS =4;
 
 class SensorPodMessages {
     public:
-        constexpr static int MQTT_MAX_TOPIC_LENGTH              = 128;
-        constexpr static int MQTT_MAX_PAYLOAD_LENGTH            = 256;
-        constexpr static const char* AUTOBLOOMER_TOPIC_NAME     = "AutoBloomer";
+        static constexpr int MQTT_MAX_TOPIC_LENGTH              = 128;
+        static constexpr int MQTT_MAX_PAYLOAD_LENGTH            = 256;
+        static constexpr const char* AUTOBLOOMER_TOPIC_NAME     = "AutoBloomer";
 
 
         // Type of incoming control command
@@ -43,6 +44,17 @@ class SensorPodMessages {
             uint16_t mSoilSensorData;
         };
 
+        struct CurrentSensorDataMessage {
+            CurrentSensorDataMessage();
+
+            void fromSensors(const vector<SensorGroup>& sensorGroups);
+            void toJSON(const vector<SensorGroup>& sensorGroups, char* jsonBuffer, int jsonBufferSize);
+            
+            uint8_t* mData;
+        };
+
+        SensorPodMessages() = delete;    // Utility class. Do not instantiate
+
         // Converts incoming MQTT message object to SensorControlMessage                
         static optional<SensorControlMessage> mqttToControlMessage(MQTTMessage& mqttMessage);
 
@@ -51,10 +63,6 @@ class SensorPodMessages {
 
         // Creates a basic test message with the supplied message as payload contents
         static optional<MQTTMessage> createTestMQTTMessage(const char *sensorName, const char *sensorLocation, const char *message);
-
-
-    private:
-        SensorPodMessages() = default;    // Utility class. Do not instantiate
 };
 
 #endif      // _SENSOR_POD_MESSAGES_H_

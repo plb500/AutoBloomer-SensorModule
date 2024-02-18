@@ -13,19 +13,22 @@ class MulticoreMailbox {
         MulticoreMailbox();
 
         // core1 -> core0 functions
-        void sendSensorDataToCore0(const SensorPod::Data& sensorPodData);
-        optional<SensorPodMessages::SensorDataUpdateMessage> getLatestSensorDataMessage();
+        void sendSensorDataToCore0(const vector<SensorGroup>& sensorGroups);
+        bool latestSensorDataToJSON(const vector<SensorGroup>& sensorGroups, char* jsonBuffer, int jsonBufferSize);
 
         // core0 -> core1 functions
         void sendSensorControlMessageToCore1(SensorPodMessages::MQTTMessage& mqttMessage);
         optional<SensorPodMessages::SensorControlMessage> getWaitingSensorControlMessage();
 
     private:
-        constexpr static int NUM_SENSOR_UPDATE_MESSAGES     = 4;
+        constexpr static int NUM_SENSOR_UPDATE_MESSAGES     = 2;    // We only really need double-buffering
         constexpr static int NUM_SENSOR_CONTROL_MESSAGES    = 4;
 
         queue_t mSensorUpdateQueue;         // Queue used for sending sensor updates from core1 to core0
         queue_t mSensorControlQueue;        // Queue used for sending sensor control commands from core0 to core1
+
+        SensorPodMessages::CurrentSensorDataMessage mSensorUpdateReadScratch;
+        SensorPodMessages::CurrentSensorDataMessage mSensorUpdateWriteScratch;
 };
 
 #endif      // _MULTICORE_MAILBOX_H_

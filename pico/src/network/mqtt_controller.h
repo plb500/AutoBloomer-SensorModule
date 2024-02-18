@@ -23,7 +23,7 @@ class MQTTController {
         MQTTController(MulticoreMailbox& mailbox);
 
         void initMQTTClient();
-        bool connectToBrokerBlocking();
+        bool connectToBrokerBlocking(uint16_t timeoutMS);
         bool isConnected();
         void disconnectFromBroker();
         void subscribeToTopic(const char* topic);

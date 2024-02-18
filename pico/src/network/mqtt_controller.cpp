@@ -44,7 +44,7 @@ void MQTTController::initMQTTClient() {
     mIncomingMessageBuffer.initialize(0);
 }
 
-bool MQTTController::connectToBrokerBlocking() {
+bool MQTTController::connectToBrokerBlocking(uint16_t timeoutMS) {
     struct mqtt_connect_client_info_t ci;
     err_t err;
     char controlTopic[SensorPodMessages::MQTT_MAX_TOPIC_LENGTH];
@@ -61,13 +61,16 @@ bool MQTTController::connectToBrokerBlocking() {
 
     ConnectionMonitor connectionMonitor;
     connectionMonitor.mConnectionCompleted = false;
+    absolute_time_t connectTimeout = make_timeout_time_ms(timeoutMS);
 
     cyw43_arch_lwip_begin();
     mqtt_client_connect(mMQTTClient, &mBrokerAddress, mBrokerPort, mqtt_connection_callback, &connectionMonitor, &ci);
     cyw43_arch_lwip_end();
 
-    while(!connectionMonitor.mConnectionCompleted) {
+    absolute_time_t now = get_absolute_time();
+    while(!connectionMonitor.mConnectionCompleted && (absolute_time_diff_us(now, connectTimeout) > 0)) {
         sleep_ms(1);
+        now = get_absolute_time();
     }
 
     return connectionMonitor.mStatus == MQTT_CONNECT_ACCEPTED;

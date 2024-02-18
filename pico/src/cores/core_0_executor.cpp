@@ -3,13 +3,15 @@
 
 #include "hardware/watchdog.h"
 #include "pico/multicore.h"
-
+#include <malloc.h>
+#include <cstring>
 
 Core0Executor* Core0Executor::sExecutor = nullptr;
 
-Core0Executor::Core0Executor(MulticoreMailbox& mailbox) :
+Core0Executor::Core0Executor(MulticoreMailbox& mailbox, const vector<SensorGroup>& sensorGroups) :
     mMailbox(mailbox),
-    mMQTTController(mailbox)
+    mMQTTController(mailbox),
+    mSensorGroups(sensorGroups)
 {}
 
 void Core0Executor::initialize() {
@@ -38,6 +40,22 @@ void Core0Executor::setExecutor(Core0Executor& executor) {
     sExecutor = &executor;
 }
 
+// void Core0Executor::doLoop() {
+//     absolute_time_t pingTimeout = nil_time;
+
+//     while(1) {
+//         absolute_time_t now = get_absolute_time();
+
+//         if(is_nil_time(pingTimeout) || absolute_time_diff_us(now, pingTimeout) <= 0) {
+//             DEBUG_PRINT("- core0 status: %d bytes free", getFreeMemory());
+//             pingTimeout = make_timeout_time_ms(STDIO_PING_TIMEOUT);
+//             transmitData();
+//         }
+
+//         sleep_ms(1);
+//     }
+// }
+
 void Core0Executor::doLoop() {
     NetworkController::DNSRequest brokerRequest;
     absolute_time_t pingTimeout = nil_time;
@@ -49,8 +67,9 @@ void Core0Executor::doLoop() {
 
         // Periodically send an update through the serial port just to show core0 is still functioning
         if(is_nil_time(pingTimeout) || absolute_time_diff_us(now, pingTimeout) <= 0) {
-            DEBUG_PRINT("- core0 ping -")
+            DEBUG_PRINT("- core0 status: %d bytes free", getFreeMemory());
             pingTimeout = make_timeout_time_ms(STDIO_PING_TIMEOUT);
+            transmitData();
         }
 
         // Process any incoming serial data
@@ -108,7 +127,7 @@ void Core0Executor::doLoop() {
                         mUserData.getLocationName().c_str()
                     );
 
-                    if(!mMQTTController.connectToBrokerBlocking()) {
+                    if(!mMQTTController.connectToBrokerBlocking(10000)) {
                         DEBUG_PRINT("Broker connection failed");
                     } else {
                         DEBUG_PRINT("Broker connection succeeded. Subscribing to control topic")
@@ -154,16 +173,23 @@ void Core0Executor::transmitData() {
 }
 
 void Core0Executor::transmitSensorData() {
-    // Process any sensor data waiting for us in the mailbox
-    if(auto msgOpt = mMailbox.getLatestSensorDataMessage()) {
-        if(auto mqttOpt = SensorPodMessages::dataUpdateToMQTTMessage(
-            mUserData.getSensorName().c_str(),
-            mUserData.getLocationName().c_str(),
-            *msgOpt
-        )) {
-            mMQTTController.publishMessage(*mqttOpt);
-        }
+    char jsonBuffer[256];
+    memset(jsonBuffer, 0, 256);
+    if(mMailbox.latestSensorDataToJSON(mSensorGroups, jsonBuffer, 256)) {
+        DEBUG_PRINT("%s\n\n\n", jsonBuffer);
     }
+
+
+    // // Process any sensor data waiting for us in the mailbox
+    // if(auto msgOpt = mMailbox.getLatestSensorDataMessage()) {
+    //     if(auto mqttOpt = SensorPodMessages::dataUpdateToMQTTMessage(
+    //         mUserData.getSensorName().c_str(),
+    //         mUserData.getLocationName().c_str(),
+    //         *msgOpt
+    //     )) {
+    //         mMQTTController.publishMessage(*mqttOpt);
+    //     }
+    // }
 }
 
 void Core0Executor::transmitTestMQTTMessage() {
@@ -180,4 +206,16 @@ void Core0Executor::transmitTestMQTTMessage() {
     if(msg) {
         mMQTTController.publishMessage(*msg);
     }
+}
+
+uint32_t Core0Executor::getFreeMemory() {
+   struct mallinfo m = mallinfo();
+
+   return getHeapSize() - m.uordblks;
+}
+
+uint32_t Core0Executor::getHeapSize() {
+   extern char __StackLimit, __bss_end__;
+   
+   return &__StackLimit  - &__bss_end__;
 }

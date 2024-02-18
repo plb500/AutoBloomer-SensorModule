@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 set(PICO_BOARD pico_w CACHE STRING "Board type")
 
@@ -31,18 +31,23 @@ add_executable(SensorPodController
     src/sensors/sensor_i2c_interface.cpp
     src/sensors/stemma_soil_sensor.cpp
     src/sensors/sensor_pod.cpp
+    src/sensors/sensor.cpp
+    src/sensors/sensor_group.cpp
+    src/sensors/dummy_sensor.cpp
+    src/sensors/scd30_sensor.cpp
 
     src/serial_control/serial_controller.cpp
 
     src/userdata/user_data.cpp
 
     src/main.cpp
+    src/sensor_hardware.cpp
 )
 
 pico_set_linker_script(SensorPodController ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
 
-pico_enable_stdio_usb(SensorPodController 1)
-pico_enable_stdio_uart(SensorPodController 0)
+pico_enable_stdio_usb(SensorPodController 0)
+pico_enable_stdio_uart(SensorPodController 1)
 pico_add_extra_outputs(SensorPodController)
 
 target_include_directories(SensorPodController PRIVATE
@@ -62,4 +67,13 @@ target_link_libraries(SensorPodController
     pico_multicore 
     pico_cyw43_arch_lwip_threadsafe_background
     pico_lwip_mqtt
+    pico_rand
+)
+
+target_compile_definitions(SensorPodController PUBLIC
+    DUMMY=1
+    SENSOR_POD=2
+    HIB=3
+
+    SENSOR_HARDWARE=SENSOR_POD
 )

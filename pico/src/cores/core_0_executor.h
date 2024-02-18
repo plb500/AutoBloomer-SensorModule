@@ -10,7 +10,7 @@
 
 class Core0Executor {
     public:
-        Core0Executor(MulticoreMailbox& mailbox);
+        Core0Executor(MulticoreMailbox& mailbox, const vector<SensorGroup>& sensorGroups);
 
         void initialize();
         
@@ -27,6 +27,9 @@ class Core0Executor {
         void transmitSensorData();
         void transmitTestMQTTMessage();
 
+        uint32_t getFreeMemory();
+        uint32_t getHeapSize();
+
         constexpr static int STDIO_PING_TIMEOUT                 = 2000;
         constexpr static uint16_t MQTT_UPDATE_CHECK_PERIOD_MS   = 750;
 
@@ -37,6 +40,8 @@ class Core0Executor {
         SerialController mSerialController;
         NetworkController mNetworkController;
         MQTTController mMQTTController;
+        const vector<SensorGroup>& mSensorGroups;
+
 };
 
 #endif      // _CORE_0_EXECUTOR_H_

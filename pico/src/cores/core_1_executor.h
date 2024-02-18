@@ -3,19 +3,20 @@
 
 
 #include <optional>
+#include <vector>
 #include "messaging/multicore_mailbox.h"
-#include "sensors/sensor_pod.h"
+#include "sensors/sensor_group.h"
 
 
 using std::optional;
+using std::vector;
 
 
 class Core1Executor {
     public:
         Core1Executor(
             MulticoreMailbox& mailbox,
-            optional<StemmaSoilSensor>& soilSensor,
-            optional<I2CInterface>& scd30Interface
+            vector<SensorGroup>& sensors
         );
 
         void initialize();
@@ -34,7 +35,9 @@ class Core1Executor {
         static Core1Executor* sExecutor;
 
         MulticoreMailbox& mMailbox;
-        SensorPod mSensorPod;
+        vector<SensorGroup>& mSensorGroups;
+
+        // SensorPod mSensorPod;
 };
 
 #endif      // _CORE_0_EXECUTOR_H_
