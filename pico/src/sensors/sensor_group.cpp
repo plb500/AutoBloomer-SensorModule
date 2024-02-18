@@ -93,5 +93,11 @@ int SensorGroup::unpackSensorDataToJSON(uint8_t* sensorDataBuffer, int bufferSiz
 }
 
 bool SensorGroup::handleSensorControlCommand(SensorControlMessage& message) {
+    for(auto s : mSensors) {
+        if(s->handleSensorControlCommand(message)) {
+            return true;
+        }
+    }
+
     return false;
 }

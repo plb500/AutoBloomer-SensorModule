@@ -1,6 +1,7 @@
 #ifndef _SENSOR_H_
 #define _SENSOR_H_
 
+#include "messaging/sensor_control_message.h"
 #include "pico/types.h"
 
 #include <map>
@@ -50,6 +51,9 @@ class Sensor {
 
         // Completely disable the sensor
         virtual void shutdown() = 0;                
+
+        // (Optionally) respond to a sensor control command
+        virtual bool handleSensorControlCommand(SensorControlMessage& message) { return false; }
 
         void update(absolute_time_t currentTime);
         const SensorDataBuffer& getCachedData() const { return mCachedData; }

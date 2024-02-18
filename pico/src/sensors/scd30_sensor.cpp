@@ -65,6 +65,63 @@ void SCD30Sensor::shutdown() {
     sensirion_i2c_hal_free();
 }           
 
+bool SCD30Sensor::handleSensorControlCommand(SensorControlMessage& message) {
+    bool consumed = false;
+    
+    switch(message.mCommand) {
+        case SCD30_SET_TEMP_OFFSET:
+            handleSetTemperatureOffsetCommand(message.mCommandParams);
+            consumed = true;
+            break;
+
+        case SCD30_SET_FRC:
+            handleSetFRCCommand(message.mCommandParams);
+            consumed = true;
+            break;
+
+        default:
+            break;
+    }    
+
+    return consumed;
+}
+
+void SCD30Sensor::setTemperatureOffset(double offset) {
+    // We can only do this if we are active
+    if(!mActive) {
+        return;
+    }
+
+    uint16_t offsetInt = (uint16_t) (offset * 100);
+
+    // Pause readings while we set the offset (not sure if we need to do this but it seems like a good idea)
+    scd30_stop_periodic_measurement();
+
+    DEBUG_PRINT(" -- Setting temperature offset to: %d", offsetInt);
+    scd30_set_temperature_offset(offsetInt);
+
+    // Restart readings
+    scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
+    scd30_start_periodic_measurement(0);
+}
+
+void SCD30Sensor::setForcedRecalibrationValue(uint16_t frc) {
+    // We can only do this if we are active
+    if(!mActive) {
+        return;
+    }
+
+    // Pause readings while we set the offset (not sure if we need to do this but it seems like a good idea)
+    scd30_stop_periodic_measurement();
+
+    DEBUG_PRINT(" -- Setting FRC to: %d", frc);
+    scd30_force_recalibration(frc);
+
+    // Restart readings
+    scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
+    scd30_start_periodic_measurement(0);
+}
+
 int SCD30Sensor::serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize) {
     float co2, temp, humidity;
     memcpy(&co2, data, sizeof(float));
@@ -135,4 +192,34 @@ void SCD30Sensor::startReadings() {
         scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
         scd30_start_periodic_measurement(0);
     }
+}
+
+void SCD30Sensor::handleSetTemperatureOffsetCommand(const char *commandParam) {
+    double val;
+    char *end;
+
+    val = strtod(commandParam, &end);
+    if(end == commandParam) {
+        // Could not convert supplied value
+        DEBUG_PRINT("Conversion error while setting temperature offset.");
+        return;
+    }
+
+    DEBUG_PRINT("SETTING TEMPERATURE OFFSET (%f)", val);
+    // setTemperatureOffset(val);
+}
+
+void SCD30Sensor::handleSetFRCCommand(const char *commandParam) {
+    long val;
+    char *end;
+
+    val = strtol(commandParam, &end, 10);
+    if(end == commandParam) {
+        // Could not convert supplied value
+        DEBUG_PRINT("Conversion error while setting FRC.");
+        return;
+    }
+
+    DEBUG_PRINT("SETTING FRC: %d", val);
+    // setForcedRecalibrationValue(val);
 }

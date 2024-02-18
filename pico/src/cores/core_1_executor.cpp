@@ -92,47 +92,19 @@ void Core1Executor::processSensorControlCommands() {
 
     do {
         if(msgOpt = mMailbox.getWaitingSensorControlMessage()) {
-            DEBUG_PRINT("THERE'S SOMETHING");
-            // switch(msgOpt->mCommand) {
-            //     case SensorPodMessages::SensorControlCommandType::SCD30_SET_TEMP_OFFSET:
-            //         handleSetTemperatureOffsetCommand(msgOpt->mCommandParams);
-            //         break;
+            bool messageHandled = false;
+            for(auto group : mSensorGroups) {
+                if(group.handleSensorControlCommand(*msgOpt)) {
+                    messageHandled = true;
+                    break;
+                }
+            }
 
-            //     case SensorPodMessages::SensorControlCommandType::SCD30_SET_FRC:
-            //         handleSetFRCCommand(msgOpt->mCommandParams);
-            //         break;
-            // }
+            if(messageHandled) {
+                DEBUG_PRINT("Sensor control command (%d) handled", msgOpt->mCommand);
+            } else {
+                DEBUG_PRINT("Sensor control command (%d) went unhandled", msgOpt->mCommand);
+            }
         }
     } while(msgOpt);
-}
-
-
-void Core1Executor::handleSetTemperatureOffsetCommand(const char *commandParam) {
-    double val;
-    char *end;
-
-    val = strtod(commandParam, &end);
-    if(end == commandParam) {
-        // Could not convert supplied value
-        DEBUG_PRINT("Conversion error while setting temperature offset.");
-        return;
-    }
-
-    DEBUG_PRINT("SETTING TEMPERATURE OFFSET (%f)", val);
-    // mSensorPod.setTemperatureOffset(val);
-}
-
-void Core1Executor::handleSetFRCCommand(const char *commandParam) {
-    long val;
-    char *end;
-
-    val = strtol(commandParam, &end, 10);
-    if(end == commandParam) {
-        // Could not convert supplied value
-        DEBUG_PRINT("Conversion error while setting FRC.");
-        return;
-    }
-
-    DEBUG_PRINT("SETTING FRC: %d", val);
-    // mSensorPod.setForcedRecalibrationValue(val);
 }
