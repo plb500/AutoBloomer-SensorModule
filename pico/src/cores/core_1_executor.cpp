@@ -10,25 +10,15 @@ Core1Executor* Core1Executor::sExecutor = nullptr;
 Core1Executor::Core1Executor(
     MulticoreMailbox& mailbox,
     vector<SensorGroup>& sensors
-    // optional<StemmaSoilSensor>& soilSensor,
-    // optional<I2CInterface>& scd30Interface
 ) :
     mMailbox(mailbox),
     mSensorGroups(sensors)
-    // mSensorPod(soilSensor, scd30Interface)
 {}
 
 void Core1Executor::initialize() {
     for(auto i = mSensorGroups.begin(); i != mSensorGroups.end(); ++i) {
         i->initializeSensors();
     }
-
-    // if(mSensorPod.initialize()) {
-    //     DEBUG_PRINT("Sensor pod initialized");
-    //     mSensorPod.startReadings();
-    // } else {
-    //     DEBUG_PRINT("Sensor pod initialization failed");
-    // }
 }
 
 void Core1Executor::loop() {

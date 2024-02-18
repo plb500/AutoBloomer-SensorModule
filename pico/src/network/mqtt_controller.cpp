@@ -68,7 +68,7 @@ bool MQTTController::connectToBrokerBlocking(uint16_t timeoutMS) {
     cyw43_arch_lwip_end();
 
     absolute_time_t now = get_absolute_time();
-    while(!connectionMonitor.mConnectionCompleted && (absolute_time_diff_us(now, connectTimeout) > 0)) {
+    while(!connectionMonitor.mConnectionCompleted) {
         sleep_ms(1);
         now = get_absolute_time();
     }

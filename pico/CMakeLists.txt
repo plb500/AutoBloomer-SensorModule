@@ -30,11 +30,12 @@ add_executable(SensorPodController
 
     src/sensors/sensor_i2c_interface.cpp
     src/sensors/stemma_soil_sensor.cpp
-    src/sensors/sensor_pod.cpp
+    # src/sensors/sensor_pod.cpp
     src/sensors/sensor.cpp
     src/sensors/sensor_group.cpp
     src/sensors/dummy_sensor.cpp
     src/sensors/scd30_sensor.cpp
+    src/sensors/stemma_soil_sensor.cpp
 
     src/serial_control/serial_controller.cpp
 

@@ -1,22 +1,35 @@
 #include "stemma_soil_sensor.h"
 
+#include <tuple>
+#include <cstring>
+#include <cstdio>
 
-const uint8_t SEESAW_STATUS_BASE            = 0x00;
-const uint8_t SEESAW_STATUS_HW_ID           = 0x01;
-const uint8_t SEESAW_STATUS_SWRST           = 0x7F;
-const uint8_t SEESAW_HW_ID_CODE             = 0x55;
-const uint8_t SEESAW_STATUS_VERSION         = 0x02;
-const uint8_t SEESAW_TOUCH_BASE             = 0x0F;
-const uint8_t SEESAW_TOUCH_CHANNEL_OFFSET   = 0x10;
+
+using std::make_tuple;
+
+const uint8_t SEESAW_STATUS_BASE                = 0x00;
+const uint8_t SEESAW_STATUS_HW_ID               = 0x01;
+const uint8_t SEESAW_STATUS_SWRST               = 0x7F;
+const uint8_t SEESAW_HW_ID_CODE                 = 0x55;
+const uint8_t SEESAW_STATUS_VERSION             = 0x02;
+const uint8_t SEESAW_TOUCH_BASE                 = 0x0F;
+const uint8_t SEESAW_TOUCH_CHANNEL_OFFSET       = 0x10;
+
+constexpr const char* SOIL_MOISTURE_JSON_KEY    = "SoilMoisture";
 
 
 StemmaSoilSensor::StemmaSoilSensor(I2CInterface& i2cInterface, uint8_t address) :
+    Sensor(Sensor::STEMMA_SOIL_SENSOR, &StemmaSoilSensor::serializeDataToJSON),
     mI2CInterface(i2cInterface),
-    mAddress(address)
+    mAddress(address),
+    mActive(false)
 {}
 
-I2CInterface::I2CResponse StemmaSoilSensor::init() {
+void StemmaSoilSensor::initialize() {
+    mI2CInterface.initSensorBus();
+
     uint8_t response = 0x33;
+    mActive = false;
 
     // Scan bus for device at given address
     bool found = false;
@@ -29,7 +42,7 @@ I2CInterface::I2CResponse StemmaSoilSensor::init() {
     }
 
     if (!found) {
-        return I2CInterface::I2CResponse::I2C_RESPONSE_DEVICE_NOT_FOUND;
+        return;
     }
 
     // Reset device
@@ -43,7 +56,7 @@ I2CInterface::I2CResponse StemmaSoilSensor::init() {
     }
 
     if (!found) {
-        return I2CInterface::I2CResponse::I2C_RESPONSE_DEVICE_NOT_FOUND;
+        return;
     } else {
         reset();
     }
@@ -61,15 +74,47 @@ I2CInterface::I2CResponse StemmaSoilSensor::init() {
         }
     }
 
-    return I2CInterface::I2CResponse::I2C_RESPONSE_OK;
+    mActive = (getVersion() != STEMMA_SOIL_SENSOR_INVALID_READING);
 }
 
-I2CInterface::I2CResponse StemmaSoilSensor::reset() {
+void StemmaSoilSensor::reset() {
     const uint8_t resetBuffer[] = {
         0xFF
     };
 
-    return mI2CInterface.writeToI2CRegister(mAddress, SEESAW_STATUS_BASE, SEESAW_STATUS_SWRST, resetBuffer, 1);
+    mI2CInterface.writeToI2CRegister(mAddress, SEESAW_STATUS_BASE, SEESAW_STATUS_SWRST, resetBuffer, 1);
+}
+
+void StemmaSoilSensor::shutdown() {
+    mI2CInterface.shutdownSensorBus();
+}
+
+int StemmaSoilSensor::serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize) {
+    uint16_t moisture;
+    memcpy(&moisture, data, sizeof(uint16_t));
+
+    return snprintf(jsonBuffer, jsonBufferSize,
+        "\"%s\": %d",
+        SOIL_MOISTURE_JSON_KEY, moisture
+    );
+}
+
+Sensor::SensorUpdateResponse StemmaSoilSensor::doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize) {
+    if(!mActive) {
+        return make_tuple(SENSOR_INACTIVE, 0);
+    }
+
+    uint16_t capValue = getCapacitiveValue();
+    if(capValue != StemmaSoilSensor::STEMMA_SOIL_SENSOR_INVALID_READING) {
+        memcpy(dataStorageBuffer, &capValue, sizeof(uint16_t));
+        return make_tuple(SENSOR_OK, sizeof(uint16_t));
+    } else {
+        // Got an invalid reading, might be something up with the port
+        return make_tuple(SENSOR_MALFUNCTIONING, 0);
+    }
+
+    // No idea how we got here, but it's not good
+    return make_tuple(SENSOR_MALFUNCTIONING, 0);
 }
 
 uint32_t StemmaSoilSensor::getVersion() {
@@ -113,5 +158,4 @@ uint16_t StemmaSoilSensor::getCapacitiveValue() {
         }
     }
     return ret;
-
 }

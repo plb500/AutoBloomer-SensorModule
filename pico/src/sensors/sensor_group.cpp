@@ -83,7 +83,7 @@ int SensorGroup::unpackSensorDataToJSON(uint8_t* sensorDataBuffer, int bufferSiz
             --jsonBufferSize;
         }
 
-        readPtr += dataLength;
+        readPtr += Sensor::SensorDataBuffer::SENSOR_DATA_BUFFER_SIZE;
     }
 
     *writePtr++ = '}';

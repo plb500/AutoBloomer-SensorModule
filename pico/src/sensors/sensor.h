@@ -12,6 +12,12 @@ using std::tuple;
 
 class Sensor {
     public:
+        enum SensorType {
+            SCD30_SENSOR            = 0x01,
+            STEMMA_SOIL_SENSOR      = 0x02,
+            DUMMY_SENSOR            = 0xFF
+        };
+
         enum SensorStatus {
             SENSOR_OK,
             SENSOR_OK_NO_DATA,
