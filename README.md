@@ -19,7 +19,7 @@ Under the hood the sensor pod uses a Raspberry Pico W to communicate with an MQT
 Configuration of the pod is done in two ways:
 
 #### Basic pod configuration
-Basic pod configuration of esential runtime variables (wireless SSID/key, broker address, pod location/name etc) is done via serial port connected to the bord's EXT header (3.3v, 57600/8/n/1) and transmitting commands in the format: `<COMMAND><PARAMETER>` (note no space)
+Basic pod configuration of essential runtime variables (wireless SSID/key, broker address, pod location/name etc) is done via serial port connected to the bord's EXT header (3.3v, 57600/8/n/1) and transmitting commands in the format: `<COMMAND><PARAMETER>` (note no space)
 - SSID<< wireless ssid >> - Sets the WiFi SSID
 - PASS<< password >> - Sets WiFi passkey
 - LOCN<< location >> - Sets sensor location (this is used for the MQTT topic path)
