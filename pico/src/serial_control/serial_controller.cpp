@@ -1,10 +1,13 @@
 #include "serial_controller.h"
 
 #include "util/debug_io.h"
+#include <cstring>
 
 SerialController::SerialController() : 
     mBufferLength(0)
-{}
+{
+    memset(mBuffer, 0, SerialController::COMMAND_BUFFER_SIZE);
+}
 
 bool SerialController::updateUserData(UserData& userData) {
     bool userDataUpdated = false;
@@ -19,6 +22,7 @@ bool SerialController::updateUserData(UserData& userData) {
                     userDataUpdated = processSerialCommand(userData);
                 }
                 mBufferLength = 0;
+                memset(mBuffer, 0, SerialController::COMMAND_BUFFER_SIZE);
             } else {
                 mBuffer[mBufferLength++] = (char) readResponse;
             }
@@ -34,7 +38,7 @@ bool SerialController::processSerialCommand(UserData& userData) {
     static const int COMMAND_PREFIX_LEN = 4;
 
     // Ensure there is at least something usable
-    if(mBufferLength <= COMMAND_PREFIX_LEN) {
+    if(mBufferLength < COMMAND_PREFIX_LEN) {
         return false;
     }
 
@@ -45,33 +49,52 @@ bool SerialController::processSerialCommand(UserData& userData) {
         mBuffer[3]
     );
 
-    const char *commandParams = mBuffer + 4;
+    const char *commandParams = 0;
+    int8_t groupIndex = -1;
     bool userDataUpdated = false;
 
     switch(command) {
         case CMD_SSID:
+            commandParams = mBuffer + 4;
             DEBUG_PRINT("Setting SSID (%s)", commandParams);
             userData.setSSID(commandParams);
             userDataUpdated = true;
             break;
         case CMD_PASS:
+            commandParams = mBuffer + 4;
             DEBUG_PRINT("Setting private key (%s)", commandParams);
             userData.setPSK(commandParams);
             userDataUpdated = true;
             break;
-        case CMD_LOCN:
-            DEBUG_PRINT("Setting location (%s)", commandParams);
-            userData.setLocation(commandParams);
-            userDataUpdated = true;
-            break;
         case CMD_NAME:
-            DEBUG_PRINT("Setting sensor name (%s)", commandParams);
-            userData.setSensorName(commandParams);
+            commandParams = mBuffer + 4;
+            DEBUG_PRINT("Setting host name (%s)", commandParams);
+            userData.setHostName(commandParams);
             userDataUpdated = true;
             break;
         case CMD_BRKR:
+            commandParams = mBuffer + 4;
             DEBUG_PRINT("Setting MQTT broker (%s)", commandParams);
             userData.setBrokerAddress(commandParams);
+            userDataUpdated = true;
+            break;
+        case CMD_WIPE:
+            DEBUG_PRINT("Wiping data");
+            userData.wipe();
+            userDataUpdated = true;
+            break;
+        case CMD_GRPN:
+            groupIndex = *(mBuffer + 4) - '0';
+            commandParams = mBuffer + 4 + 1;
+            DEBUG_PRINT("Setting group %d name (%s)", groupIndex, commandParams);
+            userData.setSensorGroupName(groupIndex, commandParams);
+            userDataUpdated = true;
+            break;
+        case CMD_GRPL:
+            groupIndex = *(mBuffer + 4) - '0';
+            commandParams = mBuffer + 4 + 1;
+            DEBUG_PRINT("Setting group %d location (%s)", groupIndex, commandParams);
+            userData.setSensorGroupLocation(groupIndex, commandParams);
             userDataUpdated = true;
             break;
         default:

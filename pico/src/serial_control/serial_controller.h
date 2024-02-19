@@ -8,15 +8,19 @@
 //
 // SSID - Sets the WiFi SSID
 // PASS - Sets WiFi key
-// LOCN - Sets sensor location
-// NAME - Sets sensor name
+// NAME - Sets hardware host name
 // BRKR - Sets the broker address
+// WIPE - Wipes all user data
+// GRPN - Sets the name of a specific group
+// GRPL - Sets the location of a specific group
 enum SerialCommand {
     CMD_SSID = 0x53534944,
     CMD_PASS = 0x50415353,
-    CMD_LOCN = 0x4C4F434E,
     CMD_NAME = 0x4E414D45,
-    CMD_BRKR = 0x42524B52
+    CMD_BRKR = 0x42524B52,
+    CMD_WIPE = 0x57495045,
+    CMD_GRPN = 0x4752504E,
+    CMD_GRPL = 0x4752504C
 };
 
 

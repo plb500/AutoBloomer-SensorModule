@@ -81,5 +81,5 @@ target_compile_definitions(SensorPodController PUBLIC
     SENSOR_POD=2
     HIB=3
 
-    SENSOR_HARDWARE=HIB
+    SENSOR_HARDWARE=DUMMY
 )

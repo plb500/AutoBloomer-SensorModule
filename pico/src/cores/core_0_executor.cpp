@@ -18,11 +18,18 @@ void Core0Executor::initialize() {
     // Grab user data
     if(mUserData.readFromFlash()) {
         DEBUG_PRINT("Flash contents:");
-        DEBUG_PRINT("  +- NAME: %s", mUserData.getSensorName().c_str());
-        DEBUG_PRINT("  +- LOCN: %s", mUserData.getLocationName().c_str());
         DEBUG_PRINT("  +- SSID: %s", mUserData.getSSID().c_str());
-        DEBUG_PRINT("  +- PKEY: %s", mUserData.getPSK().c_str());
-        DEBUG_PRINT("  +- MQTT: %s\n", mUserData.getBrokerAddress().c_str());
+        DEBUG_PRINT("  +- PASS: %s", mUserData.getPSK().c_str());
+        DEBUG_PRINT("  +- NAME: %s", mUserData.getHostName().c_str());
+        DEBUG_PRINT("  +- MQTT: %s", mUserData.getBrokerAddress().c_str());
+        DEBUG_PRINT("  +- Sensor Groups");
+        for(int i = 0; i < mSensorGroups.size(); ++i) {
+            DEBUG_PRINT("    [%d] Name: %s, Location: %s",
+                i,
+                mUserData.getSensorGroupName(i).c_str(),
+                mUserData.getSensorGroupLocation(i).c_str()
+            );
+        }
     } else {
         DEBUG_PRINT("Could not read user data from flash memory")
     }
@@ -70,7 +77,7 @@ void Core0Executor::doLoop() {
             int connectResponse = mNetworkController.connectToWiFi(
                 mUserData.getSSID().c_str(),
                 mUserData.getPSK().c_str(),
-                mUserData.getSensorName().c_str()
+                mUserData.getHostName().c_str()
             );
             DEBUG_PRINT("...connect %s (%d)", 
                 connectResponse ? "failed" : "succeeded",
@@ -106,16 +113,18 @@ void Core0Executor::doLoop() {
                         MQTT_PORT
                     );
                     mMQTTController.setClientParameters(
-                        mUserData.getSensorName().c_str(),
-                        mUserData.getLocationName().c_str()
+                        mUserData.getHostName().c_str()
                     );
 
                     if(!mMQTTController.connectToBrokerBlocking(10000)) {
                         DEBUG_PRINT("Broker connection failed");
                     } else {
-                        DEBUG_PRINT("Broker connection succeeded. Subscribing to control topic")
-                        mMQTTController.getSensorControlTopic(controlTopic);
-                        mMQTTController.subscribeToTopic(controlTopic);
+                        DEBUG_PRINT("Broker connection succeeded. Subscribing to control topics")
+                        for(auto s : mSensorGroups) {
+                            if(s.hasTopics()) {
+                                mMQTTController.subscribeToTopic(s.getControlTopic());
+                            }
+                        }
                         DEBUG_PRINT("MQTT broker subscription complete");
                         mqttUpdateTimeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
                     }
@@ -160,8 +169,10 @@ void Core0Executor::transmitSensorData() {
         return;
     }
 
+
+    /*
     MQTTMessage::setSensorDataTopic(
-        mUserData.getSensorName().c_str(),
+        mUserData.getHostName().c_str(),
         mUserData.getLocationName().c_str(),
         mOutgoingMQTTMessageBuffer
     );
@@ -171,22 +182,7 @@ void Core0Executor::transmitSensorData() {
         DEBUG_PRINT("* core0 publishing MQTT message *");
         mMQTTController.publishMessage(mOutgoingMQTTMessageBuffer);
     }
-}
-
-void Core0Executor::transmitTestMQTTMessage() {
-    char message[64];
-    static int messageValue = 0;
-    sprintf(message, "TEST MESSAGE: %d", messageValue++);
-
-    optional<MQTTMessage> msg = MQTTMessage::createTestMQTTMessage(
-        mUserData.getSensorName().c_str(),
-        mUserData.getLocationName().c_str(),
-        message
-    );
-
-    if(msg) {
-        mMQTTController.publishMessage(*msg);
-    }
+    */
 }
 
 uint32_t Core0Executor::getFreeMemory() {

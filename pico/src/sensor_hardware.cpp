@@ -1,6 +1,7 @@
 #ifdef SENSOR_HARDWARE
 
 #include "sensors/sensor_group.h"
+#include "pico/stdlib.h"
 #include <vector>
 
 using std::vector;
@@ -9,13 +10,24 @@ using std::vector;
 #if SENSOR_HARDWARE == DUMMY
 #include "sensors/dummy_sensor.h"
 
-extern const int NUM_SENSOR_GROUPS = 1;
+extern const int DEBUG_UART_TX_PIN      = 0;
+extern const int DEBUG_UART_RX_PIN      = 1;
+extern const int STDIO_UART_BAUDRATE    = 57600;
+uart_inst_t* STDIO_UART                 = uart0;
 
-DummySensor _dummySensor;
+
+DummySensor _dummySensorA;
+DummySensor _dummySensorB;
+extern const int NUM_SENSOR_GROUPS      = 2;
 vector<SensorGroup> _SENSOR_GROUPS = {
     SensorGroup(
         {
-            &_dummySensor
+            &_dummySensorA
+        }
+    ),
+    SensorGroup(
+        {
+            &_dummySensorB
         }
     )
 };
@@ -24,6 +36,11 @@ vector<SensorGroup> _SENSOR_GROUPS = {
 #elif SENSOR_HARDWARE == SENSOR_POD
 #include "sensors/scd30_sensor.h"
 #include "sensors/stemma_soil_sensor.h"
+
+extern const int DEBUG_UART_TX_PIN      = 0;
+extern const int DEBUG_UART_RX_PIN      = 1;
+extern const int STDIO_UART_BAUDRATE    = 57600;
+uart_inst_t* STDIO_UART                 = uart0;
 
 #define SCD30_I2C_PORT                      (i2c0)
 static const uint8_t SCD30_I2C_SDA_PIN      = 4;
@@ -74,6 +91,11 @@ vector<SensorGroup> _SENSOR_GROUPS = {
 #elif SENSOR_HARDWARE == HIB
 #include "sensors/battery_sensor.h"
 #include "sensors/sonar_sensor.h"
+
+extern const int DEBUG_UART_TX_PIN      = 0;
+extern const int DEBUG_UART_RX_PIN      = 1;
+extern const int STDIO_UART_BAUDRATE    = 57600;
+uart_inst_t* STDIO_UART                 = uart0;
 
 constexpr int BATTERY_SENSE_ENABLE_PIN  = 0;
 constexpr int BATTERY_SENSE_PIN         = 26;

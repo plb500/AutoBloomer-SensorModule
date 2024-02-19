@@ -10,40 +10,43 @@
 extern uint32_t ADDR_PERSISTENT[];
 #define ADDR_PERSISTENT_BASE_ADDR           (ADDR_PERSISTENT)
 
-// Used for temporarily serializing/deserializing the class from flash
-char scratchBlock[UserData::USER_DATA_FLASH_SIZE];
+// Will eventually use CRC or something here but I like being able to inspect the memory and see it
+constexpr const char* const VALID_DATA_KEY   = "xXx This is valid data xXx";
+constexpr int VALID_DATA_KEY_LENGTH          = 26;
+
+extern const int NUM_SENSOR_GROUPS;
+#define USER_DATA_FLASH_SIZE      (                                     \
+    (UserData::MAX_SSID_LENGTH + 1) +                                   \
+    (UserData::MAX_PSK_LENGTH + 1) +                                    \
+    (UserData::MAX_HOST_NAME_LENGTH + 1) +                              \
+    ((UserData::MAX_GROUP_LOCATION_LENGTH + 1) * NUM_SENSOR_GROUPS) +   \
+    ((UserData::MAX_GROUP_NAME_LENGTH + 1) * NUM_SENSOR_GROUPS) +       \
+    (UserData::MAX_BROKER_LENGTH + 1) +                                 \
+    (VALID_DATA_KEY_LENGTH + 1)                                         \
+)
 
 
 UserData::UserData() : 
-    mLocationName(MAX_LOCATION_LENGTH, 0),
-    mSensorName(MAX_SENSOR_NAME_LENGTH, 0),
+    mHostName(MAX_HOST_NAME_LENGTH, 0),
     mSSID(MAX_SSID_LENGTH, 0),
     mPSK(MAX_PSK_LENGTH, 0),
     mBrokerAddress(MAX_BROKER_LENGTH, 0)
-{}
+{
+    mScratchMemory = new char[USER_DATA_FLASH_SIZE];
+    mSensorGroupLocations = new string[NUM_SENSOR_GROUPS];
+    mSensorGroupNames = new string[NUM_SENSOR_GROUPS];
+}
 
 bool UserData::hasNetworkUserData() {
     return (
         !mSSID.empty() &&
         !mPSK.empty() &&
-        !mSensorName.empty()
+        !mHostName.empty()
     );
 }
 
 bool UserData::hasMQTTUserData() {
-    return (
-        !mBrokerAddress.empty() &&
-        !mLocationName.empty() &&
-        !mSensorName.empty()
-    );
-}
-
-void UserData::setLocation(const char* location) {
-    mLocationName = location;
-}
-
-void UserData::setSensorName(const char* name) {
-    mSensorName = name;
+    return !mBrokerAddress.empty();
 }
 
 void UserData::setSSID(const char* ssid) {
@@ -54,8 +57,36 @@ void UserData::setPSK(const char* psk) {
     mPSK = psk;
 }
 
+void UserData::setHostName(const char* name) {
+    mHostName = name;
+}
+
+void UserData::setSensorGroupLocation(uint8_t groupIndex, const char* location) {
+    assert(groupIndex < NUM_SENSOR_GROUPS);
+
+    mSensorGroupLocations[groupIndex] = location;
+}
+
+void UserData::setSensorGroupName(uint8_t groupIndex, const char* name) {
+    assert(groupIndex < NUM_SENSOR_GROUPS);
+
+    mSensorGroupNames[groupIndex] = name;
+}
+
 void UserData::setBrokerAddress(const char* brokerAddress) {
     mBrokerAddress = brokerAddress;
+}
+
+void UserData::wipe() {
+    mHostName.clear();
+    mSSID.clear();
+    mPSK.clear();
+    mBrokerAddress.clear();
+
+    for(int i = 0; i < NUM_SENSOR_GROUPS; ++i) {
+        mSensorGroupLocations[i].clear();
+        mSensorGroupNames[i].clear();
+    }
 }
 
 void UserData::writeToFlash() {
@@ -75,12 +106,12 @@ void UserData::writeToFlash() {
     // Dump our data into the scratch area. We do this rather than just serializing directly from this object because we need
     // to disable interrupts (and also the other core) while we are writing to flash and we don't want to do that for
     // longer than necessary
-    serializeToByteArray(scratchBlock, USER_DATA_FLASH_SIZE);
+    serializeToByteArray(mScratchMemory, USER_DATA_FLASH_SIZE);
 
     // Now copy into flash
     uint32_t interrupts = save_and_disable_interrupts();
     flash_range_erase(offset, sectorBytesToErase);
-    flash_range_program(offset, (uint8_t *) scratchBlock, pageBytesToWrite);
+    flash_range_program(offset, (uint8_t *) mScratchMemory, pageBytesToWrite);
     
     restore_interrupts(interrupts);
 }
@@ -90,20 +121,28 @@ bool UserData::readFromFlash() {
     return serializeFromByteArray(flashContents, USER_DATA_FLASH_SIZE);
 }
 
-const string& UserData::getLocationName() const {
-    return mLocationName;
-}
-
-const string& UserData::getSensorName() const {
-    return mSensorName;
-}
-
 const string& UserData::getSSID() const {
     return mSSID;
 }
 
 const string& UserData::getPSK() const {
     return mPSK;
+}
+
+const string& UserData::getHostName() const {
+    return mHostName;
+}
+
+const string& UserData::getSensorGroupLocation(uint8_t groupIndex) const {
+    assert(groupIndex < NUM_SENSOR_GROUPS);
+
+    return mSensorGroupLocations[groupIndex];
+}
+
+const string& UserData::getSensorGroupName(uint8_t groupIndex) const {
+    assert(groupIndex < NUM_SENSOR_GROUPS);
+
+    return mSensorGroupNames[groupIndex];
 }
 
 const string& UserData::getBrokerAddress() const {
@@ -116,20 +155,34 @@ int UserData::serializeToByteArray(char *bytes, int bytesSize) {
     }
 
     char *writePtr = bytes;
-
     memset(writePtr, 0, USER_DATA_FLASH_SIZE);
     
-    memcpy(writePtr, mLocationName.c_str(), mLocationName.length());
-    writePtr += (MAX_LOCATION_LENGTH + 1);
-
-    memcpy(writePtr, mSensorName.c_str(), mSensorName.length());
-    writePtr += (MAX_SENSOR_NAME_LENGTH + 1);
-
+    //      SERIALIZATION ORDER:
+    //
+    // - SSID
+    // - WiFi PSK
+    // - Hardware hostname
+    // - <For each sensor group>
+    //   - Group location
+    //   - Group name
+    // - Broker address
+    // - Checksum/validation string
     memcpy(writePtr, mSSID.c_str(), mSSID.length());
     writePtr += (MAX_SSID_LENGTH + 1);
 
     memcpy(writePtr, mPSK.c_str(), mPSK.length());
     writePtr += (MAX_PSK_LENGTH + 1);
+
+    memcpy(writePtr, mHostName.c_str(), mHostName.length());
+    writePtr += (MAX_HOST_NAME_LENGTH + 1);
+
+    for(int i = 0; i < NUM_SENSOR_GROUPS; ++i) {
+        memcpy(writePtr, mSensorGroupLocations[i].c_str(), mSensorGroupLocations[i].length());
+        writePtr += (MAX_GROUP_LOCATION_LENGTH + 1);
+
+        memcpy(writePtr, mSensorGroupNames[i].c_str(), mSensorGroupNames[i].length());
+        writePtr += (MAX_GROUP_NAME_LENGTH + 1);
+    }
 
     memcpy(writePtr, mBrokerAddress.c_str(), mBrokerAddress.length());
     writePtr += (MAX_BROKER_LENGTH + 1);
@@ -145,26 +198,19 @@ bool UserData::serializeFromByteArray(const char *bytes, int bytesSize) {
         return false;
     }
 
-    int locationNameLen, sensorNameLen, ssidLen, pskLen, brokerAddressLen, dataKeyLen = 0;
     const char *readPtr = bytes;
 
-    locationNameLen = strlen(readPtr);
-    readPtr += MAX_LOCATION_LENGTH + 1;
-
-    sensorNameLen = strlen(readPtr);
-    readPtr += MAX_SENSOR_NAME_LENGTH + 1;
-
-    ssidLen = strlen(readPtr);
-    readPtr += MAX_SSID_LENGTH + 1;
-
-    pskLen = strlen(readPtr);
-    readPtr += MAX_PSK_LENGTH + 1;
-
-    brokerAddressLen = strlen(readPtr);
-    readPtr += MAX_BROKER_LENGTH + 1;
-
+    // Skip to our validation block and verify
+    readPtr += (
+        (MAX_SSID_LENGTH + 1) +
+        (MAX_PSK_LENGTH + 1) +
+        (MAX_HOST_NAME_LENGTH + 1) +
+        ((MAX_GROUP_LOCATION_LENGTH + 1) * NUM_SENSOR_GROUPS) +
+        ((MAX_GROUP_NAME_LENGTH + 1) * NUM_SENSOR_GROUPS) +
+        (MAX_BROKER_LENGTH + 1)
+    );
     // Check key
-    dataKeyLen = strlen(readPtr);
+    size_t dataKeyLen = strlen(readPtr);
     if(!dataKeyLen) {
         // At the very least we should have a valid data key block before we set our data
         return false;
@@ -175,20 +221,35 @@ bool UserData::serializeFromByteArray(const char *bytes, int bytesSize) {
         return false;
     }
 
-    // Everything seems fine, go ahead and read in our blocks
+    // Rewind and read in user data
     readPtr = bytes;
-    
-    mLocationName = readPtr;
-    readPtr += (MAX_LOCATION_LENGTH + 1);
 
-    mSensorName = readPtr;
-    readPtr += (MAX_SENSOR_NAME_LENGTH + 1);
-
+    //      SERIALIZATION ORDER:
+    //
+    // - SSID
+    // - WiFi PSK
+    // - Hardware hostname
+    // - <For each sensor group>
+    //   - Group location
+    //   - Group name
+    // - Broker address
+    // - Checksum/validation string
     mSSID = readPtr;
     readPtr += (MAX_SSID_LENGTH + 1);
 
     mPSK = readPtr;
     readPtr += (MAX_PSK_LENGTH + 1);
+
+    mHostName = readPtr;
+    readPtr += (MAX_HOST_NAME_LENGTH + 1);
+
+    for(int i = 0; i < NUM_SENSOR_GROUPS; ++i) {
+        mSensorGroupLocations[i] = readPtr;
+        readPtr += (MAX_GROUP_LOCATION_LENGTH + 1);
+
+        mSensorGroupNames[i] = readPtr;
+        readPtr += (MAX_GROUP_NAME_LENGTH + 1);
+    }
 
     mBrokerAddress = readPtr;
 

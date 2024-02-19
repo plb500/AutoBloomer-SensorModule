@@ -34,8 +34,7 @@ void MQTTController::MQTTMessageBuffer::setMessageTopic(const char *topic) {
 MQTTController::MQTTController(MulticoreMailbox& mailbox) :
     mMQTTClient(nullptr),
     mBrokerPort(0),
-    mSensorName(nullptr),
-    mSensorLocation(nullptr),
+    mClientName(nullptr),
     mCoreMailbox(mailbox)
 {}
 
@@ -50,7 +49,7 @@ bool MQTTController::connectToBrokerBlocking(uint16_t timeoutMS) {
     char controlTopic[MQTTMessage::MQTT_MAX_TOPIC_LENGTH];
 
     memset(&ci, 0, sizeof(ci));
-    ci.client_id    = mSensorName;
+    ci.client_id    = mClientName;
     ci.client_user  = NULL;
     ci.client_pass  = NULL;
     ci.keep_alive   = 10;
@@ -117,9 +116,8 @@ void MQTTController::setBrokerParameters(ip_addr_t& address, uint16_t port) {
     mBrokerPort = port;
 }
 
-void MQTTController::setClientParameters(const char* sensorName, const char *sensorLocation) {
-    mSensorName = sensorName;
-    mSensorLocation = sensorLocation;
+void MQTTController::setClientParameters(const char* clientName) {
+    mClientName = clientName;
 }
 
 MQTTController::MQTTMessageBuffer& MQTTController::getBuffer() {
@@ -129,22 +127,6 @@ MQTTController::MQTTMessageBuffer& MQTTController::getBuffer() {
 void MQTTController::handleIncomingControlMessage(MQTTMessage& message) {
     mCoreMailbox.sendSensorControlMessageToCore1(message);
 }
-
-void MQTTController::getSensorControlTopic(char *dest) {
-    if(!dest) {
-        return;
-    }
-
-    snprintf(
-        dest,
-        MQTTMessage::MQTT_MAX_TOPIC_LENGTH,
-        "%s/%s/%s/control",
-        MQTTMessage::AUTOBLOOMER_TOPIC_NAME,
-        mSensorLocation,
-        mSensorName
-    );
-}
-
 
 void MQTTController::initializeMessage(MQTTMessage& message) {
     memset(message.mTopic, 0, MQTTMessage::MQTT_MAX_PAYLOAD_LENGTH);

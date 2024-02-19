@@ -29,12 +29,11 @@ class MQTTController {
         void subscribeToTopic(const char* topic);
 
         void setBrokerParameters(ip_addr_t& address, uint16_t port);
-        void setClientParameters(const char* sensorName, const char *sensorLocation);
+        void setClientParameters(const char* clientName);
 
         MQTTMessageBuffer& getBuffer();
         void handleIncomingControlMessage(MQTTMessage& mMessage);
 
-        void getSensorControlTopic(char *dest);
         void initializeMessage(MQTTMessage& message);
         err_t publishMessage(MQTTMessage& message);
 
@@ -42,8 +41,7 @@ class MQTTController {
         mqtt_client_t* mMQTTClient;
         ip_addr_t mBrokerAddress;
         uint16_t mBrokerPort;
-        const char *mSensorName;
-        const char *mSensorLocation;
+        const char *mClientName;
         MulticoreMailbox& mCoreMailbox;
         MQTTMessageBuffer mIncomingMessageBuffer;
 };

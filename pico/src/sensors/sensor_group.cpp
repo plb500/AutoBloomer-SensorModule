@@ -5,7 +5,12 @@
 
 SensorGroup::SensorGroup(initializer_list<Sensor*> sensors) :
     mSensors(sensors)
-{}
+{
+    memset(mName, 0, UserData::MAX_HOST_NAME_LENGTH + 1);
+    memset(mLocation, 0, UserData::MAX_GROUP_LOCATION_LENGTH + 1);
+    memset(mTopic, 0,MQTTMessage::MQTT_MAX_TOPIC_LENGTH);
+    memset(mControlTopic, 0,MQTTMessage::MQTT_MAX_TOPIC_LENGTH);
+}
 
 void SensorGroup::initializeSensors() {
     for(auto s : mSensors) {
@@ -100,4 +105,44 @@ bool SensorGroup::handleSensorControlCommand(SensorControlMessage& message) {
     }
 
     return false;
+}
+
+void SensorGroup::setName(const char* name) {
+    strncpy(mName, name, UserData::MAX_HOST_NAME_LENGTH);
+    createTopics();
+}
+
+void SensorGroup::setLocation(const char* location) {
+    strncpy(mLocation, location, UserData::MAX_GROUP_LOCATION_LENGTH);
+    createTopics();
+}
+
+bool SensorGroup::hasTopics() const {
+    return (strlen(mTopic) && strlen(mControlTopic));
+}
+
+const char* SensorGroup::getTopic() const {
+    return mTopic;
+}
+
+const char* SensorGroup::getControlTopic() const {
+    return mControlTopic;
+}
+
+void SensorGroup::createTopics() {
+    memset(mTopic, 0, MQTTMessage::MQTT_MAX_TOPIC_LENGTH);
+
+    if(!strlen(mName) || !strlen(mLocation)) {
+        return;
+    }
+
+    snprintf(mTopic, MQTTMessage::MQTT_MAX_TOPIC_LENGTH, "%s/%s/%s",
+        MQTTMessage::AUTOBLOOMER_TOPIC_NAME,
+        mLocation,
+        mName
+    );
+
+    snprintf(mControlTopic, MQTTMessage::MQTT_MAX_TOPIC_LENGTH, "%s/control",
+        mTopic
+    );
 }

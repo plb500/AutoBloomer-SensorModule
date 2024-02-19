@@ -6,22 +6,19 @@ extern "C"
 {
 #endif
 
-#include <stdio.h>
-#include "pico/stdlib.h"
-
-#define DEBUG_UART_TX_PIN       (0)
-#define DEBUG_UART_RX_PIN       (1)
-#define STDIO_UART_BAUDRATE     (57600)
-#define STDIO_UART              (uart0)
-
-
-
 // Debug/Serial output macro block
 #define DEBUG_PRINT_ON                                  1      // Set to 0 to disable all stdio UART logging
 
 #if DEBUG_PRINT_ON
 #include <stdio.h>
+#include "pico/stdlib.h"
 #   define DEBUG_PRINT_BUF_SIZE                         (128)
+
+extern const int DEBUG_UART_TX_PIN;
+extern const int DEBUG_UART_RX_PIN;
+extern const int STDIO_UART_BAUDRATE;
+extern uart_inst_t* STDIO_UART;
+
 static char DEBUG_PRINT_BUF[DEBUG_PRINT_BUF_SIZE];
 
 // Initialize the debug logging system
