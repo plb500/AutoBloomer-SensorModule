@@ -1,4 +1,4 @@
-# AutoBloomer Sensor Pod
+# AutoBloomer Sensor Controller
 
 <img src="/images/sensor_pod_image_1.jpg" width="30%">
 
