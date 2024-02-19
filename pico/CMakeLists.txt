@@ -17,7 +17,6 @@ add_executable(SensorPodController
     src/cores/core_0_executor.cpp
     src/cores/core_1_executor.cpp
 
-    # src/messaging/sensor_pod_messages.cpp
     src/messaging/sensor_data_message.cpp
     src/messaging/sensor_control_message.cpp
     src/messaging/mqtt_message.cpp
@@ -33,12 +32,13 @@ add_executable(SensorPodController
 
     src/sensors/sensor_i2c_interface.cpp
     src/sensors/stemma_soil_sensor.cpp
-    # src/sensors/sensor_pod.cpp
     src/sensors/sensor.cpp
     src/sensors/sensor_group.cpp
     src/sensors/dummy_sensor.cpp
     src/sensors/scd30_sensor.cpp
     src/sensors/stemma_soil_sensor.cpp
+    src/sensors/battery_sensor.cpp
+    src/sensors/sonar_sensor.cpp
 
     src/serial_control/serial_controller.cpp
 
@@ -49,6 +49,8 @@ add_executable(SensorPodController
 )
 
 pico_set_linker_script(SensorPodController ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
+
+pico_generate_pio_header(SensorPodController ${CMAKE_CURRENT_LIST_DIR}/src/pio/uart_rx.pio)
 
 pico_enable_stdio_usb(SensorPodController 0)
 pico_enable_stdio_uart(SensorPodController 1)
@@ -79,5 +81,5 @@ target_compile_definitions(SensorPodController PUBLIC
     SENSOR_POD=2
     HIB=3
 
-    SENSOR_HARDWARE=SENSOR_POD
+    SENSOR_HARDWARE=HIB
 )

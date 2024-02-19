@@ -16,6 +16,9 @@ class Sensor {
         enum SensorType {
             SCD30_SENSOR            = 0x01,
             STEMMA_SOIL_SENSOR      = 0x02,
+            BATTERY_SENSOR          = 0x03,
+            SONAR_SENSOR            = 0x04,
+
             DUMMY_SENSOR            = 0xFF
         };
 
