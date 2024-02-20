@@ -6,7 +6,7 @@ Full plans and code for a sensor controller capable of publishing multiple senso
 
 Raspberry Pico source code is [here](pico/src)
 
-PCB schematics, plans etc (KiCad format) are [here](PCB/SensorPod-Board)
+PCB schematics, plans etc (KiCad format), plus any 3D prints/CNC files are [here](hardware)
 
 A brief overiew is on [YouTube](https://youtu.be/ilkXrpyaba0)
 
