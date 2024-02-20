@@ -9,13 +9,13 @@ class BatteryVoltageSensor : public Sensor {
     public:
         BatteryVoltageSensor(int enablePin, int measurePin, int adcInput);
 
-        virtual void initialize();
         virtual void reset();
         virtual void shutdown();
 
         static int serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize);
 
     protected:
+        virtual void doInitialization();
         virtual SensorUpdateResponse doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize);
 
     private:

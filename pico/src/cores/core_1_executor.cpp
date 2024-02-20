@@ -63,7 +63,7 @@ void Core1Executor::processSensorControlCommands() {
     do {
         if(msgOpt = mMailbox.getWaitingSensorControlMessage()) {
             bool messageHandled = false;
-            for(auto group : mSensorGroups) {
+            for(auto& group : mSensorGroups) {
                 if(group.handleSensorControlCommand(*msgOpt)) {
                     messageHandled = true;
                     break;

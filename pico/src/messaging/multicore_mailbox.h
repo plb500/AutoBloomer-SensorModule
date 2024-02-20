@@ -16,7 +16,7 @@ class MulticoreMailbox {
 
         // core1 -> core0 functions
         void sendSensorDataToCore0(const vector<SensorGroup>& sensorGroups);
-        bool latestSensorDataToJSON(const vector<SensorGroup>& sensorGroups, char* jsonBuffer, int jsonBufferSize);
+        bool latestSensorDataToJSON(const vector<SensorGroup>& sensorGroups, vector<MQTTMessage>& outgoingMessages);
 
         // core0 -> core1 functions
         void sendSensorControlMessageToCore1(MQTTMessage& mqttMessage);

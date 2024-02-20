@@ -29,15 +29,3 @@ optional<MQTTMessage> MQTTMessage::createTestMQTTMessage(
 
     return mqttMsg;
 }
-
-void MQTTMessage::setSensorDataTopic(const char* name, const char* location, MQTTMessage& message) {
-    assert(name);
-    assert(location);
-
-    memset(message.mTopic, 0, MQTT_MAX_TOPIC_LENGTH);
-    snprintf(message.mTopic, MQTT_MAX_TOPIC_LENGTH, "%s/%s/%s",
-        AUTOBLOOMER_TOPIC_NAME,
-        location,
-        name
-    );
-}

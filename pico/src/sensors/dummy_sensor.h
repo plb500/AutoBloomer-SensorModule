@@ -7,13 +7,18 @@ class DummySensor : public Sensor {
     public:
         DummySensor();
 
-        virtual void initialize() {}
         virtual void reset() {}
         virtual void shutdown() {}
 
+        virtual constexpr uint16_t getRawDataSize() const { 
+            return sizeof(int) + sizeof(float);
+        }
+
         static int serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize);
 
+        static const uint32_t RAW_DATA_SIZE = (sizeof(int) + sizeof(float));
     protected:
+        virtual void doInitialization() {}
         Sensor::SensorUpdateResponse doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize);
 
     private:

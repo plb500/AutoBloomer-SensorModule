@@ -8,7 +8,7 @@
 
 Core0Executor* Core0Executor::sExecutor = nullptr;
 
-Core0Executor::Core0Executor(MulticoreMailbox& mailbox, const vector<SensorGroup>& sensorGroups) :
+Core0Executor::Core0Executor(MulticoreMailbox& mailbox, vector<SensorGroup>& sensorGroups) :
     mMailbox(mailbox),
     mMQTTController(mailbox),
     mSensorGroups(sensorGroups)
@@ -29,10 +29,15 @@ void Core0Executor::initialize() {
                 mUserData.getSensorGroupName(i).c_str(),
                 mUserData.getSensorGroupLocation(i).c_str()
             );
+
+            mSensorGroups[i].setName(mUserData.getSensorGroupName(i).c_str());
+            mSensorGroups[i].setLocation(mUserData.getSensorGroupLocation(i).c_str());
         }
     } else {
         DEBUG_PRINT("Could not read user data from flash memory")
     }
+
+    mOutgoingMQTTMessageBuffer.resize(mSensorGroups.size());
 }
 
 void Core0Executor::loop() {
@@ -120,7 +125,7 @@ void Core0Executor::doLoop() {
                         DEBUG_PRINT("Broker connection failed");
                     } else {
                         DEBUG_PRINT("Broker connection succeeded. Subscribing to control topics")
-                        for(auto s : mSensorGroups) {
+                        for(auto& s : mSensorGroups) {
                             if(s.hasTopics()) {
                                 mMQTTController.subscribeToTopic(s.getControlTopic());
                             }
@@ -169,20 +174,14 @@ void Core0Executor::transmitSensorData() {
         return;
     }
 
-
-    /*
-    MQTTMessage::setSensorDataTopic(
-        mUserData.getHostName().c_str(),
-        mUserData.getLocationName().c_str(),
-        mOutgoingMQTTMessageBuffer
-    );
-
-    memset(mOutgoingMQTTMessageBuffer.mPayload, 0, MQTTMessage::MQTT_MAX_PAYLOAD_LENGTH);
-    if(mMailbox.latestSensorDataToJSON(mSensorGroups, mOutgoingMQTTMessageBuffer.mPayload, MQTTMessage::MQTT_MAX_PAYLOAD_LENGTH)) {
+    if(mMailbox.latestSensorDataToJSON(mSensorGroups, mOutgoingMQTTMessageBuffer)) {
         DEBUG_PRINT("* core0 publishing MQTT message *");
-        mMQTTController.publishMessage(mOutgoingMQTTMessageBuffer);
+        for(auto& msg : mOutgoingMQTTMessageBuffer) {
+            if(msg.mReadyToSend) {
+                mMQTTController.publishMessage(msg);
+            }
+        }
     }
-    */
 }
 
 uint32_t Core0Executor::getFreeMemory() {

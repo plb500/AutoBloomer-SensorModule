@@ -23,7 +23,7 @@ void MulticoreMailbox::sendSensorDataToCore0(const vector<SensorGroup>& sensorGr
     } while(!added);
 }
 
-bool MulticoreMailbox::latestSensorDataToJSON(const vector<SensorGroup>& sensorGroups, char* jsonBuffer, int jsonBufferSize) {
+bool MulticoreMailbox::latestSensorDataToJSON(const vector<SensorGroup>& sensorGroups, vector<MQTTMessage>& outgoingMessages) {
     bool msgRead = false;
     bool haveMessage = false;
 
@@ -41,7 +41,8 @@ bool MulticoreMailbox::latestSensorDataToJSON(const vector<SensorGroup>& sensorG
         return false;
     }
 
-    mSensorUpdateReadScratch.toJSON(sensorGroups, jsonBuffer, jsonBufferSize);
+    mSensorUpdateReadScratch.toMQTT(sensorGroups, outgoingMessages);
+
     return true;
 }
 

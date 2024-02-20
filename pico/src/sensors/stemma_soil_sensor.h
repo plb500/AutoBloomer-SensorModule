@@ -18,13 +18,13 @@ class StemmaSoilSensor : public Sensor {
 
         StemmaSoilSensor(I2CInterface& i2cInterface, uint8_t address);
 
-        virtual void initialize();
         virtual void reset();
         virtual void shutdown();
 
         static int serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize);
 
     protected:
+        virtual void doInitialization();
         virtual SensorUpdateResponse doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize);
 
         constexpr static int STEMMA_SOIL_SENSOR_INVALID_READING = -1;

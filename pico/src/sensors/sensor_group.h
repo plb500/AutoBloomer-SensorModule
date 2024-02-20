@@ -23,6 +23,7 @@ class SensorGroup {
         void shutdown();
         void update(absolute_time_t currentTime);
 
+        uint32_t getRawDataSize() const;
         void packSensorData(uint8_t* sensorDataBuffer, uint16_t bufferSize) const;
         int unpackSensorDataToJSON(uint8_t* sensorDataBuffer, int bufferSize, char* jsonBuffer, int jsonBufferSize) const;
         bool handleSensorControlCommand(SensorControlMessage& message);
@@ -33,10 +34,6 @@ class SensorGroup {
         const char* getTopic() const;
         const char* getControlTopic() const;
 
-        static constexpr int DATA_BUFFER_PER_SENSOR = (Sensor::SensorDataBuffer::SENSOR_DATA_BUFFER_SIZE + 1 + 1);
-        static constexpr int MAX_NUM_SENSORS = 5;
-        static constexpr int NUM_SENSOR_GROUP_DATA_BYTES = (DATA_BUFFER_PER_SENSOR * MAX_NUM_SENSORS);
-
     private:
         void createTopics();
 
@@ -44,7 +41,7 @@ class SensorGroup {
         char mLocation[UserData::MAX_GROUP_LOCATION_LENGTH + 1];
         char mTopic[MQTTMessage::MQTT_MAX_TOPIC_LENGTH];
         char mControlTopic[MQTTMessage::MQTT_MAX_TOPIC_LENGTH];
-        const vector<Sensor*> mSensors;
+        vector<Sensor*> mSensors;
 };
 
 #endif

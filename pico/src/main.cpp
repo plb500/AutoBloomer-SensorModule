@@ -6,8 +6,8 @@
 #include "pico/multicore.h"
 
 
-MulticoreMailbox multicoreMailbox;
 extern vector<SensorGroup> _SENSOR_GROUPS;
+MulticoreMailbox multicoreMailbox;
 
 // Core data wrappers
 Core0Executor dataCore0(

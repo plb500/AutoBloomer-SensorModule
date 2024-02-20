@@ -12,7 +12,7 @@
 
 class Core0Executor {
     public:
-        Core0Executor(MulticoreMailbox& mailbox, const vector<SensorGroup>& sensorGroups);
+        Core0Executor(MulticoreMailbox& mailbox, vector<SensorGroup>& sensorGroups);
 
         void initialize();
         
@@ -43,8 +43,8 @@ class Core0Executor {
         SerialController mSerialController;
         NetworkController mNetworkController;
         MQTTController mMQTTController;
-        const vector<SensorGroup>& mSensorGroups;
-        MQTTMessage mOutgoingMQTTMessageBuffer;
+        vector<SensorGroup>& mSensorGroups;
+        vector<MQTTMessage> mOutgoingMQTTMessageBuffer;
 };
 
 #endif      // _CORE_0_EXECUTOR_H_

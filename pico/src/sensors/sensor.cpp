@@ -8,6 +8,13 @@ using std::tie;
 
 map<int, Sensor::JsonSerializer> Sensor::sJSONSerializerMap;
 
+
+void Sensor::SensorDataBuffer::initializeBuffer(uint32_t bufferSize) {
+    mDataBytes = new uint8_t[bufferSize];
+    mDataLen = 0;
+}
+
+
 Sensor::Sensor(uint8_t sensorType, JsonSerializer serializer) :
     mSensorType(sensorType),
     mUpdateWatchdogTimeout(nil_time)
@@ -15,11 +22,18 @@ Sensor::Sensor(uint8_t sensorType, JsonSerializer serializer) :
     sJSONSerializerMap[mSensorType] = serializer;
 }
 
+void Sensor::initialize() {
+    mCachedData.initializeBuffer(getRawDataSize());
+
+    doInitialization();
+}
+
+
 void Sensor::update(absolute_time_t currentTime) {
-    uint8_t sensorData[SensorDataBuffer::SENSOR_DATA_BUFFER_SIZE];
+    uint8_t sensorData[getRawDataSize()];
     uint8_t dataSize;
 
-    tie(mCachedData.mStatus, dataSize) = doUpdate(currentTime, sensorData, SensorDataBuffer::SENSOR_DATA_BUFFER_SIZE);
+    tie(mCachedData.mStatus, dataSize) = doUpdate(currentTime, sensorData, getRawDataSize());
 
     switch(mCachedData.mStatus) {
         case SENSOR_OK:

@@ -19,6 +19,7 @@ uart_inst_t* STDIO_UART                 = uart0;
 DummySensor _dummySensorA;
 DummySensor _dummySensorB;
 extern const int NUM_SENSOR_GROUPS      = 2;
+
 vector<SensorGroup> _SENSOR_GROUPS = {
     SensorGroup(
         {

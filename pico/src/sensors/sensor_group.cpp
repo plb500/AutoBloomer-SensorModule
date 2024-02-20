@@ -13,35 +13,45 @@ SensorGroup::SensorGroup(initializer_list<Sensor*> sensors) :
 }
 
 void SensorGroup::initializeSensors() {
-    for(auto s : mSensors) {
+    for(auto& s : mSensors) {
         s->initialize();
     }
 }
 
 void SensorGroup::shutdown() {
-    for(auto s : mSensors) {
+    for(auto& s : mSensors) {
         s->shutdown();
     }
 }
 
 void SensorGroup::update(absolute_time_t currentTime) {
-    for(auto s : mSensors) {
+    for(auto& s : mSensors) {
         s->update(currentTime);
     }
 }
 
+uint32_t SensorGroup::getRawDataSize() const {
+    uint32_t dataSize = 0;
+    for(auto& s : mSensors) {
+        // We need the actual data size, plus one byte for status and another byte for sensor type
+        dataSize += s->getRawDataSize() + 2;
+    }
+
+    return dataSize;
+}
+
 void SensorGroup::packSensorData(uint8_t* sensorDataBuffer, uint16_t bufferSize) const {
     assert(sensorDataBuffer);
-    assert(bufferSize >= mSensors.size() * DATA_BUFFER_PER_SENSOR);
+    assert(bufferSize >= getRawDataSize());
 
     uint8_t *writePtr = sensorDataBuffer;
-    for(auto s : mSensors) {
+    for(auto& s : mSensors) {
         const Sensor::SensorDataBuffer& cachedData = s->getCachedData();
         *writePtr++ = (uint8_t) cachedData.mStatus;
         *writePtr++ = cachedData.mDataLen;
 
-        memcpy(writePtr, cachedData.mDataBytes, Sensor::SensorDataBuffer::SENSOR_DATA_BUFFER_SIZE);
-        writePtr += Sensor::SensorDataBuffer::SENSOR_DATA_BUFFER_SIZE;
+        memcpy(writePtr, cachedData.mDataBytes, cachedData.mDataLen);
+        writePtr += cachedData.mDataLen;
     }
 }
 
@@ -51,7 +61,7 @@ int SensorGroup::unpackSensorDataToJSON(uint8_t* sensorDataBuffer, int bufferSiz
     *writePtr++ = '{';
     --jsonBufferSize;
 
-    for(auto s : mSensors) {
+    for(auto& s : mSensors) {
         // First byte is status
         Sensor::SensorStatus status = (Sensor::SensorStatus) *readPtr++;
 
@@ -88,7 +98,7 @@ int SensorGroup::unpackSensorDataToJSON(uint8_t* sensorDataBuffer, int bufferSiz
             --jsonBufferSize;
         }
 
-        readPtr += Sensor::SensorDataBuffer::SENSOR_DATA_BUFFER_SIZE;
+        readPtr += s->getRawDataSize();
     }
 
     *writePtr++ = '}';
@@ -98,7 +108,7 @@ int SensorGroup::unpackSensorDataToJSON(uint8_t* sensorDataBuffer, int bufferSiz
 }
 
 bool SensorGroup::handleSensorControlCommand(SensorControlMessage& message) {
-    for(auto s : mSensors) {
+    for(auto& s : mSensors) {
         if(s->handleSensorControlCommand(message)) {
             return true;
         }

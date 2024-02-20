@@ -27,7 +27,7 @@ StemmaSoilSensor::StemmaSoilSensor(I2CInterface& i2cInterface, uint8_t address) 
     mActive(false)
 {}
 
-void StemmaSoilSensor::initialize() {
+void StemmaSoilSensor::doInitialization() {
     mI2CInterface.initSensorBus();
 
     uint8_t response = 0x33;

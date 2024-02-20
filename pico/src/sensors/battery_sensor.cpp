@@ -26,7 +26,7 @@ BatteryVoltageSensor::BatteryVoltageSensor(int enablePin, int measurePin, int ad
     mADCInput(adcInput)
 {}
 
-void BatteryVoltageSensor::initialize() {
+void BatteryVoltageSensor::doInitialization() {
     // Initialize the GPIO pin which will trigger battery current into the ADC pin.
     // It is driven LOW to activate the circuit
     gpio_init(mEnableSensePin);

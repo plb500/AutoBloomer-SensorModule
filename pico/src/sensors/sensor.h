@@ -30,10 +30,10 @@ class Sensor {
         };
 
         struct SensorDataBuffer {
-            static constexpr uint32_t SENSOR_DATA_BUFFER_SIZE       = (64);
+            void initializeBuffer(uint32_t bufferSize);
 
             SensorStatus mStatus;
-            uint8_t mDataBytes[SENSOR_DATA_BUFFER_SIZE];
+            uint8_t* mDataBytes;
             uint8_t mDataLen;
             absolute_time_t mDataExpiryTime;
         };
@@ -47,7 +47,7 @@ class Sensor {
         uint8_t getSensorTypeID() const { return mSensorType; };      
 
         // Perform all required hardware initialization
-        virtual void initialize() = 0;
+        virtual void initialize();
 
         // Fully reset the sensor hardware (will be used if sensor stops responding for a period of time)
         virtual void reset() = 0;
@@ -58,6 +58,9 @@ class Sensor {
         // (Optionally) respond to a sensor control command
         virtual bool handleSensorControlCommand(SensorControlMessage& message) { return false; }
 
+        // The total size required to pack this sensor's raw data into a binary blob
+        virtual constexpr uint16_t getRawDataSize() const { return 0; }
+
         void update(absolute_time_t currentTime);
         const SensorDataBuffer& getCachedData() const { return mCachedData; }
 
@@ -66,6 +69,8 @@ class Sensor {
 
     protected:
         typedef tuple<SensorStatus, uint8_t> SensorUpdateResponse;
+
+        virtual void doInitialization() = 0;
 
         // Update the underlying sensor hardware, serializing any current data into the supplied buffer
         virtual SensorUpdateResponse doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize) = 0;

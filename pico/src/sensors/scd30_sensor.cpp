@@ -24,7 +24,7 @@ SCD30Sensor::SCD30Sensor(I2CInterface& i2c, uint8_t powerPin) :
     mPowerControlPin(powerPin)
 {}
 
-void SCD30Sensor::initialize() {
+void SCD30Sensor::doInitialization() {
     uint8_t major, minor;
 
     // I2C hardware init

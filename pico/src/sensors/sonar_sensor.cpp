@@ -18,7 +18,7 @@ SonarSensor::SonarSensor(PIOWrapper &pioWrapper, int stateMachineID, int txPin, 
     mBaudrate(baud)
 {}
 
-void SonarSensor::initialize() {
+void SonarSensor::doInitialization() {
     // Setup the PIO if it hasn't already been done
     if(!mPIOWrapper.mInitialized) {
         initializeSonarPIO(mPIOWrapper);
