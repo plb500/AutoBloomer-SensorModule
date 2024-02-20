@@ -1,4 +1,0 @@
-(fp_lib_table
-  (lib (name "Pico W")(type "KiCad")(uri "/Users/philip/Downloads/VGA-PicoW-KiCAD/RPi_Pico.pretty")(options "")(descr ""))
-  (lib (name "SCD30")(type "KiCad")(uri "/Users/philip/Downloads/SCD30")(options "")(descr ""))
-)
