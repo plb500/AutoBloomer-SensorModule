@@ -18,6 +18,14 @@ constexpr const uint32_t TOTAL_RAW_DATA_SIZE = (
 );
 
 #elif SENSOR_HARDWARE == SENSOR_POD
+#include "sensors/scd30_sensor.h"
+#include "sensors/stemma_soil_sensor.h"
+
+constexpr const uint32_t TOTAL_RAW_DATA_SIZE = (
+    (SCD30Sensor::RAW_DATA_SIZE + 2) +
+    (StemmaSoilSensor::RAW_DATA_SIZE + 2)
+);
+
 #elif SENSOR_HARDWARE == HIB
 #else
 #endif

@@ -17,7 +17,9 @@ class SCD30Sensor : public Sensor {
         void setForcedRecalibrationValue(uint16_t frc);
 
         static int serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize);
-
+        virtual constexpr uint16_t getRawDataSize() const { return RAW_DATA_SIZE; }
+        
+        static const uint32_t RAW_DATA_SIZE = (sizeof(float) * 3);
     protected:
         virtual void doInitialization();
         virtual Sensor::SensorUpdateResponse doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize);

@@ -22,7 +22,9 @@ class StemmaSoilSensor : public Sensor {
         virtual void shutdown();
 
         static int serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize);
+        virtual constexpr uint16_t getRawDataSize() const { return RAW_DATA_SIZE; }
 
+        static const uint32_t RAW_DATA_SIZE = sizeof(uint16_t);
     protected:
         virtual void doInitialization();
         virtual SensorUpdateResponse doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize);

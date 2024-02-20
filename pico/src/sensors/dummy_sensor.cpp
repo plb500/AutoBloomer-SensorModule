@@ -35,7 +35,7 @@ int DummySensor::serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* json
 }
 
 bool DummySensor::handleSensorControlCommand(SensorControlMessage& message) {
-    if(message.mCommand == 0x44434241) {
+    if(message.mCommand == 0x44434241) {        // "ABCD"
         DEBUG_PRINT("HANDLING COMMAND");
         return true;
     }
