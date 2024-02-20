@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg3961"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   sodipodi:docname="sensor-box-side.svg">
+  <defs
+     id="defs3955">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient69136">
+      <stop
+         style="stop-color:#3387e4;stop-opacity:1"
+         offset="0"
+         id="stop69132" />
+      <stop
+         style="stop-color:#253f63;stop-opacity:1"
+         offset="1"
+         id="stop69134" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient68966">
+      <stop
+         style="stop-color:#04b0ff;stop-opacity:1"
+         offset="0"
+         id="stop68962" />
+      <stop
+         style="stop-color:#003954;stop-opacity:1"
+         offset="1"
+         id="stop68964" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient68966"
+       id="radialGradient68968"
+       cx="-28.095795"
+       cy="10.488476"
+       fx="-28.095795"
+       fy="10.488476"
+       r="44.875"
+       gradientTransform="matrix(1,0,0,0.94150418,0,0.61353201)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient69136"
+       id="radialGradient69140"
+       cx="105.87274"
+       cy="56.398106"
+       fx="105.87274"
+       fy="56.398106"
+       r="41.374996"
+       gradientTransform="matrix(1,0,0,0.93655595,0,3.5781244)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient69136"
+       id="radialGradient69140-9"
+       cx="105.87274"
+       cy="56.398106"
+       fx="105.87274"
+       fy="56.398106"
+       r="41.374996"
+       gradientTransform="matrix(1,0,0,0.93655596,-46.64172,101.97889)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient69136"
+       id="radialGradient69140-9-3"
+       cx="105.87274"
+       cy="56.398106"
+       fx="105.87274"
+       fy="56.398106"
+       r="41.374996"
+       gradientTransform="matrix(1,0,0,0.93655596,-9.665078,184.30611)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.5510718"
+     inkscape:cx="388.86927"
+     inkscape:cy="165.24017"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:snap-object-midpoints="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1024"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:object-paths="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:pagecheckerboard="true" />
+  <metadata
+     id="metadata3958">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5053"
+       style="fill:black;fill-opacity:1;stroke:none;font-family:'DejaVu Sans Mono';font-style:normal;font-weight:normal;font-size:24px;line-height:1.25;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:'DejaVu Sans Mono';font-stretch:normal;font-variant:normal"><flowRegion
+         id="flowRegion5055"><rect
+           id="rect5057"
+           width="650.354"
+           height="29.364368"
+           x="-282.96573"
+           y="-51.053959" /></flowRegion><flowPara
+         id="flowPara5059"></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5120"
+       style="fill:black;fill-opacity:1;stroke:none;font-family:'DejaVu Sans Mono';font-style:normal;font-weight:normal;font-size:24px;line-height:1.25;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:'DejaVu Sans Mono';font-stretch:normal;font-variant:normal"><flowRegion
+         id="flowRegion5122"><rect
+           id="rect5124"
+           width="131.80597"
+           height="63.066654"
+           x="-508.87115"
+           y="202.54739" /></flowRegion><flowPara
+         id="flowPara5126"></flowPara></flowRoot>    <g
+       id="g5192"
+       transform="translate(139.53108,48.654987)">
+      <rect
+         transform="rotate(90)"
+         y="110.15376"
+         x="-13.043034"
+         height="43"
+         width="40"
+         id="rect4506"
+         style="opacity:1;fill:#a5a5a5;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+      <g
+         transform="translate(1.468941e-6,4.5012501e-6)"
+         id="g4978">
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4508"
+           cx="-120.01621"
+           cy="-72.907898"
+           r="5.8000002" />
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4542"
+           cx="-120.01621"
+           cy="-72.907898"
+           r="0.5" />
+      </g>
+      <g
+         transform="translate(1.468941e-6,4.5012501e-6)"
+         id="g4982">
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4508-7"
+           cx="-109.92728"
+           cy="-55.433331"
+           r="5.8000002" />
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4542-1"
+           cx="-109.92728"
+           cy="-55.433331"
+           r="0.5" />
+      </g>
+      <g
+         transform="translate(1.468941e-6,4.5012501e-6)"
+         id="g4986">
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4508-5"
+           cx="-130.10516"
+           cy="-55.433331"
+           r="5.8000002" />
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4542-3"
+           cx="-130.10516"
+           cy="-55.433331"
+           r="0.5" />
+      </g>
+      <g
+         transform="matrix(-1,0,0,1,-240.79826,-31.134526)"
+         id="g5131">
+        <path
+           inkscape:connector-curvature="0"
+           id="path5069"
+           d="m -110.15376,49.706001 v -3.051122 l 2.64235,1.525561 z"
+           style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        <text
+           transform="scale(-1,1)"
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="111.5813"
+           y="49.14846"
+           id="text4766-5-6-5"><tspan
+             sodipodi:role="line"
+             id="tspan4764-0-3-0"
+             x="111.5813"
+             y="49.14846"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';stroke-width:0.26458332">TEMP/RH</tspan></text>
+      </g>
+      <g
+         transform="matrix(-1,0,0,1,-253.64675,-54.844457)"
+         id="g5168">
+        <path
+           inkscape:connector-curvature="0"
+           id="path5069-6"
+           d="m -120.47149,63.326988 v -3.051122 l -2.64235,1.525561 z"
+           style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        <text
+           transform="scale(-1,1)"
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="103.26493"
+           y="62.769447"
+           id="text4766-5-6-5-5"><tspan
+             sodipodi:role="line"
+             id="tspan4764-0-3-0-0"
+             x="103.26493"
+             y="62.769447"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';stroke-width:0.26458332">FEED LVL</tspan></text>
+      </g>
+      <g
+         id="g5136-8"
+         transform="translate(-11.263794,-64.933408)">
+        <path
+           inkscape:connector-curvature="0"
+           id="path5069-6-1"
+           d="m -120.47149,63.326988 v -3.051122 l -2.64235,1.525561 z"
+           style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="-119.04395"
+           y="62.769447"
+           id="text4766-5-6-5-5-2"><tspan
+             sodipodi:role="line"
+             id="tspan4764-0-3-0-0-2"
+             x="-119.04395"
+             y="62.769447"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';stroke-width:0.26458332">MOISTURE</tspan></text>
+      </g>
+    </g>
+    <g
+       transform="matrix(-1,0,0,1,62.151632,49.441141)"
+       id="g5192-6">
+      <rect
+         transform="rotate(90)"
+         y="110.15376"
+         x="-13.043034"
+         height="43"
+         width="40"
+         id="rect4506-9"
+         style="opacity:1;fill:#a5a5a5;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+      <g
+         transform="translate(1.468941e-6,4.5012501e-6)"
+         id="g4978-1">
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4508-0"
+           cx="-120.01621"
+           cy="-72.907898"
+           r="5.8000002" />
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4542-4"
+           cx="-120.01621"
+           cy="-72.907898"
+           r="0.5" />
+      </g>
+      <g
+         transform="translate(1.468941e-6,4.5012501e-6)"
+         id="g4982-2">
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4508-7-7"
+           cx="-109.92728"
+           cy="-55.433331"
+           r="5.8000002" />
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4542-1-4"
+           cx="-109.92728"
+           cy="-55.433331"
+           r="0.5" />
+      </g>
+      <g
+         transform="translate(1.468941e-6,4.5012501e-6)"
+         id="g4986-0">
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4508-5-3"
+           cx="-130.10516"
+           cy="-55.433331"
+           r="5.8000002" />
+        <circle
+           transform="rotate(-30)"
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="path4542-3-2"
+           cx="-130.10516"
+           cy="-55.433331"
+           r="0.5" />
+      </g>
+      <g
+         transform="matrix(-1,0,0,1,-240.79826,-31.134526)"
+         id="g5131-8">
+        <path
+           inkscape:connector-curvature="0"
+           id="path5069-0"
+           d="m -110.15376,49.706001 v -3.051122 l 2.64235,1.525561 z"
+           style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="-128.3848"
+           y="49.14846"
+           id="text4766-5-6-5-3"><tspan
+             sodipodi:role="line"
+             id="tspan4764-0-3-0-7"
+             x="-128.3848"
+             y="49.14846"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';stroke-width:0.26458332">TEMP/RH</tspan></text>
+      </g>
+      <g
+         transform="matrix(-1,0,0,1,-253.64675,-54.844457)"
+         id="g5168-0">
+        <path
+           inkscape:connector-curvature="0"
+           id="path5069-6-0"
+           d="m -120.47149,63.326988 v -3.051122 l -2.64235,1.525561 z"
+           style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="-119.04395"
+           y="62.769447"
+           id="text4766-5-6-5-5-3"><tspan
+             sodipodi:role="line"
+             id="tspan4764-0-3-0-0-4"
+             x="-119.04395"
+             y="62.769447"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';stroke-width:0.26458332">FEED LVL</tspan></text>
+      </g>
+      <g
+         id="g5136-8-9"
+         transform="translate(-11.263794,-64.933408)">
+        <path
+           inkscape:connector-curvature="0"
+           id="path5069-6-1-2"
+           d="m -120.47149,63.326988 v -3.051122 l -2.64235,1.525561 z"
+           style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="100.05888"
+           y="62.769447"
+           id="text4766-5-6-5-5-2-7"
+           transform="scale(-1,1)"><tspan
+             sodipodi:role="line"
+             id="tspan4764-0-3-0-0-2-4"
+             x="100.05888"
+             y="62.769447"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';stroke-width:0.26458332">MOISTURE</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g69985"
+       inkscape:export-filename="/home/philip/Desktop/top-graphic.png"
+       inkscape:export-xdpi="299.86511"
+       inkscape:export-ydpi="299.86511">
+      <g
+         transform="translate(40.94874,-19.47832)"
+         id="g69715">
+        <rect
+           style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99677306;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="rect4597-2"
+           width="117.41"
+           height="87.5"
+           x="0.52602082"
+           y="111.04887" />
+        <rect
+           style="opacity:1;fill:#002d64;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="rect69467"
+           width="88.800003"
+           height="83.5"
+           x="14.831021"
+           y="113.04887" />
+        <path
+           style="opacity:1;fill:url(#radialGradient69140-9);fill-opacity:1;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           d="m 23.856023,117.04887 h 70.75001 l 4.99999,5 v 65.5 l -4.99999,5 h -70.75001 l -5,-5 v -65.5 z"
+           id="rect4595-5-0"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccccccccc" />
+        <g
+           id="g4618-2"
+           transform="translate(85.027143,144.3104)"
+           style="fill:#000406;fill-opacity:1">
+          <circle
+             r="6.1999998"
+             cy="38.697041"
+             cx="-44.243027"
+             id="path4599-7"
+             style="opacity:1;fill:#000406;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <circle
+             r="6.2000003"
+             cy="38.697041"
+             cx="-7.3492002"
+             id="path4599-3-9"
+             style="opacity:1;fill:#000406;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+        </g>
+        <g
+           transform="translate(-46.64172,98.40076)"
+           id="g69366-9">
+          <circle
+             r="4.5500002"
+             cy="41.473721"
+             cx="77.400978"
+             id="path4652-5"
+             style="opacity:1;fill:#616161;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <circle
+             r="2.875"
+             cy="41.473721"
+             cx="77.400978"
+             id="path4620-2"
+             style="opacity:1;fill:#0095ff;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <circle
+             r="4.5500002"
+             cy="41.473721"
+             cx="134.34451"
+             id="path4652-8-0"
+             style="opacity:1;fill:#616161;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <circle
+             r="2.875"
+             cy="41.473721"
+             cx="134.34451"
+             id="path4620-04-8"
+             style="opacity:1;fill:#0095ff;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <g
+             transform="translate(0,1.930553)"
+             id="g69306-3">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="92.188515"
+               y="41.524357"
+               id="text4766-9-5"><tspan
+                 sodipodi:role="line"
+                 id="tspan4764-6-9"
+                 x="92.188515"
+                 y="41.524357"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#000000;fill-opacity:1;stroke-width:0.26458332">Moisture</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="92.717682"
+               y="40.995201"
+               id="text4766-6"><tspan
+                 sodipodi:role="line"
+                 id="tspan4764-5"
+                 x="92.717682"
+                 y="40.995201"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Moisture</tspan></text>
+          </g>
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="51.784603"
+           y="184.98862"
+           id="text4766-8-5-1-6"><tspan
+             sodipodi:role="line"
+             id="tspan4764-3-6-3-3"
+             x="51.784603"
+             y="184.98862"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#000000;fill-opacity:1;stroke-width:0.26458332">TARE</tspan></text>
+        <g
+           id="g69087-0"
+           transform="translate(-46.641715,110.32961)">
+          <g
+             id="g69081-2">
+            <g
+               id="g69076-0">
+              <text
+                 id="text4766-8-5-7"
+                 y="74.12986"
+                 x="98.955482"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+                 xml:space="preserve"><tspan
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+                   y="74.12986"
+                   x="98.955482"
+                   id="tspan4764-3-6-4"
+                   sodipodi:role="line">TARE</tspan></text>
+            </g>
+          </g>
+        </g>
+        <g
+           id="g69260-7"
+           transform="translate(-47.170892,63.63864)">
+          <path
+             style="fill:#090909;fill-opacity:1;stroke:#ffffff;stroke-width:0.59531248px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             d="M 75.813477,65.38088 V 58.515855 L 69.86819,61.948367 Z"
+             id="path5069-6-1-7-3"
+             inkscape:connector-curvature="0" />
+          <path
+             style="fill:#090909;fill-opacity:1;stroke:#ffffff;stroke-width:0.59531248px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             d="m 136.99036,65.38088 v -6.865025 l 5.94528,3.432512 z"
+             id="path5069-6-1-7-7-0"
+             inkscape:connector-curvature="0" />
+        </g>
+        <g
+           transform="translate(-46.64172,111.69752)"
+           id="g69355-6-1">
+          <circle
+             r="4.5500002"
+             cy="54.770485"
+             cx="77.400978"
+             id="path4652-1-3-6"
+             style="opacity:1;fill:#616161;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <circle
+             r="2.875"
+             cy="54.770485"
+             cx="77.400978"
+             id="path4620-0-9-7"
+             style="opacity:1;fill:#ff0004;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <circle
+             r="4.5500002"
+             cy="54.770485"
+             cx="134.34451"
+             id="path4652-1-1-1-5"
+             style="opacity:1;fill:#616161;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <circle
+             r="2.875"
+             cy="54.770485"
+             cx="134.34451"
+             id="path4620-0-3-0-7"
+             style="opacity:1;fill:#ff0004;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <g
+             transform="translate(0,14.101388)"
+             id="g69107-4-8">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="92.740952"
+               y="42.650288"
+               id="text4766-5-7-1-8"><tspan
+                 sodipodi:role="line"
+                 x="92.740952"
+                 y="42.650288"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#000000;fill-opacity:1;stroke-width:0.26458332"
+                 id="tspan5061-2-1-9">TEMP/RH</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="93.270119"
+               y="42.12112"
+               id="text4766-5-8-0"><tspan
+                 sodipodi:role="line"
+                 x="93.270119"
+                 y="42.12112"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+                 id="tspan5061-6-7">TEMP/RH</tspan></text>
+          </g>
+        </g>
+        <g
+           transform="translate(-46.64172,85.104)"
+           id="g69344-4-8">
+          <circle
+             r="4.5500002"
+             cy="68.067245"
+             cx="77.400978"
+             id="path4652-7-3-0"
+             style="opacity:1;fill:#616161;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <circle
+             r="2.875"
+             cy="68.067245"
+             cx="77.400978"
+             id="path4620-6-4-3"
+             style="opacity:1;fill:#02f900;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <circle
+             r="4.5500002"
+             cy="68.067238"
+             cx="134.34451"
+             id="path4652-7-9-7-1"
+             style="opacity:1;fill:#616161;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <circle
+             r="2.875"
+             cy="68.067245"
+             cx="134.34451"
+             id="path4620-6-3-7-0"
+             style="opacity:1;fill:#02f900;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+          <g
+             transform="translate(0,14.101388)"
+             id="g69113-0-3">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="88.228226"
+               y="55.947056"
+               id="text4766-8-1-7-6"><tspan
+                 sodipodi:role="line"
+                 id="tspan4764-3-0-4-7"
+                 x="88.228226"
+                 y="55.947056"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#000000;fill-opacity:1;stroke-width:0.26458332">FEED LEVELS</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="88.757393"
+               y="55.417889"
+               id="text4766-8-53-3"><tspan
+                 sodipodi:role="line"
+                 id="tspan4764-3-07-2"
+                 x="88.757393"
+                 y="55.417889"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">FEED LEVELS</tspan></text>
+          </g>
+        </g>
+        <text
+           id="text69787-2"
+           y="128.77823"
+           x="36.757336"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111126px;line-height:1.25;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111126px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#000000;fill-opacity:1;stroke-width:0.26458332"
+             y="128.77823"
+             x="36.757336"
+             id="tspan69785-1"
+             sodipodi:role="line">SENSORS</tspan></text>
+        <g
+           transform="translate(7.3715392e-7,0.00475754)"
+           id="g69884">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111126px;line-height:1.25;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="37.286503"
+             y="128.24431"
+             id="text69787"><tspan
+               sodipodi:role="line"
+               id="tspan69785"
+               x="37.286503"
+               y="128.24431"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111126px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">SENSORS</tspan></text>
+        </g>
+      </g>
+    </g>
+    <g
+       id="g70321"
+       inkscape:export-filename="/home/philip/Desktop/top-graphic.png"
+       inkscape:export-xdpi="299.86511"
+       inkscape:export-ydpi="299.86511">
+      <rect
+         y="186.32608"
+         x="20.007668"
+         height="101.6"
+         width="152.39999"
+         id="rect70243"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1" />
+      <g
+         id="g70281">
+        <rect
+           style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99677306;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="rect4597-2-5"
+           width="117.41"
+           height="87.5"
+           x="37.502663"
+           y="193.37608" />
+        <rect
+           style="opacity:1;fill:#005164;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           id="rect69467-8"
+           width="88.800003"
+           height="83.5"
+           x="51.807663"
+           y="195.37608" />
+        <path
+           style="opacity:1;fill:url(#radialGradient69140-9-3);fill-opacity:1;stroke:#ffffff;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.36793756;stroke-opacity:1"
+           d="m 60.832665,199.37609 h 70.750005 l 4.99999,5 v 65.5 l -4.99999,5 H 60.832665 l -5,-5 v -65.5 z"
+           id="rect4595-5-0-0"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccccccccc" />
+        <g
+           transform="translate(-9.665078,180.72798)"
+           id="g69366-9-3">
+          <g
+             transform="translate(0,1.930553)"
+             id="g69306-3-7">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="92.188515"
+               y="41.524357"
+               id="text4766-9-5-1"><tspan
+                 sodipodi:role="line"
+                 id="tspan4764-6-9-3"
+                 x="92.188515"
+                 y="41.524357"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#000000;fill-opacity:1;stroke-width:0.26458332">Moisture</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="92.717682"
+               y="40.995201"
+               id="text4766-6-9"><tspan
+                 sodipodi:role="line"
+                 id="tspan4764-5-6"
+                 x="92.717682"
+                 y="40.995201"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Moisture</tspan></text>
+          </g>
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="88.761246"
+           y="267.31583"
+           id="text4766-8-5-1-6-4"><tspan
+             sodipodi:role="line"
+             id="tspan4764-3-6-3-3-2"
+             x="88.761246"
+             y="267.31583"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#000000;fill-opacity:1;stroke-width:0.26458332">TARE</tspan></text>
+        <g
+           id="g69087-0-0"
+           transform="translate(-9.665073,192.65683)">
+          <g
+             id="g69081-2-2">
+            <g
+               id="g69076-0-9">
+              <text
+                 id="text4766-8-5-7-5"
+                 y="74.12986"
+                 x="98.955482"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+                 xml:space="preserve"><tspan
+                   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+                   y="74.12986"
+                   x="98.955482"
+                   id="tspan4764-3-6-4-7"
+                   sodipodi:role="line">TARE</tspan></text>
+            </g>
+          </g>
+        </g>
+        <g
+           id="g69260-7-4"
+           transform="translate(-10.19425,145.96586)">
+          <path
+             style="fill:#090909;fill-opacity:1;stroke:#ffffff;stroke-width:0.59531248px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             d="M 75.813477,65.38088 V 58.515855 L 69.86819,61.948367 Z"
+             id="path5069-6-1-7-3-6"
+             inkscape:connector-curvature="0" />
+          <path
+             style="fill:#090909;fill-opacity:1;stroke:#ffffff;stroke-width:0.59531248px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             d="m 136.99036,65.38088 v -6.865025 l 5.94528,3.432512 z"
+             id="path5069-6-1-7-7-0-4"
+             inkscape:connector-curvature="0" />
+        </g>
+        <g
+           transform="translate(-9.665078,194.02474)"
+           id="g69355-6-1-9">
+          <g
+             transform="translate(0,14.101388)"
+             id="g69107-4-8-8">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="92.740952"
+               y="42.650288"
+               id="text4766-5-7-1-8-1"><tspan
+                 sodipodi:role="line"
+                 x="92.740952"
+                 y="42.650288"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#000000;fill-opacity:1;stroke-width:0.26458332"
+                 id="tspan5061-2-1-9-3">TEMP/RH</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="93.270119"
+               y="42.12112"
+               id="text4766-5-8-0-8"><tspan
+                 sodipodi:role="line"
+                 x="93.270119"
+                 y="42.12112"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+                 id="tspan5061-6-7-9">TEMP/RH</tspan></text>
+          </g>
+        </g>
+        <g
+           transform="translate(-9.665078,167.43122)"
+           id="g69344-4-8-2">
+          <g
+             transform="translate(0,14.101388)"
+             id="g69113-0-3-0">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="88.228226"
+               y="55.947056"
+               id="text4766-8-1-7-6-1"><tspan
+                 sodipodi:role="line"
+                 id="tspan4764-3-0-4-7-3"
+                 x="88.228226"
+                 y="55.947056"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#000000;fill-opacity:1;stroke-width:0.26458332">FEED LEVELS</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="88.757393"
+               y="55.417889"
+               id="text4766-8-53-3-3"><tspan
+                 sodipodi:role="line"
+                 id="tspan4764-3-07-2-0"
+                 x="88.757393"
+                 y="55.417889"
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">FEED LEVELS</tspan></text>
+          </g>
+        </g>
+        <text
+           id="text69787-2-0"
+           y="211.10545"
+           x="73.733978"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111126px;line-height:1.25;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111126px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#000000;fill-opacity:1;stroke-width:0.26458332"
+             y="211.10545"
+             x="73.733978"
+             id="tspan69785-1-0"
+             sodipodi:role="line">SENSORS</tspan></text>
+        <g
+           transform="translate(36.976643,82.331978)"
+           id="g69884-2">
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111126px;line-height:1.25;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             x="37.286503"
+             y="128.24431"
+             id="text69787-22"><tspan
+               sodipodi:role="line"
+               id="tspan69785-4"
+               x="37.286503"
+               y="128.24431"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111126px;font-family:'Falcon Punch Straight';-inkscape-font-specification:'Falcon Punch Straight';fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">SENSORS</tspan></text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
