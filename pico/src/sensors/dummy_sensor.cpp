@@ -34,6 +34,15 @@ int DummySensor::serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* json
     );
 }
 
+bool DummySensor::handleSensorControlCommand(SensorControlMessage& message) {
+    if(message.mCommand == 0x44434241) {
+        DEBUG_PRINT("HANDLING COMMAND");
+        return true;
+    }
+
+    return false;
+}
+
 Sensor::SensorUpdateResponse DummySensor::doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize) {
     if(is_nil_time(mNextUpdateTime) || absolute_time_diff_us(currentTime, mNextUpdateTime) <= 0) {
 

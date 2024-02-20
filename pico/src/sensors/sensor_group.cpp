@@ -108,6 +108,16 @@ int SensorGroup::unpackSensorDataToJSON(uint8_t* sensorDataBuffer, int bufferSiz
 }
 
 bool SensorGroup::handleSensorControlCommand(SensorControlMessage& message) {
+    if(strncmp(
+        message.mControlTopic,
+        mControlTopic,
+        MQTTMessage::MQTT_MAX_TOPIC_LENGTH
+    )) {
+        // Not for this group
+        return false;
+    }
+
+    // This message is for this group, find a sensor that can handle it
     for(auto& s : mSensors) {
         if(s->handleSensorControlCommand(message)) {
             return true;

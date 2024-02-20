@@ -15,6 +15,7 @@ class DummySensor : public Sensor {
         }
 
         static int serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize);
+        virtual bool handleSensorControlCommand(SensorControlMessage& message);
 
         static const uint32_t RAW_DATA_SIZE = (sizeof(int) + sizeof(float));
     protected:

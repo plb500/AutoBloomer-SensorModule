@@ -8,7 +8,7 @@
 struct SensorControlMessage {
     uint32_t mCommand;
     char mCommandParams[8];
-
+    char mControlTopic[MQTTMessage::MQTT_MAX_TOPIC_LENGTH];
     bool fillFromMQTT(MQTTMessage& mqttMessage);
 };
 

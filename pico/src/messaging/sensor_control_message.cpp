@@ -6,6 +6,12 @@
 bool SensorControlMessage::fillFromMQTT(MQTTMessage& mqttMessage) {
     const int MAX_COMPONENT_LENGTH = 8;
 
+    if(!strlen(mqttMessage.mTopic)) {
+        return false;
+    }
+
+    strncpy(mControlTopic, mqttMessage.mTopic, MQTTMessage::MQTT_MAX_TOPIC_LENGTH);
+
     char command[MAX_COMPONENT_LENGTH + 1];
     char value[MAX_COMPONENT_LENGTH + 1];
     char formatString[16];
