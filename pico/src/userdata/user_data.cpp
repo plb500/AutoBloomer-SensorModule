@@ -213,11 +213,13 @@ bool UserData::serializeFromByteArray(const char *bytes, int bytesSize) {
     size_t dataKeyLen = strlen(readPtr);
     if(!dataKeyLen) {
         // At the very least we should have a valid data key block before we set our data
+        wipe();
         return false;
     }
     string dataKey = readPtr;
     if(dataKey != VALID_DATA_KEY) {
         // We had some key data but it looks corrupted
+        wipe();
         return false;
     }
 

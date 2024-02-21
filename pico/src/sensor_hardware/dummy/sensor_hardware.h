@@ -1,6 +1,7 @@
 #ifndef _SENSOR_HARDWARE_H_
 #define _SENSOR_HARDWARE_H_
 
+#include "pico/types.h"
 
 // Could not think of a better way of doing this. The data buffer sizes are naturally variable because
 // our set of sensors is not fixed and depends on our current hardware implementation, but they also
@@ -10,24 +11,11 @@
 // queue need to contain fixed arrays of data. We could just pre-allocate large arrays and hope that
 // it's enough that our sensors will never overflow them, and that's what I did for a while but it 
 // seemed a bit gross (and wasteful of memory)
-#if SENSOR_HARDWARE == DUMMY
 #include "sensors/dummy_sensor.h"
 
 constexpr const uint32_t TOTAL_RAW_DATA_SIZE = (
     (DummySensor::RAW_DATA_SIZE + 2) * 2
 );
 
-#elif SENSOR_HARDWARE == SENSOR_POD
-#include "sensors/scd30_sensor.h"
-#include "sensors/stemma_soil_sensor.h"
-
-constexpr const uint32_t TOTAL_RAW_DATA_SIZE = (
-    (SCD30Sensor::RAW_DATA_SIZE + 2) +
-    (StemmaSoilSensor::RAW_DATA_SIZE + 2)
-);
-
-#elif SENSOR_HARDWARE == HIB
-#else
-#endif
 
 #endif      // _SENSOR_HARDWARE_H_

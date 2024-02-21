@@ -2,8 +2,14 @@ cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
-
 set(PICO_BOARD pico_w CACHE STRING "Board type")
+
+set(HARDWARE_TYPE "DUMMY" CACHE STRING "Define the physical hardware type we are compiling for")
+set_property(CACHE HARDWARE_TYPE PROPERTY STRINGS 
+    DUMMY,
+    SENSOR_POD,
+    HIB
+)
 
 include(pico_sdk_import.cmake)
 
@@ -45,7 +51,6 @@ add_executable(SensorPodController
     src/userdata/user_data.cpp
 
     src/main.cpp
-    src/sensor_hardware.cpp
 )
 
 pico_set_linker_script(SensorPodController ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
@@ -77,9 +82,22 @@ target_link_libraries(SensorPodController
 )
 
 target_compile_definitions(SensorPodController PUBLIC
-    DUMMY=1
-    SENSOR_POD=2
-    HIB=3
-
-    SENSOR_HARDWARE=SENSOR_POD
+    # Set to 0 to disable all stdio UART logging
+    DEBUG_PRINT_ON=1
 )
+
+set(HARDWARE_TYPE "HIB")
+
+if(HARDWARE_TYPE STREQUAL "DUMMY")
+    add_subdirectory(
+        src/sensor_hardware/dummy
+    )
+elseif(HARDWARE_TYPE STREQUAL "SENSOR_POD")
+    add_subdirectory(
+        src/sensor_hardware/sensor_pod
+    )
+elseif(HARDWARE_TYPE STREQUAL "HIB")
+    add_subdirectory(
+        src/sensor_hardware/hib
+    )
+endif()

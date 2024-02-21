@@ -6,26 +6,18 @@ extern "C"
 {
 #endif
 
-// Debug/Serial output macro block
-#define DEBUG_PRINT_ON                                  1      // Set to 0 to disable all stdio UART logging
-
 #if DEBUG_PRINT_ON
 #include <stdio.h>
 #include "pico/stdlib.h"
 #   define DEBUG_PRINT_BUF_SIZE                         (128)
-
-extern const int DEBUG_UART_TX_PIN;
-extern const int DEBUG_UART_RX_PIN;
-extern const int STDIO_UART_BAUDRATE;
-extern uart_inst_t* STDIO_UART;
 
 static char DEBUG_PRINT_BUF[DEBUG_PRINT_BUF_SIZE];
 
 // Initialize the debug logging system
 #   if LIB_PICO_STDIO_UART                                      
 #       define DEBUG_PRINT_INIT()                              {    \
-            gpio_set_function(DEBUG_UART_TX_PIN, GPIO_FUNC_UART);   \
-            gpio_set_function(DEBUG_UART_RX_PIN, GPIO_FUNC_UART);   \
+            gpio_set_function(PICO_DEFAULT_UART_TX_PIN, GPIO_FUNC_UART);   \
+            gpio_set_function(PICO_DEFAULT_UART_RX_PIN, GPIO_FUNC_UART);   \
             uart_init(STDIO_UART, STDIO_UART_BAUDRATE);             \
             uart_set_format (STDIO_UART, 8, 1, UART_PARITY_NONE);   \
             uart_set_hw_flow(STDIO_UART, false, false);             \
