@@ -1,6 +1,9 @@
 # AutoBloomer Sensor Module
 
-<img src="/images/sensor_pod_image_1.jpg" width="30%">
+<p align="center">
+  <img src="/images/sensor_pod_with_board.jpg" width="40%" /> 
+  <img src="/images/hib.jpg" width="40%" />
+</p>
 
 Full plans and code for a sensor controller capable of publishing multiple sensor data via MQTT
 
@@ -36,7 +39,7 @@ The Sensor Pod consists of a single sensor group providing data from the followi
     - Soil moisture
  
 ### Hardware Interface Board
-The HIB consists of two distinct pieces of hardware. One section provides power and hardware control to the Raspberry Pi powering the AutoBloomer controller, along with a RTC module and interfacing to relays. The other section is the sensor module which provides data from feed level sensors along with the current RTC battery module. These are grouped as follows:
+The HIB consists of two distinct pieces of hardware. One section provides power and hardware control to the Raspberry Pi powering the [AutoBloomer controller](https://github.com/plb500/AutoBloomer-Controller), along with a RTC module and interfacing to relays. The other section is the sensor module which provides data from feed level sensors along with the current RTC battery module. These are grouped as follows:
 - Group 0
   - RTC battery level
 - Group 1
@@ -72,3 +75,4 @@ The payload consists of a single line detailing the type of calibration to be pe
 Calibration commands are one of the following:
 - TEMP [temperature offset]
 - FRC [CO2 field calibration value]
+For more details on these parameters, see the SCD30 documentation [here](/docs/SCD30_Interface_Description.pdf)
