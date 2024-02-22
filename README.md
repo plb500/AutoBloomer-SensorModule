@@ -1,9 +1,15 @@
-# AutoBloomer Sensor Module
+# AutoBloomer Sensor Modules
+
+<p align="center">
+  <img src="/images/sensor_pod_render.jpg" width="40%" /> 
+  <img src="/images/hib-render.jpg" width="40%" />
+</p>
 
 <p align="center">
   <img src="/images/sensor_pod_with_board.jpg" width="40%" /> 
   <img src="/images/hib.jpg" width="40%" />
 </p>
+
 
 Full plans and code for a sensor controller capable of publishing multiple sensor data via MQTT
 
