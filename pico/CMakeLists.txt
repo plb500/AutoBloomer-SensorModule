@@ -4,7 +4,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
 set(PICO_BOARD pico_w CACHE STRING "Board type")
 
-set(HARDWARE_TYPE "DUMMY" CACHE STRING "Define the physical hardware type we are compiling for")
+set(HARDWARE_TYPE "DUMMY" CACHE STRING "Define the physical hardware platform we are compiling for")
 set_property(CACHE HARDWARE_TYPE PROPERTY STRINGS 
     DUMMY,
     SENSOR_POD,
@@ -90,14 +90,14 @@ set(HARDWARE_TYPE "HIB")
 
 if(HARDWARE_TYPE STREQUAL "DUMMY")
     add_subdirectory(
-        src/sensor_hardware/dummy
+        src/hardware_platform/dummy
     )
 elseif(HARDWARE_TYPE STREQUAL "SENSOR_POD")
     add_subdirectory(
-        src/sensor_hardware/sensor_pod
+        src/hardware_platform/sensor_pod
     )
 elseif(HARDWARE_TYPE STREQUAL "HIB")
     add_subdirectory(
-        src/sensor_hardware/hib
+        src/hardware_platform/hib
     )
 endif()

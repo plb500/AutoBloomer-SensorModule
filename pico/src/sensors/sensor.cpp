@@ -40,7 +40,7 @@ void Sensor::update(absolute_time_t currentTime) {
             // We got fresh data, everything is good. Cache the data.
             memcpy(mCachedData.mDataBytes, sensorData, dataSize);
             mCachedData.mDataLen = dataSize;
-            mCachedData.mDataExpiryTime = make_timeout_time_ms(SENSOR_DATA_CACHE_TIME_MS);
+            mCachedData.mDataExpiryTime = make_timeout_time_ms(getDataCacheTimeout());
             resetUpdateWatchdogTimer();
             break;
 

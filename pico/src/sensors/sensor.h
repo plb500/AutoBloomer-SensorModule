@@ -61,6 +61,8 @@ class Sensor {
         // The total size required to pack this sensor's raw data into a binary blob
         virtual constexpr uint16_t getRawDataSize() const { return 0; }
 
+        virtual uint32_t getDataCacheTimeout() const { return SENSOR_DATA_CACHE_TIME_MS; }
+
         void update(absolute_time_t currentTime);
         const SensorDataBuffer& getCachedData() const { return mCachedData; }
 

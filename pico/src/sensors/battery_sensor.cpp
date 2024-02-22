@@ -2,13 +2,11 @@
 #include "util/debug_io.h"
 
 #include "hardware/adc.h"
-// #include "pico/stdlib.h"
 #include <cmath>
 #include <cstring>
 
 using std::make_tuple;
 using std::get;
-
 
 // Max value will be 3.3v (internal ADC ref). Convert from 12-bit value to voltage.
 // On the HIB, the voltage is put through a voltage divider which halves the voltage
@@ -17,6 +15,8 @@ const uint BATTERY_SAMPLE_PERIOD_MS = 300000;               // Battery isn't goi
 const uint BATTERY_CHARGE_PERIOD_MS = 20;                   // Time for capacitor to build up
 
 #define BATTERY_SAMPLE_COUNT_FACTOR     (3)                 // We'll take 8 (2^3) battery readings
+
+constexpr const char* VOLTAGE_JSON_KEY               = "voltage";
 
 
 BatteryVoltageSensor::BatteryVoltageSensor(int enablePin, int measurePin, int adcInput) :
@@ -52,7 +52,14 @@ void BatteryVoltageSensor::shutdown() {
 }
 
 int BatteryVoltageSensor::serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize) {
-    return -1;
+    float voltage;
+
+    memcpy(&voltage, data, sizeof(float));
+
+    return sprintf(jsonBuffer,
+        "\"%s\": %.2f",
+        VOLTAGE_JSON_KEY, voltage
+    );
 }
 
 Sensor::SensorUpdateResponse BatteryVoltageSensor::doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize) {
