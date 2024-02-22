@@ -1,7 +1,7 @@
 #ifndef _BATTERY_VOLTAGE_SENSOR_H_
 #define _BATTERY_VOLTAGE_SENSOR_H_
 
-#include "sensor.h"
+#include "sensors/sensor.h"
 
 #include "pico/types.h"
 

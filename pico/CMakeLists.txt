@@ -31,20 +31,21 @@ add_executable(SensorPodController
     src/network/network_controller.cpp
     src/network/mqtt_controller.cpp
 
-    src/sensors/sensirion/scd30_i2c.c
-    src/sensors/sensirion/sensirion_common.c
-    src/sensors/sensirion/sensirion_i2c_hal.c
-    src/sensors/sensirion/sensirion_i2c.c
+    src/sensors/hardware_interfaces/sensirion/scd30_i2c.c
+    src/sensors/hardware_interfaces/sensirion/sensirion_common.c
+    src/sensors/hardware_interfaces/sensirion/sensirion_i2c_hal.c
+    src/sensors/hardware_interfaces/sensirion/sensirion_i2c.c
+    src/sensors/hardware_interfaces/sensor_i2c_interface.cpp
 
-    src/sensors/sensor_i2c_interface.cpp
-    src/sensors/stemma_soil_sensor.cpp
+    src/sensors/sensor_types/stemma_soil_sensor.cpp
+    src/sensors/sensor_types/dummy_sensor.cpp
+    src/sensors/sensor_types/scd30_sensor.cpp
+    src/sensors/sensor_types/stemma_soil_sensor.cpp
+    src/sensors/sensor_types/battery_sensor.cpp
+    src/sensors/sensor_types/sonar_sensor.cpp
+
     src/sensors/sensor.cpp
     src/sensors/sensor_group.cpp
-    src/sensors/dummy_sensor.cpp
-    src/sensors/scd30_sensor.cpp
-    src/sensors/stemma_soil_sensor.cpp
-    src/sensors/battery_sensor.cpp
-    src/sensors/sonar_sensor.cpp
 
     src/serial_control/serial_controller.cpp
 

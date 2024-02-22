@@ -1,5 +1,5 @@
 #include "sensors/sensor_group.h"
-#include "sensors/dummy_sensor.h"
+#include "sensors/sensor_types/dummy_sensor.h"
 #include "pico/stdlib.h"
 #include <vector>
 

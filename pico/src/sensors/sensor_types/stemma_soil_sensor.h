@@ -2,8 +2,8 @@
 #define _STEMMA_SOIL_SENSOR_H_
 
 
-#include "sensor.h"
-#include "sensor_i2c_interface.h"
+#include "sensors/sensor.h"
+#include "sensors/hardware_interfaces/sensor_i2c_interface.h"
 #include "pico/types.h"
 
 

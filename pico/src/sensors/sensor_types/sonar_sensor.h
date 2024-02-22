@@ -1,7 +1,7 @@
 #ifndef _SONAR_SENSOR_H_
 #define _SONAR_SENSOR_H_
 
-#include "sensor.h"
+#include "sensors/sensor.h"
 #include "hardware/pio.h"
 
 

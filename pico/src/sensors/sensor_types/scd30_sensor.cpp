@@ -1,6 +1,6 @@
 #include "scd30_sensor.h"
-#include "sensirion/scd30_i2c.h"
-#include "sensirion/sensirion_i2c_hal.h"
+#include "sensors/hardware_interfaces/sensirion/scd30_i2c.h"
+#include "sensors/hardware_interfaces/sensirion/sensirion_i2c_hal.h"
 #include "util/debug_io.h"
 
 #include <cstring>

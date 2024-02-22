@@ -1,8 +1,8 @@
 #ifndef _SCD30_SENSOR_H_
 #define _SCD30_SENSOR_H_
 
-#include "sensor.h"
-#include "sensor_i2c_interface.h"
+#include "sensors/sensor.h"
+#include "sensors/hardware_interfaces/sensor_i2c_interface.h"
 
 class SCD30Sensor : public Sensor {
     public:

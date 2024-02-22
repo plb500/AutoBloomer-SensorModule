@@ -1,7 +1,7 @@
 #include "sensors/sensor_group.h"
 #include "pico/stdlib.h"
-#include "sensors/battery_sensor.h"
-#include "sensors/sonar_sensor.h"
+#include "sensors/sensor_types/battery_sensor.h"
+#include "sensors/sensor_types/sonar_sensor.h"
 #include <vector>
 
 
