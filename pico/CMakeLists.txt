@@ -87,7 +87,7 @@ target_compile_definitions(SensorPodController PUBLIC
     DEBUG_PRINT_ON=1
 )
 
-set(HARDWARE_TYPE "HIB")
+set(HARDWARE_TYPE "SENSOR_POD")
 
 if(HARDWARE_TYPE STREQUAL "DUMMY")
     add_subdirectory(
