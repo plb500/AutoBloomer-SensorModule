@@ -358,7 +358,7 @@
   (pad "41" thru_hole oval (at 0.5841 5.6) (size 1.7 1.7) (drill 1.02) (layers *.Cu *.Mask) (tstamp a877084f-aef7-444b-b196-c3d6fd8c99fa))
   (pad "42" thru_hole rect (at 3.1241 5.6) (size 1.7 1.7) (drill 1.02) (layers *.Cu *.Mask) (tstamp 0c7737c2-9ce5-4a7e-b469-773493986cc0))
   (pad "43" thru_hole oval (at 5.6641 5.6) (size 1.7 1.7) (drill 1.02) (layers *.Cu *.Mask) (tstamp 5f92749e-d901-43e2-9830-cd67adc28c43))
-  (model "/Users/philip/Development/PiFeeder/AutoBloomer-SensorPod/hardware/KiCad/PicoW/RPi Pico W w_headers.step"
+  (model "${KIPRJMOD}/../../KiCad/PicoW/RPi Pico W w_headers.step"
     (offset (xyz -10.5 -25.5 10.5))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))

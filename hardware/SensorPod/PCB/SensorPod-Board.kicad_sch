@@ -449,7 +449,7 @@
         )
       )
     )
-    (symbol "RPi_Pico:PicoW" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
+    (symbol "PicoW:PicoW" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
       (property "Reference" "U" (id 0) (at -13.97 27.94 0)
         (effects (font (size 1.27 1.27)))
       )
@@ -2018,12 +2018,12 @@
     (pin "1" (uuid 5b7b78e3-accd-4a29-88b1-d8435bcd960a))
   )
 
-  (symbol (lib_id "RPi_Pico:PicoW") (at 165.1 104.14 0) (unit 1)
+  (symbol (lib_id "PicoW:PicoW") (at 165.1 104.14 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid edc16dc7-3087-489e-9478-e0104b4d8c62)
     (property "Reference" "U1" (id 0) (at 165.1 72.39 0))
     (property "Value" "Pico W" (id 1) (at 165.1 74.93 0))
-    (property "Footprint" "RPi_Pico:RPi_PicoW_SMD_TH" (id 2) (at 165.1 104.14 90)
+    (property "Footprint" "RPi_PicoW:RPi_Pico_SMD_TH" (id 2) (at 165.1 104.14 90)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (id 3) (at 165.1 104.14 0)
@@ -2174,7 +2174,7 @@
       (reference "R3") (unit 1) (value "10K") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal")
     )
     (path "/edc16dc7-3087-489e-9478-e0104b4d8c62"
-      (reference "U1") (unit 1) (value "Pico W") (footprint "RPi_Pico:RPi_PicoW_SMD_TH")
+      (reference "U1") (unit 1) (value "Pico W") (footprint "RPi_PicoW:RPi_Pico_SMD_TH")
     )
     (path "/a18a804a-71b6-4fa4-a9fe-740ba1a67f07"
       (reference "U2") (unit 1) (value "SCD30") (footprint "SCD30:MODULE_SCD30")

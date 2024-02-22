@@ -1,4 +1,4 @@
 (sym_lib_table
-  (lib (name "SCD30")(type "KiCad")(uri "/Users/philip/Development/PiFeeder/AutoBloomer-SensorPod/hardware/KiCad/SCD30/SCD30.kicad_sym")(options "")(descr ""))
-  (lib (name "RPi_Pico")(type "KiCad")(uri "/Users/philip/Development/PiFeeder/AutoBloomer-SensorPod/hardware/KiCad/PicoW/RPi_Pico.kicad_sym")(options "")(descr ""))
+  (lib (name "SCD30")(type "KiCad")(uri "${KIPRJMOD}/../../KiCad/SCD30/SCD30.kicad_sym")(options "")(descr ""))
+  (lib (name "PicoW")(type "KiCad")(uri "${KIPRJMOD}/../../KiCad/PicoW/RPi_Pico.kicad_sym")(options "")(descr ""))
 )

@@ -1,3 +1,4 @@
 (sym_lib_table
-  (lib (name "SCD30")(type "KiCad")(uri "/Users/philip/Downloads/SCD30/SCD30.kicad_sym")(options "")(descr ""))
+  (lib (name "SCD30")(type "KiCad")(uri "${KIPRJMOD}/../../KiCad/SCD30/SCD30.kicad_sym")(options "")(descr ""))
+  (lib (name "RPi_Pico")(type "KiCad")(uri "${KIPRJMOD}/../../KiCad/PicoW/RPi_Pico.kicad_sym")(options "")(descr ""))
 )
