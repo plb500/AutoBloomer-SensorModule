@@ -17,17 +17,17 @@ Raspberry Pico source code is [here](pico/src)
 
 PCB schematics (KiCad format), plans plus any 3D prints/CNC files for the different hardware platforms are [here](hardware)
 
-A brief overiew is on [YouTube](https://youtu.be/ilkXrpyaba0)
+A brief overview is on [YouTube](https://youtu.be/ilkXrpyaba0)
 
-Under the hood the sensor module uses a Raspberry Pico W to communicate with an MQTT broker and transmit data it collates from the following sensors:
-- SCD30 environmental sensor
-- Stemma soil sensor
-- Battery voltage (for Raspberry Pi RTC)
-- Sonar (feed level) sensors
+Under the hood the sensor modules use Raspberry Pico Ws to communicate with an MQTT broker and transmit data it collates from the following sensors:
+- SCD30 environmental sensor ([link](https://www.sensirion.com/products/catalog/SCD30/))
+- Stemma soil sensor ([link](https://www.adafruit.com/product/4026))
+- Battery voltage (for Raspberry Pi RTC) (uses an ADC pin on the Pico and custom circuitry on the HIB)
+- Sonar (feed level) sensors (Currently using A02YYUW sonars - [link](https://www.dfrobot.com/product-1935.html)
 
-I also intend to add EC and/or pH sensors to this to essentially make this a fully-fledged hydroponics sensor interface.
+I also intend to add EC and/or pH sensors to this to essentially make this a one-stop hydroponics sensor interface.
 
-The module arranges these sensors into sensor "groups". Each group effectively publishes a set of data from multiple sensors to a single MQTT topic. This allows the Sensor Pod, for example, to accumulate sensor data from both the SCD30 sensor and the Stemma Soil Sensor into a single topic, and also allows the HIB to publish sensor data to multiple topics (i.e. the RTC battery voltage and each individual connected feed sensor all publish to their own individual topics)
+The module arranges these sensors into sensor "groups", referred to by their index. Each group effectively publishes a set of data from multiple sensors to a single MQTT topic. This allows the Sensor Pod, for example, to accumulate sensor data from both the SCD30 sensor and the Stemma Soil Sensor into a single topic, and also allows the HIB to publish sensor data to multiple topics (i.e. the RTC battery voltage and each individual connected feed sensor all publish to their own individual topics)
 
 ## Hardware platforms
 Currently there are two different hardware platforms defined:
@@ -65,6 +65,15 @@ Basic pod configuration of essential runtime variables (wireless SSID/key, broke
 - GRPN<< sensor group index>><< sensor group name >> - Sets the name of the sensor group at the supplied index (this is used for the MQTT topic path)
 - GRPL<<sensor group index>><< sensor group location >> - Sets the location of the sensor group at the supplied index (this is used for the MQTT topic path)
 
+#### Example commands
+- `SSIDMyNetwork` -> Sets the sensor module to connect to the wireless network with the SSID "MyNetwork"
+- `PASSthe_key` -> Sets the sensor module to connect to the wireless network using the PSK "the_key"
+- `NAMESensorModule` -> Sets the Pico's host/MQTT client name to be "SensorModule"
+- `BRKRthebroker.local` -> Tells the sensor module to connect and publish to the MQTT broker with host name "thebroker.local"
+- `BRKR192.168.1.50` -> Tells the sensor module to connect and publish to the MQTT broker at address "192.168.1.50"
+- `GRPN0Group1Sensor` -> Sets the name of the sensor group at index 0 to "Group1Sensor"
+- `GRPL0LeftChamber` -> Sets the location of the sensor group at index 0 to "LeftChamber"
+
 Once these have been set the pod will attempt to connect to the configured broker via the supplied wireless network and begin publishing sensor data to the topic:
 
 ```
@@ -79,6 +88,7 @@ AutoBloomer/<< sensor group location >>/<< sensor group name >>/control
 
 The payload consists of a single line detailing the type of calibration to be performed. Currently the only sensor capable of (and requiring) calibration is the SCD30 on the Sensor Pod.
 Calibration commands are one of the following:
-- TEMP [temperature offset]
-- FRC [CO2 field calibration value]
+- TEMP (temperature offset)
+- FRC (CO2 field calibration value)
+  
 For more details on these parameters, see the SCD30 documentation [here](/docs/SCD30_Interface_Description.pdf)
