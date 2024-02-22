@@ -45,7 +45,7 @@ The Sensor Pod consists of a single sensor group providing data from the followi
     - Soil moisture
  
 ### Hardware Interface Board
-The HIB consists of two distinct pieces of hardware. One section provides power and hardware control to the Raspberry Pi powering the [AutoBloomer controller](https://github.com/plb500/AutoBloomer-Controller), along with a RTC module and interfacing to relays. The other section is the sensor module which provides data from feed level sensors along with the current RTC battery module. These are grouped as follows:
+The HIB consists of two distinct pieces of hardware. One section provides power and hardware control to the Raspberry Pi powering the [AutoBloomer controller](https://github.com/plb500/AutoBloomer-Controller), along with a RTC module and interfacing to relays. The other section is the sensor module which provides data from feed level sensors along with the current RTC battery module voltage. These are grouped as follows:
 - Group 0
   - RTC battery level
 - Group 1
