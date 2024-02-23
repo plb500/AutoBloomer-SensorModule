@@ -3,6 +3,7 @@
 
 #include "sensors/sensor.h"
 #include "hardware/pio.h"
+#include "board_hardware/connection_io.h"
 
 
 struct PIOWrapper {
@@ -13,7 +14,8 @@ struct PIOWrapper {
 
 class SonarSensor : public Sensor {
     public:
-        SonarSensor(PIOWrapper &pioWrapper, int stateMachineID, int txPin, int rxPin, int baud);
+        SonarSensor(
+            PIOWrapper &pioWrapper, int stateMachineID, int txPin, int rxPin, int baud, ConnectionIO& connectionIO);
 
         virtual void reset();
         virtual void shutdown();                
@@ -23,6 +25,7 @@ class SonarSensor : public Sensor {
         static int serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize);
 
         static const uint32_t RAW_DATA_SIZE = sizeof(uint16_t);
+
     protected:
         virtual void doInitialization();
         virtual SensorUpdateResponse doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize);
@@ -37,6 +40,7 @@ class SonarSensor : public Sensor {
         const int mTXPin;
         const int mRXPin;
         const int mBaudrate;
+        ConnectionIO& mConnectionIO;
 
         char mPacketBuffer[SONAR_SENSOR_PACKET_SIZE];
         int mCurrentBufferPos;

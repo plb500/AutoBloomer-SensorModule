@@ -20,6 +20,9 @@ pico_sdk_init()
 string(APPEND CMAKE_EXE_LINKER_FLAGS "-Wl,--print-memory-usage")
 
 add_executable(SensorPodController
+    src/board_hardware/connection_io.cpp
+    src/board_hardware/shift_register.cpp
+
     src/cores/core_0_executor.cpp
     src/cores/core_1_executor.cpp
 
@@ -87,7 +90,7 @@ target_compile_definitions(SensorPodController PUBLIC
     DEBUG_PRINT_ON=1
 )
 
-set(HARDWARE_TYPE "SENSOR_POD")
+set(HARDWARE_TYPE "HIB")
 
 if(HARDWARE_TYPE STREQUAL "DUMMY")
     add_subdirectory(

@@ -64,8 +64,10 @@ void Sensor::update(absolute_time_t currentTime) {
             mCachedData.mDataLen = 0;
             break;
 
+        case SENSOR_NOT_CONNECTED:
         case SENSOR_INACTIVE:
-            // Not a lot we can do here, either we weren't initialized or the init failed.
+            // Not a lot we can do here, either we weren't initialized or the init failed or the sensor
+            // physically hasn't been connected yet. Either way there's no data.
             mCachedData.mDataLen = 0;
             break;
     }

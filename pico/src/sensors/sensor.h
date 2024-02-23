@@ -25,6 +25,7 @@ class Sensor {
         enum SensorStatus {
             SENSOR_OK,
             SENSOR_OK_NO_DATA,
+            SENSOR_NOT_CONNECTED,
             SENSOR_INACTIVE,
             SENSOR_MALFUNCTIONING
         };

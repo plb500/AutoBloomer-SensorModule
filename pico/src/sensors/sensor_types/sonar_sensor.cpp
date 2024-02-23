@@ -14,16 +14,21 @@ using std::get;
 constexpr const char* DISTANCE_JSON_KEY               = "distance";
 
 
-SonarSensor::SonarSensor(PIOWrapper &pioWrapper, int stateMachineID, int txPin, int rxPin, int baud) :
+SonarSensor::SonarSensor(
+    PIOWrapper &pioWrapper, int stateMachineID, int txPin, int rxPin, int baud, ConnectionIO& connectionIO) :
     Sensor(Sensor::SONAR_SENSOR, &SonarSensor::serializeDataToJSON),
     mPIOWrapper(pioWrapper),
     mStateMachineID(stateMachineID),
     mTXPin(txPin),
     mRXPin(rxPin),
-    mBaudrate(baud)
+    mBaudrate(baud),
+    mConnectionIO(connectionIO)
 {}
 
 void SonarSensor::doInitialization() {
+    // Initialize the connect-detect shift register
+    mConnectionIO.initialize();
+
     // Setup the PIO if it hasn't already been done
     if(!mPIOWrapper.mInitialized) {
         initializeSonarPIO(mPIOWrapper);
@@ -74,7 +79,13 @@ int SonarSensor::serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* json
 }
 
 Sensor::SensorUpdateResponse SonarSensor::doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize) {
-     SensorUpdateResponse response = make_tuple(Sensor::SENSOR_OK_NO_DATA, 0);
+    mConnectionIO.update();
+
+    if(!mConnectionIO.isConnected()) {
+        return make_tuple(Sensor::SENSOR_NOT_CONNECTED, 0);
+    }
+
+    SensorUpdateResponse response = make_tuple(Sensor::SENSOR_OK_NO_DATA, 0);
 
     while(uart_rx_program_has_data(mPIOWrapper.mPIO, mStateMachineID)) {
         char c = uart_rx_program_getc(mPIOWrapper.mPIO, mStateMachineID);

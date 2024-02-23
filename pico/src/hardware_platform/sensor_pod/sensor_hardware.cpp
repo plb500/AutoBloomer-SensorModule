@@ -46,8 +46,8 @@ extern const int NUM_SENSOR_GROUPS = 1;
 vector<SensorGroup> _SENSOR_GROUPS = {
     SensorGroup(
         {
-            &_scd30Sensor,
-            &_stemmaSensor
+            &_scd30Sensor
+            // &_stemmaSensor
         }
     )
 };
