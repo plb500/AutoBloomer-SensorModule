@@ -16,9 +16,6 @@ class NetworkController {
         void resolveHost(DNSRequest &request);
         int connectToWiFi(const char * const ssid, const char * const password, const char * const hostname);
 
-        void ledOn();
-        void ledOff();
-
         static void ipAddressToString(char *dest, ip_addr_t *address);
 
     private:

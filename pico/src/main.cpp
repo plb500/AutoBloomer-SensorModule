@@ -2,17 +2,20 @@
 #include "messaging/multicore_mailbox.h"
 #include "cores/core_0_executor.h"
 #include "cores/core_1_executor.h"
+#include "board_hardware/wifi_indicator.h"
 
 #include "pico/multicore.h"
 
 
+extern WiFiIndicator* _wifiIndicator;
 extern vector<SensorGroup> _SENSOR_GROUPS;
 MulticoreMailbox multicoreMailbox;
 
 // Core data wrappers
 Core0Executor dataCore0(
     multicoreMailbox,
-    _SENSOR_GROUPS
+    _SENSOR_GROUPS,
+    _wifiIndicator
 );
 
 Core1Executor dataCore1(
