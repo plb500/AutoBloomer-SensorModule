@@ -1,6 +1,6 @@
 #include "scd30_sensor.h"
-#include "sensors/hardware_interfaces/sensirion/scd30_i2c.h"
-#include "sensors/hardware_interfaces/sensirion/sensirion_i2c_hal.h"
+#include "sensors/hardware_interfaces/sensirion/scd30.h"
+#include "sensors/hardware_interfaces/sensirion/sensirion_i2c.h"
 #include "util/debug_io.h"
 
 #include <cstring>
@@ -17,52 +17,60 @@ extern int sensirion_i2c_baud;
 extern int sensirion_sda_pin;
 extern int sensirion_scl_pin;
 
-SCD30Sensor::SCD30Sensor(I2CInterface& i2c, uint8_t powerPin) :
-    Sensor(SCD30_SENSOR, &SCD30Sensor::serializeDataToJSON),
-    mI2C(i2c),
-    mActive(false),
-    mPowerControlPin(powerPin)
+#define SCD30_WAIT_SLEEP()    (busy_wait_us_32(10))
+
+SCD30Sensor::SCD30Sensor(uint8_t sdaPin, uint8_t sclPin, uint8_t powerPin) :
+    Sensor{SCD30_SENSOR, &SCD30Sensor::serializeDataToJSON},
+    mActive{false},
+    mSDAPin{sdaPin},
+    mSCLPin{sclPin},
+    mPowerControlPin{powerPin}
 {}
 
 void SCD30Sensor::doInitialization() {
-    uint8_t major, minor;
+    char serial[33];
 
-    // I2C hardware init
-    sensirion_i2c_inst = mI2C.mI2C;
-    sensirion_i2c_baud = mI2C.mBaud;
-    sensirion_sda_pin = mI2C.mSDA;
-    sensirion_scl_pin = mI2C.mSCL;
-    init_driver(SCD30_I2C_ADDR_61);
-    sensirion_i2c_hal_init();
-
-    // It's possible the SCD30 might still be in continuous measurement mode, do a stop-reset anyway
-    if(scd30_stop_periodic_measurement() != 0) {
-        return;
-    }
+    // Setup our power control pin
+    gpio_init(mPowerControlPin);
+    gpio_set_dir(mPowerControlPin, GPIO_OUT);
+    gpio_pull_up(mPowerControlPin);
 
     sleep_ms(2);
 
-    if(scd30_soft_reset() != 0) {
-        return;
+    gpio_put(mPowerControlPin, 0);
+
+    // Initialize I2C lib
+    sensirion_i2c_init();
+
+    // See if we can get access
+    while (scd30_probe() != NO_ERROR) {
+        sensirion_sleep_usec(1000000u);
     }
 
-    sleep_ms(2);
-
-    mActive = !scd30_read_firmware_version(&major, &minor);
-    DEBUG_PRINT("SCD30 Firmware: 0x%2X - 0x%2X");
+    // Validate we can communicate with the SCD30
+    mActive = !scd30_read_serial(serial);
+    DEBUG_PRINT("SCD30 serial: %s", serial);
 
     startReadings();
 }
 
 void SCD30Sensor::reset() {
     shutdown();
+
+    // Bounce the power to the sensor
+    sleep_ms(2);
+    gpio_put(mPowerControlPin, 1);
+    sleep_ms(2);
+    gpio_put(mPowerControlPin, 0);
+    sleep_ms(2);
+
     initialize();
 }
 
 void SCD30Sensor::shutdown() {
     scd30_stop_periodic_measurement();
-    sleep_ms(1);
-    sensirion_i2c_hal_free();
+    SCD30_WAIT_SLEEP();
+    sensirion_i2c_release();
 }           
 
 bool SCD30Sensor::handleSensorControlCommand(SensorControlMessage& message) {
@@ -115,7 +123,7 @@ void SCD30Sensor::setForcedRecalibrationValue(uint16_t frc) {
     scd30_stop_periodic_measurement();
 
     DEBUG_PRINT(" -- Setting FRC to: %d", frc);
-    scd30_force_recalibration(frc);
+    scd30_set_forced_recalibration(frc);
 
     // Restart readings
     scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
@@ -154,7 +162,7 @@ Sensor::SensorUpdateResponse SCD30Sensor::doUpdate(absolute_time_t currentTime, 
             float temperatureReading;
             float humidityReading;
 
-            if(!scd30_read_measurement_data(
+            if(!scd30_read_measurement(
                 &co2Reading,
                 &temperatureReading,
                 &humidityReading
@@ -208,6 +216,7 @@ Sensor::SensorUpdateResponse SCD30Sensor::doUpdate(absolute_time_t currentTime, 
 void SCD30Sensor::startReadings() {
     if(mActive) {
         scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
+        sensirion_sleep_usec(20000u);
         scd30_start_periodic_measurement(0);
     }
 }

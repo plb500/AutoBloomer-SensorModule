@@ -15,6 +15,8 @@ Core0Executor::Core0Executor(MulticoreMailbox& mailbox, vector<SensorGroup>& sen
 {}
 
 void Core0Executor::initialize() {
+    watchdog_enable(WATCHDOG_TIMEOUT_MS, true);
+
     // Grab user data
     if(mUserData.readFromFlash()) {
         DEBUG_PRINT("Flash contents:");
@@ -59,6 +61,7 @@ void Core0Executor::doLoop() {
     char controlTopic[MQTTMessage::MQTT_MAX_TOPIC_LENGTH];
 
     while(1) {
+        watchdog_update();
         absolute_time_t now = get_absolute_time();
 
         // Periodically send an update through the serial port just to show core0 is still functioning

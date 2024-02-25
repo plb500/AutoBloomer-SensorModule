@@ -34,10 +34,10 @@ add_executable(SensorPodController
     src/network/network_controller.cpp
     src/network/mqtt_controller.cpp
 
-    src/sensors/hardware_interfaces/sensirion/scd30_i2c.c
+    src/sensors/hardware_interfaces/sensirion/scd30.c
     src/sensors/hardware_interfaces/sensirion/sensirion_common.c
-    src/sensors/hardware_interfaces/sensirion/sensirion_i2c_hal.c
-    src/sensors/hardware_interfaces/sensirion/sensirion_i2c.c
+    src/sensors/hardware_interfaces/sensirion/sensirion_sw_i2c.c
+    src/sensors/hardware_interfaces/sensirion/sensirion_sw_i2c_implementation.c
     src/sensors/hardware_interfaces/sensor_i2c_interface.cpp
 
     src/sensors/sensor_types/stemma_soil_sensor.cpp
@@ -90,7 +90,7 @@ target_compile_definitions(SensorPodController PUBLIC
     DEBUG_PRINT_ON=1
 )
 
-set(HARDWARE_TYPE "HIB")
+set(HARDWARE_TYPE "DUMMY")
 
 if(HARDWARE_TYPE STREQUAL "DUMMY")
     add_subdirectory(

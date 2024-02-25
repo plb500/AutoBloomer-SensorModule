@@ -6,7 +6,7 @@
 
 class SCD30Sensor : public Sensor {
     public:
-        SCD30Sensor(I2CInterface& i2c, uint8_t powerPin);
+        SCD30Sensor(uint8_t sdaPin, uint8_t sclPin, uint8_t powerPin);
 
         virtual void reset();
         virtual void shutdown();                
@@ -38,8 +38,9 @@ class SCD30Sensor : public Sensor {
 
         static constexpr int SCD30_MEASUREMENT_INTERVAL_SECONDS      = 2;
 
-        I2CInterface& mI2C;
         bool mActive;
+        uint8_t mSDAPin;
+        uint8_t mSCLPin;
         uint8_t mPowerControlPin;
 };
 
