@@ -17,7 +17,7 @@ Raspberry Pico source code is [here](pico/src)
 
 PCB schematics (KiCad format), plans plus any 3D prints/CNC files for the different hardware platforms are [here](hardware)
 
-A brief overview is on [YouTube](https://youtu.be/fkDcWQXZaM0)
+A brief overview is on [YouTube](https://youtu.be/QP_2SgASPRE)
 
 Under the hood the sensor modules use Raspberry Pico Ws to communicate with an MQTT broker and transmit data it collates from the following sensors:
 - SCD30 environmental sensor ([link](https://www.sensirion.com/products/catalog/SCD30/))
