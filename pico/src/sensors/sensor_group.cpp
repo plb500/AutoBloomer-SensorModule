@@ -58,7 +58,7 @@ void SensorGroup::packSensorData(uint8_t* sensorDataBuffer, uint16_t bufferSize)
 int SensorGroup::unpackSensorDataToJSON(uint8_t* sensorDataBuffer, int bufferSize, char* jsonBuffer, int jsonBufferSize) const {
     char* writePtr = jsonBuffer;
     uint8_t* readPtr = sensorDataBuffer;
-    *writePtr++ = '{';
+    *writePtr++ = '[';
     --jsonBufferSize;
 
     for(auto& s : mSensors) {
@@ -101,7 +101,7 @@ int SensorGroup::unpackSensorDataToJSON(uint8_t* sensorDataBuffer, int bufferSiz
         readPtr += s->getRawDataSize();
     }
 
-    *writePtr++ = '}';
+    *writePtr++ = ']';
     *writePtr++ = 0;
     jsonBufferSize -= 2;
 
