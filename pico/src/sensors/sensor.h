@@ -47,8 +47,9 @@ class Sensor {
         // Must be unique per-sensor type
         uint8_t getSensorTypeID() const { return mSensorType; };      
 
-        // Perform all required hardware initialization
-        virtual void initialize();
+        void initialize();
+
+        void update(absolute_time_t currentTime);
 
         // Fully reset the sensor hardware (will be used if sensor stops responding for a period of time)
         virtual void reset() = 0;
@@ -57,14 +58,13 @@ class Sensor {
         virtual void shutdown() = 0;                
 
         // (Optionally) respond to a sensor control command
-        virtual bool handleSensorControlCommand(SensorControlMessage& message) { return false; }
+        bool handleSensorControlCommand(SensorControlMessage& message);
 
         // The total size required to pack this sensor's raw data into a binary blob
         virtual constexpr uint16_t getRawDataSize() const { return 0; }
 
         virtual uint32_t getDataCacheTimeout() const { return SENSOR_DATA_CACHE_TIME_MS; }
 
-        void update(absolute_time_t currentTime);
         const SensorDataBuffer& getCachedData() const { return mCachedData; }
 
         static int getDataAsJSON(uint8_t sensorTypeID, uint8_t* data, uint8_t dataLength, char* jsonBuffer, int jsonBufferSize);
@@ -73,10 +73,14 @@ class Sensor {
     protected:
         typedef tuple<SensorStatus, uint8_t> SensorUpdateResponse;
 
+        // Perform all required hardware-specific initialization
         virtual void doInitialization() = 0;
 
         // Update the underlying sensor hardware, serializing any current data into the supplied buffer
         virtual SensorUpdateResponse doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize) = 0;
+
+        virtual bool respondsToSensorControlCommand(uint32_t command) { return false; }
+        virtual void processSensorControlCommand(SensorControlMessage& message) {}
 
     private:
         inline void resetUpdateWatchdogTimer();
