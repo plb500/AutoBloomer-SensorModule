@@ -26,6 +26,7 @@ class Core0Executor {
         void stopCore1AndWriteUserData();
         
         void transmitData();
+        void transmitTestMQTTMessage();
         void transmitSensorData();
 
         uint32_t getFreeMemory();

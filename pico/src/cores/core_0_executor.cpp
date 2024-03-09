@@ -170,6 +170,21 @@ void Core0Executor::stopCore1AndWriteUserData() {
 
 void Core0Executor::transmitData() {
     transmitSensorData();
+    // transmitTestMQTTMessage();
+}
+
+void Core0Executor::transmitTestMQTTMessage() {
+    if(!mUserData.hasMQTTUserData()) {
+        return;
+    }
+
+    MQTTMessage msg {
+        true,
+        "AutoBloomer/TestLocation/TestSensor",
+        "[{\"type\": 1, \"status\":1, \"testValue\": 25}]"
+    };
+
+    mMQTTController.publishMessage(msg);
 }
 
 void Core0Executor::transmitSensorData() {
