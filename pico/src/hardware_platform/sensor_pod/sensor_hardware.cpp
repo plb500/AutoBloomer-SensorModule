@@ -55,5 +55,5 @@ vector<SensorGroup> _SENSOR_GROUPS = {
 PicoWOnboardLEDIndicator _ledIndicator;
 
 
-extern WiFiIndicator* _wifiIndicator = &_ledIndicator;
+WiFiIndicator* _wifiIndicator = &_ledIndicator;
 extern const int NUM_SENSOR_GROUPS = 2;

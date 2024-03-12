@@ -7,13 +7,13 @@
 
 class PicoWOnboardLEDIndicator : public WiFiIndicator {
     public:
-        virtual void PicoWOnboardLEDIndicator::ledOn() {
+        virtual void ledOn() {
             if(cyw43_arch_async_context()) {
                 cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
             }
         }
 
-        virtual void PicoWOnboardLEDIndicator::ledOff() {
+        virtual void ledOff() {
             if(cyw43_arch_async_context()) {
                 cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
             }
