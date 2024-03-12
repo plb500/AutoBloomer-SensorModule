@@ -7,12 +7,13 @@
 #include "serial_control/serial_controller.h"
 #include "network/network_controller.h"
 #include "network/mqtt_controller.h"
+#include "board_hardware/wifi_indicator.h"
 
 
 
 class Core0Executor {
     public:
-        Core0Executor(MulticoreMailbox& mailbox, vector<SensorGroup>& sensorGroups);
+        Core0Executor(MulticoreMailbox& mailbox, vector<SensorGroup>& sensorGroups, WiFiIndicator* wifiIndicator);
 
         void initialize();
         
@@ -46,6 +47,7 @@ class Core0Executor {
         MQTTController mMQTTController;
         vector<SensorGroup>& mSensorGroups;
         vector<MQTTMessage> mOutgoingMQTTMessageBuffer;
+        WiFiIndicator* mWifiIndicator;
 };
 
 #endif      // _CORE_0_EXECUTOR_H_

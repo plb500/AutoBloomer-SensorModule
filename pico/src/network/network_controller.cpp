@@ -45,18 +45,6 @@ int NetworkController::connectToWiFi(const char * const ssid, const char * const
     return init_wifi(country, ssid, password, auth, hostname);
 }
 
-void NetworkController::ledOn() {
-    if(cyw43_arch_async_context()) {
-        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
-    }
-}
-
-void NetworkController::ledOff() {
-    if(cyw43_arch_async_context()) {
-        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
-    }
-}
-
 void NetworkController::ipAddressToString(char *dest, ip_addr_t *address) {
     if(!dest || !address) {
         return;

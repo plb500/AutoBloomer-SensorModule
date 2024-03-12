@@ -8,10 +8,11 @@
 
 Core0Executor* Core0Executor::sExecutor = nullptr;
 
-Core0Executor::Core0Executor(MulticoreMailbox& mailbox, vector<SensorGroup>& sensorGroups) :
-    mMailbox(mailbox),
-    mMQTTController(mailbox),
-    mSensorGroups(sensorGroups)
+Core0Executor::Core0Executor(MulticoreMailbox& mailbox, vector<SensorGroup>& sensorGroups, WiFiIndicator* wifiIndicator) :
+    mMailbox{mailbox},
+    mMQTTController{mailbox},
+    mSensorGroups{sensorGroups},
+    mWifiIndicator{wifiIndicator}
 {}
 
 void Core0Executor::initialize() {
@@ -79,7 +80,7 @@ void Core0Executor::doLoop() {
 
         // Check to see if we need to (re)connect to the network
         if(mUserData.hasNetworkUserData() && !mNetworkController.isConnected()) {
-            mNetworkController.ledOff();
+            if(mWifiIndicator) mWifiIndicator->ledOff();
             
             DEBUG_PRINT("Network is not connected, connecting....");
             int connectResponse = mNetworkController.connectToWiFi(
@@ -93,13 +94,13 @@ void Core0Executor::doLoop() {
             );
 
             if(!connectResponse) {
-                mNetworkController.ledOn();
+                if(mWifiIndicator) mWifiIndicator->ledOn();
                 mMQTTController.initMQTTClient();
             }
         }
 
         if(mNetworkController.isConnected()) {
-            mNetworkController.ledOn();
+            if(mWifiIndicator) mWifiIndicator->ledOn();
 
             // If we aren't connected to the broker yet, connect and subscribe
             if(!mMQTTController.isConnected() && mUserData.hasMQTTUserData()) {
@@ -150,7 +151,7 @@ void Core0Executor::doLoop() {
                 mqttUpdateTimeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
             }
         } else {
-            mNetworkController.ledOff();
+            if(mWifiIndicator) mWifiIndicator->ledOff();
         }
 
         sleep_ms(1);

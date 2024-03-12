@@ -73,6 +73,15 @@ void Sensor::update(absolute_time_t currentTime) {
     }
 }
 
+bool Sensor::handleSensorControlCommand(SensorControlMessage& message) {
+    if(respondsToSensorControlCommand(message.mCommand)) {
+        processSensorControlCommand(message);
+        return true;
+    }
+
+    return false;
+}
+
 int Sensor::getDataAsJSON(uint8_t sensorTypeID, uint8_t* data, uint8_t dataLength, char* jsonBuffer, int jsonBufferSize) {
     if(auto serializer = sJSONSerializerMap.find(sensorTypeID); serializer != sJSONSerializerMap.end()) {
         return serializer->second(data, dataLength, jsonBuffer, jsonBufferSize);

@@ -17,13 +17,13 @@ Raspberry Pico source code is [here](pico/src)
 
 PCB schematics (KiCad format), plans plus any 3D prints/CNC files for the different hardware platforms are [here](hardware)
 
-A brief overview is on [YouTube](https://youtu.be/ilkXrpyaba0)
+A brief overview is on [YouTube](https://youtu.be/QP_2SgASPRE)
 
 Under the hood the sensor modules use Raspberry Pico Ws to communicate with an MQTT broker and transmit data it collates from the following sensors:
 - SCD30 environmental sensor ([link](https://www.sensirion.com/products/catalog/SCD30/))
 - Stemma soil sensor ([link](https://www.adafruit.com/product/4026))
 - Battery voltage (for Raspberry Pi RTC) (uses an ADC pin on the Pico and custom circuitry on the HIB)
-- Sonar (feed level) sensors (Currently using A02YYUW sonars - [link](https://www.dfrobot.com/product-1935.html)
+- Sonar (feed level) sensors (Currently using A02YYUW sonars - [link](https://www.dfrobot.com/product-1935.html))
 
 I also intend to add EC and/or pH sensors to this to essentially make this a one-stop hydroponics sensor interface.
 

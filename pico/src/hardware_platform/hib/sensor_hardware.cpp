@@ -1,6 +1,7 @@
 #include "sensors/sensor_group.h"
 #include "pico/stdlib.h"
 #include "board_hardware/connection_io.h"
+#include "board_hardware/hib_led_indicator.h"
 #include "sensors/sensor_types/battery_sensor.h"
 #include "sensors/sensor_types/sonar_sensor.h"
 #include <vector>
@@ -62,6 +63,11 @@ ShiftRegister _hardwareIndicateShiftRegister {
     16
 };
 
+HIBLEDIndicator _ledIndicator {
+    _hardwareIndicateShiftRegister,
+    LED_L3_IDX
+};
+
 BatteryVoltageSensor _batterySensor(
     BATTERY_SENSE_ENABLE_PIN,
     BATTERY_SENSE_PIN,
@@ -98,7 +104,6 @@ SonarSensor _sonarSensorR1(
     _sonarR1ConnectionIO
 );
 
-extern const int NUM_SENSOR_GROUPS = 3;
 vector<SensorGroup> _SENSOR_GROUPS = {
     SensorGroup(
         {
@@ -116,3 +121,6 @@ vector<SensorGroup> _SENSOR_GROUPS = {
         }
     )
 };
+
+extern const int NUM_SENSOR_GROUPS = 3;
+WiFiIndicator* _wifiIndicator = &_ledIndicator;
