@@ -23,14 +23,16 @@ I2CInterface _scd30Interface = I2CInterface(
     SCD30_I2C_PORT,
     SCD30_I2C_BAUDRATE,
     SCD30_I2C_SDA_PIN,
-    SCD30_I2C_SCL_PIN
+    SCD30_I2C_SCL_PIN,
+    true
 );
 
 I2CInterface _stemmaInterface = I2CInterface(
     STEMMA_I2C_PORT,
     STEMMA_I2C_BAUDRATE,
     STEMMA_I2C_SDA_PIN,
-    STEMMA_I2C_SCL_PIN
+    STEMMA_I2C_SCL_PIN,
+    true
 );
 
 SCD30Sensor _scd30Sensor(

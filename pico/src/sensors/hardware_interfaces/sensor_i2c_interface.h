@@ -21,7 +21,8 @@ class I2CInterface {
             i2c_inst_t* i2c,
             int baud,
             int sdaPin,
-            int sclPin
+            int sclPin,
+            bool sendStopAfterTransactions
         );
 
         void initSensorBus();
@@ -64,14 +65,16 @@ class I2CInterface {
             const uint16_t readDelay
         );
 
+
         constexpr static int DEFAULT_I2C_TIMEOUT_MS        = 100;
         constexpr static int I2C_WATCHDOG_TIMEOUT_MS       = 5000;
 
 
         i2c_inst_t *mI2C;                           // The underlying I2C access struct
-        int mBaud;                                  // I2C baud rate
-        int mSDA;                                   // I2C SDA pin
-        int mSCL;                                   // I2C SCL pin
+        const int mBaud;                            // I2C baud rate
+        const int mSDA;                             // I2C SDA pin
+        const int mSCL;                             // I2C SCL pin
+        const bool mSendStopAfterTransactions;      // If we relinquish the bus after transactions (for multi-master)
         absolute_time_t mInterfaceResetTimeout;     // Watchdog timer for multiplexer/interface
 };
 

@@ -34,10 +34,10 @@ add_executable(SensorPodController
     src/network/network_controller.cpp
     src/network/mqtt_controller.cpp
 
-    src/sensors/hardware_interfaces/sensirion/scd30.c
-    src/sensors/hardware_interfaces/sensirion/sensirion_common.c
-    src/sensors/hardware_interfaces/sensirion/sensirion_sw_i2c.c
-    src/sensors/hardware_interfaces/sensirion/sensirion_sw_i2c_implementation.c
+    src/sensors/hardware_interfaces/sensirion/bitbang/scd30.c
+    src/sensors/hardware_interfaces/sensirion/bitbang/sensirion_common.c
+    src/sensors/hardware_interfaces/sensirion/bitbang/sensirion_sw_i2c.c
+    src/sensors/hardware_interfaces/sensirion/bitbang/sensirion_sw_i2c_implementation.c
     src/sensors/hardware_interfaces/sensor_i2c_interface.cpp
 
     src/sensors/sensor_types/stemma_soil_sensor.cpp

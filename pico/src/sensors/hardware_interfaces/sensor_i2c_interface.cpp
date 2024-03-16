@@ -4,19 +4,18 @@
 #include "hardware/gpio.h"
 
 
-const bool I2C_NOSTOP = false;
-
-
 I2CInterface::I2CInterface(
     i2c_inst_t *i2c,
     int baud,
     int sdaPin,
-    int sclPin
+    int sclPin,
+    bool sendStopAfterTransactions
 ) : 
     mI2C(i2c),
     mBaud(baud),
     mSDA(sdaPin),
     mSCL(sclPin),
+    mSendStopAfterTransactions(sendStopAfterTransactions),
     mInterfaceResetTimeout(nil_time)
 {}
 
@@ -48,7 +47,7 @@ I2CInterface::I2CResponse I2CInterface::checkI2CAddress(const uint8_t address) {
         address,
         0,
         0,
-        I2C_NOSTOP,
+        !mSendStopAfterTransactions,
         timeout
     );
 
@@ -75,7 +74,6 @@ void I2CInterface::checkInterfaceWatchdog() {
     }
 }
 
-
 I2CInterface::I2CResponse I2CInterface::writeI2CData(
     const uint8_t address, 
     const uint8_t *buffer, 
@@ -85,7 +83,14 @@ I2CInterface::I2CResponse I2CInterface::writeI2CData(
 
     // Write the data itself, if we have any
     if(buffer && bufferLen) {
-        int response = i2c_write_blocking_until(mI2C, address, buffer, bufferLen, I2C_NOSTOP, timeout);
+        int response = i2c_write_blocking_until(
+            mI2C, 
+            address, 
+            buffer, 
+            bufferLen, 
+            !mSendStopAfterTransactions, 
+            timeout
+        );
 
         switch(response) {
             case PICO_ERROR_GENERIC:
@@ -111,9 +116,15 @@ I2CInterface::I2CResponse I2CInterface::writePrefixedI2CData(
 ) {
     // Write the prefix data (usually an address)
     if ((prefixLen != 0) && (prefixBuffer != NULL)) {
-        // Again, since we don't want to relinquish the I2C bus we won't bother with the STOP
         absolute_time_t timeout = make_timeout_time_ms(DEFAULT_I2C_TIMEOUT_MS);
-        int response = i2c_write_blocking_until(mI2C, address, prefixBuffer, prefixLen, I2C_NOSTOP, timeout);
+        int response = i2c_write_blocking_until(
+            mI2C,
+            address,
+            prefixBuffer,
+            prefixLen,
+            !mSendStopAfterTransactions,
+            timeout
+        );
 
         switch(response) {
             case PICO_ERROR_GENERIC:
@@ -155,7 +166,14 @@ I2CInterface::I2CResponse I2CInterface::readFromI2C(
     const uint8_t amountToRead
 ) {
     absolute_time_t timeout = make_timeout_time_ms(DEFAULT_I2C_TIMEOUT_MS);
-    int response = i2c_read_blocking_until(mI2C, address, buffer, amountToRead, I2C_NOSTOP, timeout);
+    int response = i2c_read_blocking_until(
+        mI2C,
+        address,
+        buffer,
+        amountToRead,
+        !mSendStopAfterTransactions,
+        timeout
+    );
 
     switch(response) {
         case PICO_ERROR_GENERIC:
