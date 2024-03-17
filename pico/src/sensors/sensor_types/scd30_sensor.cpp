@@ -20,12 +20,11 @@ extern int sensirion_scl_pin;
 
 #define SCD30_WAIT_SLEEP()    (busy_wait_us_32(10))
 
-SCD30Sensor::SCD30Sensor(uint8_t sdaPin, uint8_t sclPin, uint8_t powerPin) :
+SCD30Sensor::SCD30Sensor(I2CInterface& i2c, uint8_t powerPin) :
     Sensor{SCD30_SENSOR, &SCD30Sensor::serializeDataToJSON},
-    mActive{false},
-    mSDAPin{sdaPin},
-    mSCLPin{sclPin},
-    mPowerControlPin{powerPin}
+    mI2C(i2c),
+    mPowerControlPin{powerPin},
+    mActive{false}
 {}
 
 void SCD30Sensor::doInitialization() {
@@ -43,7 +42,7 @@ void SCD30Sensor::doInitialization() {
 
     // Initialize I2C lib
     init_driver(SCD30_I2C_ADDR_61);
-    sensirion_i2c_hal_init(0);
+    sensirion_i2c_hal_init(&mI2C);
 
     // See if we can get access
     while (scd30_await_data_ready()) {

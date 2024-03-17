@@ -36,8 +36,7 @@ I2CInterface _stemmaInterface = I2CInterface(
 );
 
 SCD30Sensor _scd30Sensor(
-    SCD30_I2C_SDA_PIN,
-    SCD30_I2C_SCL_PIN,
+    _scd30Interface,
     SCD30_POWER_CTL_PIN
 );
 
