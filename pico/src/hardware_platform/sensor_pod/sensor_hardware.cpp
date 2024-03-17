@@ -8,7 +8,7 @@ using std::vector;
 #include "sensors/sensor_types/scd30_sensor.h"
 #include "sensors/sensor_types/stemma_soil_sensor.h"
 
-#define SCD30_I2C_PORT                      (i2c1)
+#define SCD30_I2C_PORT                      (i2c0)
 extern const uint8_t SCD30_I2C_SDA_PIN      = 4;
 extern const uint8_t SCD30_I2C_SCL_PIN      = 5;
 static const uint8_t SCD30_POWER_CTL_PIN    = 6;

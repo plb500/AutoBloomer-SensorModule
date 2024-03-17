@@ -29,14 +29,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "sensirion_arch_config.h"
+#include "sensors/hardware_interfaces/sensirion/common/sensirion_config.h"
 #include "sensirion_sw_i2c_gpio.h"
 #include "hardware/gpio.h"
 #include "pico/time.h"
 
-
-extern const uint8_t SCD30_I2C_SDA_PIN;
-extern const uint8_t SCD30_I2C_SCL_PIN;
 
 /*
  * INSTRUCTIONS
@@ -57,17 +54,21 @@ extern const uint8_t SCD30_I2C_SCL_PIN;
  * Initialize all hard- and software components that are needed to set the
  * SDA and SCL pins.
  */
-void sensirion_init_pins(void) {
-    gpio_init(SCD30_I2C_SDA_PIN);
-    gpio_init(SCD30_I2C_SCL_PIN);
-    sensirion_SDA_in();
-    sensirion_SCL_in();
+void sensirion_init_pins(I2CInterface* i2c) {
+    assert(i2c);
+
+    gpio_init(i2c->mSDA);
+    gpio_init(i2c->mSCL);
+    sensirion_SDA_in(i2c);
+    sensirion_SCL_in(i2c);
 }
 
 /**
  * Release all resources initialized by sensirion_init_pins()
  */
-void sensirion_release_pins(void) {
+void sensirion_release_pins(I2CInterface* i2c) {
+    assert(i2c);
+
     // IMPLEMENT or leave empty if no resources need to be freed
 }
 
@@ -76,25 +77,31 @@ void sensirion_release_pins(void) {
  * should be left floating, without external pull-up resistor, the input must be
  * configured to use the internal pull-up resistor.
  */
-void sensirion_SDA_in(void) {    
-    gpio_set_dir(SCD30_I2C_SDA_PIN, GPIO_IN);
-    gpio_pull_up(SCD30_I2C_SDA_PIN);
+void sensirion_SDA_in(I2CInterface* i2c) {    
+    assert(i2c);
+
+    gpio_set_dir(i2c->mSDA, GPIO_IN);
+    gpio_pull_up(i2c->mSDA);
 }
 
 /**
  * Configure the SDA pin as an output and drive it low or set to logical false.
  */
-void sensirion_SDA_out(void) {
-    gpio_set_dir(SCD30_I2C_SDA_PIN, GPIO_OUT);
-    gpio_put(SCD30_I2C_SDA_PIN, 0);
+void sensirion_SDA_out(I2CInterface* i2c) {
+    assert(i2c);
+
+    gpio_set_dir(i2c->mSDA, GPIO_OUT);
+    gpio_put(i2c->mSDA, 0);
 }
 
 /**
  * Read the value of the SDA pin.
  * @returns 0 if the pin is low and 1 otherwise.
  */
-uint8_t sensirion_SDA_read(void) {
-    uint8_t pinVal = (gpio_get(SCD30_I2C_SDA_PIN) ? 1 : 0);
+uint8_t sensirion_SDA_read(I2CInterface* i2c) {
+    assert(i2c);
+
+    uint8_t pinVal = (gpio_get(i2c->mSDA) ? 1 : 0);
     return pinVal;
 }
 
@@ -103,25 +110,31 @@ uint8_t sensirion_SDA_read(void) {
  * should be left floating, without external pull-up resistor, the input must be
  * configured to use the internal pull-up resistor.
  */
-void sensirion_SCL_in(void) {
-    gpio_set_dir(SCD30_I2C_SCL_PIN, GPIO_IN);
-    gpio_pull_up(SCD30_I2C_SCL_PIN);
+void sensirion_SCL_in(I2CInterface* i2c) {
+    assert(i2c);
+
+    gpio_set_dir(i2c->mSCL, GPIO_IN);
+    gpio_pull_up(i2c->mSCL);
 }
 
 /**
  * Configure the SCL pin as an output and drive it low or set to logical false.
  */
-void sensirion_SCL_out(void) {
-    gpio_set_dir(SCD30_I2C_SCL_PIN, GPIO_OUT);
-    gpio_put(SCD30_I2C_SCL_PIN, 0);
+void sensirion_SCL_out(I2CInterface* i2c) {
+    assert(i2c);
+
+    gpio_set_dir(i2c->mSCL, GPIO_OUT);
+    gpio_put(i2c->mSCL, 0);
 }
 
 /**
  * Read the value of the SCL pin.
  * @returns 0 if the pin is low and 1 otherwise.
  */
-uint8_t sensirion_SCL_read(void) {
-    uint8_t pinVal = (gpio_get(SCD30_I2C_SCL_PIN) ? 1 : 0);
+uint8_t sensirion_SCL_read(I2CInterface* i2c) {
+    assert(i2c);
+
+    uint8_t pinVal = (gpio_get(i2c->mSCL) ? 1 : 0);
     return pinVal;
 }
 

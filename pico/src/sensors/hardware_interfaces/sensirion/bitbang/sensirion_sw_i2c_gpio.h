@@ -32,27 +32,28 @@
 #ifndef SENSIRION_SW_I2C_GPIO_H
 #define SENSIRION_SW_I2C_GPIO_H
 
-#include "sensirion_arch_config.h"
+#include "sensors/hardware_interfaces/sensirion/common/sensirion_config.h"
+#include "sensors/hardware_interfaces/sensor_i2c_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void sensirion_init_pins(void);
+void sensirion_init_pins(I2CInterface* i2c);
 
-void sensirion_release_pins(void);
+void sensirion_release_pins(I2CInterface* i2c);
 
-void sensirion_SDA_in(void);
+void sensirion_SDA_in(I2CInterface* i2c);
 
-void sensirion_SDA_out(void);
+void sensirion_SDA_out(I2CInterface* i2c);
 
-uint8_t sensirion_SDA_read(void);
+uint8_t sensirion_SDA_read(I2CInterface* i2c);
 
-void sensirion_SCL_in(void);
+void sensirion_SCL_in(I2CInterface* i2c);
 
-void sensirion_SCL_out(void);
+void sensirion_SCL_out(I2CInterface* i2c);
 
-uint8_t sensirion_SCL_read(void);
+uint8_t sensirion_SCL_read(I2CInterface* i2c);
 
 void sensirion_sleep_usec(uint32_t useconds);
 

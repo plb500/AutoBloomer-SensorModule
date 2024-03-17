@@ -81,7 +81,9 @@
       "streambuf": "cpp",
       "thread": "cpp",
       "cinttypes": "cpp",
-      "typeinfo": "cpp"
+      "typeinfo": "cpp",
+      "sensirion_config.h": "c",
+      "debug_io.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false,
 }

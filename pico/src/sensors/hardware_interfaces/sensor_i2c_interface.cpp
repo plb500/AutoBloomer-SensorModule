@@ -39,7 +39,7 @@ void I2CInterface::resetSensorBus() {
     initSensorBus();
 }
 
-I2CInterface::I2CResponse I2CInterface::checkI2CAddress(const uint8_t address) {
+I2CResponse I2CInterface::checkI2CAddress(const uint8_t address) {
     absolute_time_t timeout = make_timeout_time_ms(DEFAULT_I2C_TIMEOUT_MS);
 
     int response = i2c_write_blocking_until(
@@ -74,7 +74,7 @@ void I2CInterface::checkInterfaceWatchdog() {
     }
 }
 
-I2CInterface::I2CResponse I2CInterface::writeI2CData(
+I2CResponse I2CInterface::writeI2CData(
     const uint8_t address, 
     const uint8_t *buffer, 
     size_t bufferLen 
@@ -107,7 +107,7 @@ I2CInterface::I2CResponse I2CInterface::writeI2CData(
     return I2C_RESPONSE_OK;
 }
 
-I2CInterface::I2CResponse I2CInterface::writePrefixedI2CData(
+I2CResponse I2CInterface::writePrefixedI2CData(
     const uint8_t address, 
     const uint8_t *prefixBuffer, 
     size_t prefixLen,
@@ -145,7 +145,7 @@ I2CInterface::I2CResponse I2CInterface::writePrefixedI2CData(
     return I2C_RESPONSE_OK;
 }
 
-I2CInterface::I2CResponse I2CInterface::writeToI2CRegister(
+I2CResponse I2CInterface::writeToI2CRegister(
     const uint8_t address, 
     const uint8_t regHigh, 
     const uint8_t regLow, 
@@ -160,7 +160,7 @@ I2CInterface::I2CResponse I2CInterface::writeToI2CRegister(
     return writePrefixedI2CData(address, prefix, 2, buffer, bufferLen);
 }
 
-I2CInterface::I2CResponse I2CInterface::readFromI2C(
+I2CResponse I2CInterface::readFromI2C(
     const uint8_t address,
     uint8_t *buffer, 
     const uint8_t amountToRead
@@ -187,7 +187,7 @@ I2CInterface::I2CResponse I2CInterface::readFromI2C(
     }
 }
 
-I2CInterface::I2CResponse I2CInterface::readFromI2CRegister(
+I2CResponse I2CInterface::readFromI2CRegister(
     const uint8_t address,
     const uint8_t regHigh, 
     const uint8_t regLow,
@@ -208,4 +208,114 @@ I2CInterface::I2CResponse I2CInterface::readFromI2CRegister(
 
     // Read response
     return readFromI2C(address, buffer, amountToRead);
+}
+
+
+
+
+
+EXPORT_C void init_sensor_bus(I2CInterface* i2c) {
+    assert(i2c);
+
+    i2c_init(i2c->mI2C, i2c->mBaud);
+    gpio_set_function(i2c->mSDA, GPIO_FUNC_I2C);
+    gpio_set_function(i2c->mSCL, GPIO_FUNC_I2C);
+
+    gpio_pull_up(i2c->mSDA);
+    gpio_pull_up(i2c->mSCL);
+
+    i2c->mInterfaceResetTimeout = make_timeout_time_ms(I2C_WATCHDOG_TIMEOUT_MS);
+}
+
+EXPORT_C void shutdown_sensor_bus(I2CInterface* i2c) {
+    assert(i2c);
+
+    i2c->shutdownSensorBus();
+
+}
+
+EXPORT_C void reset_sensor_bus(I2CInterface* i2c) {
+    assert(i2c);
+
+    i2c->resetSensorBus();
+}
+
+EXPORT_C I2CResponse check_i2c_address(I2CInterface* i2c, const uint8_t address) {
+    assert(i2c);
+
+    return i2c->checkI2CAddress(address);
+}
+
+EXPORT_C void reset_interface_watchdog(I2CInterface* i2c) {
+    assert(i2c);
+
+    i2c->resetInterfaceWatchdog();
+}
+
+EXPORT_C void check_interface_watchdog(I2CInterface* i2c) {
+    assert(i2c);
+
+    i2c->checkInterfaceWatchdog();
+}
+
+EXPORT_C I2CResponse write_i2c_data(
+    I2CInterface* i2c,
+    const uint8_t address, 
+    const uint8_t *buffer, 
+    size_t bufferLen 
+) {
+    assert(i2c);
+
+    return i2c->writeI2CData(address, buffer, bufferLen);
+}
+
+EXPORT_C I2CResponse write_prefixed_i2c_data(
+    I2CInterface* i2c,
+    const uint8_t address, 
+    const uint8_t *prefixBuffer, 
+    size_t prefixLen,
+    const uint8_t *buffer, 
+    size_t bufferLen 
+) {
+    assert(i2c);
+
+    return i2c->writePrefixedI2CData(address, prefixBuffer, prefixLen, buffer, bufferLen);
+}
+
+EXPORT_C I2CResponse write_to_i2c_register(
+    I2CInterface* i2c,
+    const uint8_t address, 
+    const uint8_t regHigh, 
+    const uint8_t regLow, 
+    const uint8_t *buffer, 
+    const uint8_t bufferLen
+) {
+    assert(i2c);
+
+    return i2c->writeToI2CRegister(address, regHigh, regLow, buffer, bufferLen);
+}
+
+EXPORT_C I2CResponse read_from_i2c(
+    I2CInterface* i2c,
+    const uint8_t address,
+    uint8_t *buffer, 
+    const uint8_t amountToRead
+) {
+    assert(i2c);
+
+    return i2c->readFromI2C(address, buffer, amountToRead);
+}
+
+EXPORT_C I2CResponse read_from_i2c_register(
+    I2CInterface* i2c,
+    const uint8_t address,
+    const uint8_t regHigh, 
+    const uint8_t regLow,
+    uint8_t *buffer, 
+    const uint8_t amountToRead, 
+    const uint16_t readDelay
+) {
+    assert(i2c);
+
+    return i2c->readFromI2CRegister(address, regHigh, regLow, buffer, amountToRead, readDelay);
 }

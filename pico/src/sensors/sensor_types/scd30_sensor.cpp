@@ -1,6 +1,7 @@
 #include "scd30_sensor.h"
-#include "sensors/hardware_interfaces/sensirion/bitbang/scd30.h"
-#include "sensors/hardware_interfaces/sensirion/bitbang/sensirion_i2c.h"
+#include "sensors/hardware_interfaces/sensirion/common/scd30_i2c.h"
+#include "sensors/hardware_interfaces/sensirion/common/sensirion_i2c.h"
+#include "sensors/hardware_interfaces/sensirion/common/sensirion_i2c_hal.h"
 #include "util/debug_io.h"
 
 #include <cstring>
@@ -29,6 +30,7 @@ SCD30Sensor::SCD30Sensor(uint8_t sdaPin, uint8_t sclPin, uint8_t powerPin) :
 
 void SCD30Sensor::doInitialization() {
     char serial[33];
+    uint8_t firmwareMajor, firmwareMinor;
 
     // Setup our power control pin
     gpio_init(mPowerControlPin);
@@ -40,16 +42,17 @@ void SCD30Sensor::doInitialization() {
     gpio_put(mPowerControlPin, 0);
 
     // Initialize I2C lib
-    sensirion_i2c_init();
+    init_driver(SCD30_I2C_ADDR_61);
+    sensirion_i2c_hal_init(0);
 
     // See if we can get access
-    while (scd30_probe() != NO_ERROR) {
-        sensirion_sleep_usec(1000000u);
+    while (scd30_await_data_ready()) {
+        sensirion_i2c_hal_sleep_usec(1000000u);
     }
 
     // Validate we can communicate with the SCD30
-    mActive = !scd30_read_serial(serial);
-    DEBUG_PRINT("SCD30 serial: %s", serial);
+    mActive = !scd30_read_firmware_version(&firmwareMajor, &firmwareMinor);
+    DEBUG_PRINT("SCD30 firmware: 0x%0X-0x%0X", firmwareMajor, firmwareMinor);
 
     startReadings();
 }
@@ -70,7 +73,7 @@ void SCD30Sensor::reset() {
 void SCD30Sensor::shutdown() {
     scd30_stop_periodic_measurement();
     SCD30_WAIT_SLEEP();
-    sensirion_i2c_release();
+    sensirion_i2c_hal_free();
 }           
 
 bool SCD30Sensor::handleSensorControlCommand(SensorControlMessage& message) {
@@ -123,7 +126,7 @@ void SCD30Sensor::setForcedRecalibrationValue(uint16_t frc) {
     scd30_stop_periodic_measurement();
 
     DEBUG_PRINT(" -- Setting FRC to: %d", frc);
-    scd30_set_forced_recalibration(frc);
+    scd30_force_recalibration(frc);
 
     // Restart readings
     scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
@@ -162,7 +165,7 @@ Sensor::SensorUpdateResponse SCD30Sensor::doUpdate(absolute_time_t currentTime, 
             float temperatureReading;
             float humidityReading;
 
-            if(!scd30_read_measurement(
+            if(!scd30_read_measurement_data(
                 &co2Reading,
                 &temperatureReading,
                 &humidityReading
@@ -216,7 +219,7 @@ Sensor::SensorUpdateResponse SCD30Sensor::doUpdate(absolute_time_t currentTime, 
 void SCD30Sensor::startReadings() {
     if(mActive) {
         scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL_SECONDS);
-        sensirion_sleep_usec(20000u);
+        sensirion_i2c_hal_sleep_usec(20000u);
         scd30_start_periodic_measurement(0);
     }
 }

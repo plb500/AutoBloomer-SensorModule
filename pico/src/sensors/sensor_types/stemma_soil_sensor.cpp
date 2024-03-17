@@ -36,7 +36,7 @@ void StemmaSoilSensor::doInitialization() {
     // Scan bus for device at given address
     bool found = false;
     for (int retries = 0; retries < 10; retries++) {
-        if(mI2CInterface.checkI2CAddress(mAddress) == I2CInterface::I2CResponse::I2C_RESPONSE_OK) {
+        if(mI2CInterface.checkI2CAddress(mAddress) == I2C_RESPONSE_OK) {
             found = true;
             break;
         }
@@ -50,7 +50,7 @@ void StemmaSoilSensor::doInitialization() {
     // Reset device
     found = false;
     for (int retries = 0; retries < 10; retries++) {
-        if(mI2CInterface.checkI2CAddress(mAddress) == I2CInterface::I2CResponse::I2C_RESPONSE_OK) {
+        if(mI2CInterface.checkI2CAddress(mAddress) == I2C_RESPONSE_OK) {
             found = true;
             break;
         }
@@ -138,7 +138,7 @@ uint32_t StemmaSoilSensor::getVersion() {
         buf,
         4,
         100
-    ) != I2CInterface::I2CResponse::I2C_RESPONSE_OK) {
+    ) != I2C_RESPONSE_OK) {
         return STEMMA_SOIL_SENSOR_INVALID_READING;
     }
 
@@ -164,7 +164,7 @@ uint16_t StemmaSoilSensor::getCapacitiveValue() {
             buf, 
             READING_BUFFER_SIZE, 
             READ_DELAY_MS
-        ) == I2CInterface::I2CResponse::I2C_RESPONSE_OK) {
+        ) == I2C_RESPONSE_OK) {
             ret = ((uint16_t) buf[0] << 8) | buf[1];
         }
     }

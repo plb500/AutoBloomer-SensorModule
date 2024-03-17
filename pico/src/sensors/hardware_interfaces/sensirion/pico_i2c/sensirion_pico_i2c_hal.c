@@ -29,14 +29,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SENSIRION_I2C_H
-#define SENSIRION_I2C_H
+#include "sensors/hardware_interfaces/sensirion/common/sensirion_i2c_hal.h"
+#include "sensors/hardware_interfaces/sensirion/common/sensirion_common.h"
+#include "sensors/hardware_interfaces/sensirion/common/sensirion_config.h"
 
-#include "sensirion_arch_config.h"
+/*
+ * INSTRUCTIONS
+ * ============
+ *
+ * Implement all functions where they are marked as IMPLEMENT.
+ * Follow the function specification in the comments.
+ */
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+
+I2CInterface* _I2C_INTERFACE = 0;
 
 /**
  * Select the current i2c bus by index.
@@ -48,18 +54,33 @@ extern "C" {
  * @param bus_idx   Bus index to select
  * @returns         0 on success, an error code otherwise
  */
-int16_t sensirion_i2c_select_bus(uint8_t bus_idx);
+int16_t sensirion_i2c_hal_select_bus(uint8_t bus_idx) {
+    /* TODO:IMPLEMENT or leave empty if all sensors are located on one single
+     * bus
+     */
+    return NOT_IMPLEMENTED_ERROR;
+}
 
 /**
  * Initialize all hard- and software components that are needed for the I2C
  * communication.
  */
-void sensirion_i2c_init(void);
+void sensirion_i2c_hal_init(I2CInterface* i2c) {
+    assert(i2c);
+
+    _I2C_INTERFACE = i2c;
+    init_sensor_bus(_I2C_INTERFACE);
+}
 
 /**
- * Release all resources initialized by sensirion_i2c_init().
+ * Release all resources initialized by sensirion_i2c_hal_init().
  */
-void sensirion_i2c_release(void);
+void sensirion_i2c_hal_free() {
+    assert(_I2C_INTERFACE);
+
+    reset_sensor_bus(_I2C_INTERFACE);
+    _I2C_INTERFACE = 0;
+}
 
 /**
  * Execute one read transaction on the I2C bus, reading a given number of bytes.
@@ -71,7 +92,12 @@ void sensirion_i2c_release(void);
  * @param count   number of bytes to read from I2C and store in the buffer
  * @returns 0 on success, error code otherwise
  */
-int8_t sensirion_i2c_read(uint8_t address, uint8_t* data, uint16_t count);
+int8_t sensirion_i2c_hal_read(uint8_t address, uint8_t* data, uint16_t count) {
+    assert(_I2C_INTERFACE);
+
+    I2CResponse response = read_from_i2c(_I2C_INTERFACE, address, data, count);
+    return (response == I2C_RESPONSE_OK) ? 0 : -1;
+}
 
 /**
  * Execute one write transaction on the I2C bus, sending a given number of
@@ -84,29 +110,22 @@ int8_t sensirion_i2c_read(uint8_t address, uint8_t* data, uint16_t count);
  * @param count   number of bytes to read from the buffer and send over I2C
  * @returns 0 on success, error code otherwise
  */
-int8_t sensirion_i2c_write(uint8_t address, const uint8_t* data,
-                           uint16_t count);
+int8_t sensirion_i2c_hal_write(uint8_t address, const uint8_t* data,
+                               uint16_t count) {
+    assert(_I2C_INTERFACE);
+
+    I2CResponse response = write_i2c_data(_I2C_INTERFACE, address, data, count);
+    return (response == I2C_RESPONSE_OK) ? 0 : -1;
+}
 
 /**
  * Sleep for a given number of microseconds. The function should delay the
- * execution approximately, but no less than, the given time.
+ * execution for at least the given time, but may also sleep longer.
  *
- * When using hardware i2c:
  * Despite the unit, a <10 millisecond precision is sufficient.
- *
- * When using software i2c:
- * The precision needed depends on the desired i2c frequency, i.e. should be
- * exact to about half a clock cycle (defined in
- * `SENSIRION_I2C_CLOCK_PERIOD_USEC` in `sensirion_arch_config.h`).
- *
- * Example with 400kHz requires a precision of 1 / (2 * 400kHz) == 1.25usec.
  *
  * @param useconds the sleep time in microseconds
  */
-void sensirion_sleep_usec(uint32_t useconds);
-
-#ifdef __cplusplus
+void sensirion_i2c_hal_sleep_usec(uint32_t useconds) {
+    sleep_us(useconds);
 }
-#endif /* __cplusplus */
-
-#endif /* SENSIRION_I2C_H */
