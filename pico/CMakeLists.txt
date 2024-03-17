@@ -74,7 +74,7 @@ else()
         ${SensorPodController_sources}
         "src/sensors/hardware_interfaces/sensirion/pico_i2c/sensirion_pico_i2c_hal.c"
     )
-endif(NOT SCD30_SW_I2C)
+endif()
 
 
 add_executable(SensorPodController
