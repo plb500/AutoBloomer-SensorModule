@@ -50,6 +50,10 @@ extern "C" {
 #define SENSIRION_NUM_WORDS(x) (sizeof(x) / SENSIRION_WORD_SIZE)
 #define SENSIRION_MAX_BUFFER_WORDS 32
 
+#define STATUS_OK 0
+#define STATUS_FAIL (-1)
+
+
 /**
  * sensirion_common_bytes_to_int16_t() - Convert an array of bytes to an int16_t
  *

@@ -29,13 +29,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "sensirion_i2c_hal.h"
-#include "sensirion_common.h"
-#include "sensirion_config.h"
-
-// Raspberry Pico includes
-#include "hardware/i2c.h"
-#include "hardware/gpio.h"
+#include "sensors/hardware_interfaces/sensirion/common/sensirion_i2c_hal.h"
+#include "sensors/hardware_interfaces/sensirion/common/sensirion_common.h"
+#include "sensors/hardware_interfaces/sensirion/common/sensirion_config.h"
 
 /*
  * INSTRUCTIONS
@@ -45,36 +41,8 @@
  * Follow the function specification in the comments.
  */
 
-/*
- * I2C parameters which will be used in the sensirion functions
- *
- * Values MUST be populated prior to using below functions
- * e.g. by declaring them extern and setting them:
- * 
- * extern i2c_inst_t *sensirion_i2c_inst;
- * extern int sensirion_i2c_baud;
- * extern int sensirion_sda_pin;
- * extern int sensirion_scl_pin;
- *
- * void main() {
- *     sensirion_i2c_inst = i2c1;
- *     sensirion_i2c_baud = 100 * 1000;
- *     sensirion_sda_pin = 2;
- *     sensirion_scl_pin = 3;
- * }
- * 
- */
-i2c_inst_t *sensirion_i2c_inst = NULL;
-int sensirion_i2c_baud = 100 * 1000;
-int sensirion_sda_pin = -1;
-int sensirion_scl_pin = -1;
 
-#define SENSIRION_I2C_PARAMS_VALID  (   \
-    (sensirion_i2c_inst != NULL) &&         \
-    (sensirion_sda_pin != -1) &&          \
-    (sensirion_scl_pin != -1)             \
-)
-
+I2CInterface* _I2C_INTERFACE = 0;
 
 /**
  * Select the current i2c bus by index.
@@ -97,24 +65,21 @@ int16_t sensirion_i2c_hal_select_bus(uint8_t bus_idx) {
  * Initialize all hard- and software components that are needed for the I2C
  * communication.
  */
-void sensirion_i2c_hal_init(void) {
-    if(!SENSIRION_I2C_PARAMS_VALID) {
-        return;
-    }
+void sensirion_i2c_hal_init(I2CInterface* i2c) {
+    assert(i2c);
 
-    i2c_init(sensirion_i2c_inst, sensirion_i2c_baud);
-    gpio_set_function(sensirion_sda_pin, GPIO_FUNC_I2C);
-    gpio_set_function(sensirion_scl_pin, GPIO_FUNC_I2C);
-
-    gpio_pull_up(sensirion_sda_pin);
-    gpio_pull_up(sensirion_scl_pin);
+    _I2C_INTERFACE = i2c;
+    init_sensor_bus(_I2C_INTERFACE);
 }
 
 /**
  * Release all resources initialized by sensirion_i2c_hal_init().
  */
-void sensirion_i2c_hal_free(void) {
-    i2c_deinit(sensirion_i2c_inst);
+void sensirion_i2c_hal_free() {
+    assert(_I2C_INTERFACE);
+
+    reset_sensor_bus(_I2C_INTERFACE);
+    _I2C_INTERFACE = 0;
 }
 
 /**
@@ -128,15 +93,10 @@ void sensirion_i2c_hal_free(void) {
  * @returns 0 on success, error code otherwise
  */
 int8_t sensirion_i2c_hal_read(uint8_t address, uint8_t* data, uint16_t count) {
-    if(!SENSIRION_I2C_PARAMS_VALID) {
-        return NOT_IMPLEMENTED_ERROR;
-    }
+    assert(_I2C_INTERFACE);
 
-    if(count) {
-        int r = i2c_read_blocking(sensirion_i2c_inst, address, data, count, false);
-        return (r > 0) ? !(r == count) : r;
-    }
-    return 0;
+    I2CResponse response = read_from_i2c(_I2C_INTERFACE, address, data, count);
+    return (response == I2C_RESPONSE_OK) ? 0 : -1;
 }
 
 /**
@@ -152,12 +112,10 @@ int8_t sensirion_i2c_hal_read(uint8_t address, uint8_t* data, uint16_t count) {
  */
 int8_t sensirion_i2c_hal_write(uint8_t address, const uint8_t* data,
                                uint16_t count) {
-    if(!SENSIRION_I2C_PARAMS_VALID) {
-        return NOT_IMPLEMENTED_ERROR;
-    }
+    assert(_I2C_INTERFACE);
 
-    int r = i2c_write_blocking(sensirion_i2c_inst, address, data, count, false); 
-    return (r >= 0) ? 0 : r;
+    I2CResponse response = write_i2c_data(_I2C_INTERFACE, address, data, count);
+    return (response == I2C_RESPONSE_OK) ? 0 : -1;
 }
 
 /**

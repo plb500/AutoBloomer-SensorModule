@@ -27,8 +27,8 @@ class Core0Executor {
         void stopCore1AndWriteUserData();
         
         void transmitData();
-        void transmitSensorData();
         void transmitTestMQTTMessage();
+        void transmitSensorData();
 
         uint32_t getFreeMemory();
         uint32_t getHeapSize();
@@ -36,6 +36,7 @@ class Core0Executor {
         constexpr static int STDIO_PING_TIMEOUT                 = 2000;
         constexpr static uint16_t MQTT_UPDATE_CHECK_PERIOD_MS   = 750;
         constexpr static int JSON_BUFFER_SIZE                   = 256;
+        constexpr static int WATCHDOG_TIMEOUT_MS                = 15000;
 
         static Core0Executor* sExecutor;
 

@@ -19,7 +19,7 @@ pico_sdk_init()
 
 string(APPEND CMAKE_EXE_LINKER_FLAGS "-Wl,--print-memory-usage")
 
-add_executable(SensorPodController
+set(SensorPodController_sources
     src/board_hardware/connection_io.cpp
     src/board_hardware/shift_register.cpp
 
@@ -34,10 +34,10 @@ add_executable(SensorPodController
     src/network/network_controller.cpp
     src/network/mqtt_controller.cpp
 
-    src/sensors/hardware_interfaces/sensirion/scd30_i2c.c
-    src/sensors/hardware_interfaces/sensirion/sensirion_common.c
-    src/sensors/hardware_interfaces/sensirion/sensirion_i2c_hal.c
-    src/sensors/hardware_interfaces/sensirion/sensirion_i2c.c
+    src/sensors/hardware_interfaces/sensirion/common/scd30_i2c.c
+    src/sensors/hardware_interfaces/sensirion/common/sensirion_common.c
+    src/sensors/hardware_interfaces/sensirion/common/sensirion_i2c.c
+
     src/sensors/hardware_interfaces/sensor_i2c_interface.cpp
 
     src/sensors/sensor_types/stemma_soil_sensor.cpp
@@ -57,6 +57,30 @@ add_executable(SensorPodController
     src/main.cpp
 )
 
+# Switch between different I2C implementations for SCD30
+option(SCD30_SW_I2C "Use software (bitbang) I2C for SCD30" ON)
+
+set(SCD30_SW_I2C OFF)
+if(SCD30_SW_I2C)
+    message(STATUS "Using SW (bitbanged) I2C SCD30 implementation")
+    set(SensorPodController_sources 
+        ${SensorPodController_sources} 
+        "src/sensors/hardware_interfaces/sensirion/bitbang/sensirion_sw_i2c_hal.c"
+        "src/sensors/hardware_interfaces/sensirion/bitbang/sensirion_sw_i2c_implementation.c"
+    )
+else()
+    message(STATUS "Using HW (pico) I2C SCD30 implementation")
+    set(SensorPodController_sources 
+        ${SensorPodController_sources}
+        "src/sensors/hardware_interfaces/sensirion/pico_i2c/sensirion_pico_i2c_hal.c"
+    )
+endif()
+
+
+add_executable(SensorPodController
+    ${SensorPodController_sources}
+)
+
 pico_set_linker_script(SensorPodController ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
 
 pico_generate_pio_header(SensorPodController ${CMAKE_CURRENT_LIST_DIR}/src/pio/uart_rx.pio)
@@ -70,7 +94,7 @@ target_include_directories(SensorPodController PRIVATE
 
     ${PROJECT_SOURCE_DIR}/src
     ${PROJECT_SOURCE_DIR}/src/network
-    )
+)
 
 target_link_libraries(SensorPodController
     pico_stdlib
@@ -90,7 +114,7 @@ target_compile_definitions(SensorPodController PUBLIC
     DEBUG_PRINT_ON=1
 )
 
-set(HARDWARE_TYPE "HIB")
+set(HARDWARE_TYPE "SENSOR_POD")
 
 if(HARDWARE_TYPE STREQUAL "DUMMY")
     add_subdirectory(

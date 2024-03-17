@@ -39,8 +39,8 @@ class SCD30Sensor : public Sensor {
         static constexpr int SCD30_MEASUREMENT_INTERVAL_SECONDS      = 2;
 
         I2CInterface& mI2C;
-        bool mActive;
         uint8_t mPowerControlPin;
+        bool mActive;
 };
 
 #endif      // _SCD30_SENSOR_H_

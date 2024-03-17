@@ -33,6 +33,8 @@
 #define SENSIRION_I2C_HAL_H
 
 #include "sensirion_config.h"
+#include "sensors/hardware_interfaces/sensor_i2c_interface.h"
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,12 +56,12 @@ int16_t sensirion_i2c_hal_select_bus(uint8_t bus_idx);
  * Initialize all hard- and software components that are needed for the I2C
  * communication.
  */
-void sensirion_i2c_hal_init(void);
+void sensirion_i2c_hal_init(I2CInterface* i2c);
 
 /**
  * Release all resources initialized by sensirion_i2c_hal_init().
  */
-void sensirion_i2c_hal_free(void);
+void sensirion_i2c_hal_free();
 
 /**
  * Execute one read transaction on the I2C bus, reading a given number of bytes.
