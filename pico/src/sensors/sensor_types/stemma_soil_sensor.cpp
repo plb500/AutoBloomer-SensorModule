@@ -166,6 +166,14 @@ uint16_t StemmaSoilSensor::getCapacitiveValue() {
             READ_DELAY_MS
         ) == I2C_RESPONSE_OK) {
             ret = ((uint16_t) buf[0] << 8) | buf[1];
+
+            if(ret < CAPACITIVE_READING_MIN) {
+                ret = CAPACITIVE_READING_MIN;
+            } else if(ret > CAPACITIVE_READING_MAX) {
+                ret = CAPACITIVE_READING_MAX;
+            }
+
+            ret = ((ret - CAPACITIVE_READING_MIN) * 100) / (CAPACITIVE_READING_MAX - CAPACITIVE_READING_MIN);
         }
     }
     return ret;
