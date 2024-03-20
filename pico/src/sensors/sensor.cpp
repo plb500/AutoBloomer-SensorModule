@@ -9,11 +9,25 @@ using std::tie;
 map<int, Sensor::JsonSerializer> Sensor::sJSONSerializerMap;
 
 
-void Sensor::SensorDataBuffer::initializeBuffer(uint32_t bufferSize) {
-    mDataBytes = new uint8_t[bufferSize];
+Sensor::SensorDataBuffer::SensorDataBuffer() :
+    mDataBytes{nullptr},
+    mDataLen{0}
+{}
+
+Sensor::SensorDataBuffer::~SensorDataBuffer() {
+    if(mDataBytes) {
+       delete[] mDataBytes;
+       mDataBytes = nullptr;
+    }
     mDataLen = 0;
 }
 
+void Sensor::SensorDataBuffer::initializeBuffer(uint32_t bufferSize) {
+    if(!mDataBytes) {
+        mDataBytes = new uint8_t[bufferSize];
+    }
+    mDataLen = 0;
+}
 
 Sensor::Sensor(uint8_t sensorType, JsonSerializer serializer) :
     mSensorType(sensorType),
@@ -65,9 +79,12 @@ void Sensor::update(absolute_time_t currentTime) {
             break;
 
         case SENSOR_NOT_CONNECTED:
+            break;
+
         case SENSOR_INACTIVE:
             // Not a lot we can do here, either we weren't initialized or the init failed or the sensor
-            // physically hasn't been connected yet. Either way there's no data.
+            // physically hasn't been connected yet. Either way there's no data. We can try re-initializing
+            initialize();
             mCachedData.mDataLen = 0;
             break;
     }

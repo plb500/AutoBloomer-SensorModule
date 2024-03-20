@@ -16,18 +16,16 @@ Core0Executor::Core0Executor(MulticoreMailbox& mailbox, vector<SensorGroup>& sen
 {}
 
 void Core0Executor::initialize() {
-    watchdog_enable(WATCHDOG_TIMEOUT_MS, true);
-
     // Grab user data
     if(mUserData.readFromFlash()) {
         DEBUG_PRINT("Flash contents:");
         DEBUG_PRINT("  +- SSID: %s", mUserData.getSSID().c_str());
         DEBUG_PRINT("  +- PASS: %s", mUserData.getPSK().c_str());
         DEBUG_PRINT("  +- NAME: %s", mUserData.getHostName().c_str());
-        DEBUG_PRINT("  +- MQTT: %s", mUserData.getBrokerAddress().c_str());
+        DEBUG_PRINT("  +- BRKR: %s", mUserData.getBrokerAddress().c_str());
         DEBUG_PRINT("  +- Sensor Groups");
         for(int i = 0; i < mSensorGroups.size(); ++i) {
-            DEBUG_PRINT("    [%d] Name: %s, Location: %s",
+            DEBUG_PRINT("    [%d] GRPN: %s, GRPL: %s",
                 i,
                 mUserData.getSensorGroupName(i).c_str(),
                 mUserData.getSensorGroupLocation(i).c_str()
@@ -171,21 +169,6 @@ void Core0Executor::stopCore1AndWriteUserData() {
 
 void Core0Executor::transmitData() {
     transmitSensorData();
-    // transmitTestMQTTMessage();
-}
-
-void Core0Executor::transmitTestMQTTMessage() {
-    if(!mUserData.hasMQTTUserData()) {
-        return;
-    }
-
-    MQTTMessage msg {
-        true,
-        "AutoBloomer/TestLocation/TestSensor",
-        "[{\"type\": 1, \"status\":1, \"testValue\": 25}]"
-    };
-
-    mMQTTController.publishMessage(msg);
 }
 
 void Core0Executor::transmitSensorData() {

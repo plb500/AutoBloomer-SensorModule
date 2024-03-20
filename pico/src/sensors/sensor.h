@@ -31,6 +31,8 @@ class Sensor {
         };
 
         struct SensorDataBuffer {
+            SensorDataBuffer();
+            ~SensorDataBuffer();
             void initializeBuffer(uint32_t bufferSize);
 
             SensorStatus mStatus;

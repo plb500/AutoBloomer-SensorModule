@@ -29,7 +29,7 @@ class StemmaSoilSensor : public Sensor {
         virtual void doInitialization();
         virtual SensorUpdateResponse doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize);
 
-        constexpr static int STEMMA_SOIL_SENSOR_INVALID_READING = -1;
+        constexpr static uint16_t STEMMA_SOIL_SENSOR_INVALID_READING = -1;
 
     private:
         uint32_t getVersion();

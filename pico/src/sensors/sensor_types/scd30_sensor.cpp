@@ -235,7 +235,7 @@ void SCD30Sensor::handleSetTemperatureOffsetCommand(const char *commandParam) {
     }
 
     DEBUG_PRINT("SETTING TEMPERATURE OFFSET (%f)", val);
-    // setTemperatureOffset(val);
+    setTemperatureOffset(val);
 }
 
 void SCD30Sensor::handleSetFRCCommand(const char *commandParam) {
@@ -250,5 +250,5 @@ void SCD30Sensor::handleSetFRCCommand(const char *commandParam) {
     }
 
     DEBUG_PRINT("SETTING FRC: %d", val);
-    // setForcedRecalibrationValue(val);
+    setForcedRecalibrationValue(val);
 }
