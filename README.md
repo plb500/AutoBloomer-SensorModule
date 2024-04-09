@@ -90,5 +90,11 @@ The payload consists of a single line detailing the type of calibration to be pe
 Calibration commands are one of the following:
 - TEMP (temperature offset)
 - FRC (CO2 field calibration value)
-  
+
+For example, setting a FRC value of 400 (i.e. recalibrating outside) and using mosquitto_pub the command line would look something like this:
+
+```
+mosquitto_pub -h broker.address -m "FRC 400" -t "AutoBloomer/SensorLocation/SensorName/control"
+```
+
 For more details on these parameters, see the SCD30 documentation [here](/docs/SCD30_Interface_Description.pdf)
