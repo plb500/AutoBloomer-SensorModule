@@ -123,7 +123,7 @@ void Core0Executor::doLoop() {
                         mUserData.getHostName().c_str()
                     );
 
-                    if(!mMQTTController.connectToBrokerBlocking(10000)) {
+                    if(!mMQTTController.connectToBrokerBlocking(3500)) {
                         DEBUG_PRINT("Broker connection failed");
                     } else {
                         DEBUG_PRINT("Broker connection succeeded. Subscribing to control topics")

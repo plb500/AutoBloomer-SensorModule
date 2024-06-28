@@ -11,7 +11,7 @@
       "request": "launch",
       "type": "cortex-debug",
       "servertype": "openocd",
-      "gdbPath": "arm-none-eabi-gdb",
+      "gdbPath": "gdb-multiarch",
       "openOCDLaunchCommands": ["adapter speed 5000"],
       "device": "RP2040",
       "configFiles": [

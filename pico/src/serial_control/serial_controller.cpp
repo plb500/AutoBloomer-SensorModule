@@ -3,6 +3,10 @@
 #include "util/debug_io.h"
 #include <cstring>
 
+bool isTerminatingChar(int c) {
+    return (c == '\r' || c == '\n');
+}
+
 SerialController::SerialController() : 
     mBufferLength(0)
 {
@@ -16,7 +20,7 @@ bool SerialController::updateUserData(UserData& userData) {
     while(readLoop) {
         int readResponse = getchar_timeout_us(2000);        // Timeout = 2ms
         if(readResponse != PICO_ERROR_TIMEOUT) {
-            if(readResponse == '\n') {
+            if(isTerminatingChar(readResponse)) {
                 // Completed 
                 if(mBufferLength) {
                     userDataUpdated = processSerialCommand(userData);
