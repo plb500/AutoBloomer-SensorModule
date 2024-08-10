@@ -26,13 +26,13 @@ void SensorGroup::shutdown() {
 }
 
 void SensorGroup::update(absolute_time_t currentTime) {
-    DEBUG_PRINT("Updating sensor group: %s", mName);
+    DEBUG_PRINT(1, "     <<<<< Updating sensor group: %s >>>>>", mName);
 
     for(auto& s : mSensors) {
         s->update(currentTime);
     }
 
-    DEBUG_PRINT("----- %s update complete", mName);
+    DEBUG_PRINT(1, "     <<<<< %s update complete >>>>>", mName);
 }
 
 uint32_t SensorGroup::getRawDataSize() const {

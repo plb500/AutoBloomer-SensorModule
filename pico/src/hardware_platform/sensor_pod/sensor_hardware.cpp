@@ -42,7 +42,7 @@ SCD30Sensor _scd30Sensor(
 
 StemmaSoilSensor _stemmaSensor(
     _stemmaInterface,
-    StemmaSoilSensor::SOIL_SENSOR_3_ADDRESS
+    StemmaSoilSensor::SOIL_SENSOR_1_ADDRESS
 );
 
 vector<SensorGroup> _SENSOR_GROUPS = {

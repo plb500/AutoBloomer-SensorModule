@@ -60,44 +60,44 @@ bool SerialController::processSerialCommand(UserData& userData) {
     switch(command) {
         case CMD_SSID:
             commandParams = mBuffer + 4;
-            DEBUG_PRINT("Setting SSID (%s)", commandParams);
+            DEBUG_PRINT(0, "Setting SSID (%s)", commandParams);
             userData.setSSID(commandParams);
             userDataUpdated = true;
             break;
         case CMD_PASS:
             commandParams = mBuffer + 4;
-            DEBUG_PRINT("Setting private key (%s)", commandParams);
+            DEBUG_PRINT(0, "Setting private key (%s)", commandParams);
             userData.setPSK(commandParams);
             userDataUpdated = true;
             break;
         case CMD_NAME:
             commandParams = mBuffer + 4;
-            DEBUG_PRINT("Setting host name (%s)", commandParams);
+            DEBUG_PRINT(0, "Setting host name (%s)", commandParams);
             userData.setHostName(commandParams);
             userDataUpdated = true;
             break;
         case CMD_BRKR:
             commandParams = mBuffer + 4;
-            DEBUG_PRINT("Setting MQTT broker (%s)", commandParams);
+            DEBUG_PRINT(0, "Setting MQTT broker (%s)", commandParams);
             userData.setBrokerAddress(commandParams);
             userDataUpdated = true;
             break;
         case CMD_WIPE:
-            DEBUG_PRINT("Wiping data");
+            DEBUG_PRINT(0, "Wiping data");
             userData.wipe();
             userDataUpdated = true;
             break;
         case CMD_GRPN:
             groupIndex = *(mBuffer + 4) - '0';
             commandParams = mBuffer + 4 + 1;
-            DEBUG_PRINT("Setting group %d name (%s)", groupIndex, commandParams);
+            DEBUG_PRINT(0, "Setting group %d name (%s)", groupIndex, commandParams);
             userData.setSensorGroupName(groupIndex, commandParams);
             userDataUpdated = true;
             break;
         case CMD_GRPL:
             groupIndex = *(mBuffer + 4) - '0';
             commandParams = mBuffer + 4 + 1;
-            DEBUG_PRINT("Setting group %d location (%s)", groupIndex, commandParams);
+            DEBUG_PRINT(0, "Setting group %d location (%s)", groupIndex, commandParams);
             userData.setSensorGroupLocation(groupIndex, commandParams);
             userDataUpdated = true;
             break;

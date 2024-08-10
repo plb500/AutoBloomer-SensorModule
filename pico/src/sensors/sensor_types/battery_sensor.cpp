@@ -101,8 +101,16 @@ Sensor::SensorUpdateResponse BatteryVoltageSensor::doUpdate(absolute_time_t curr
 
             get<0>(response) = Sensor::SENSOR_OK;
             get<1>(response) = sizeof(float);
+
+
+            DEBUG_PRINT(1, "+--------------------------------+");
+            DEBUG_PRINT(1, "|           RTC BATTERY          |");
+            DEBUG_PRINT(1, "|         * NEW READING *        |")
+            DEBUG_PRINT(1, "| Voltage: %1.2fV                 |", voltage);
+            DEBUG_PRINT(1, "+--------------------------------+");
+
             break;
-    }
+    } 
 
     return response;
 }

@@ -18,14 +18,14 @@ Core0Executor::Core0Executor(MulticoreMailbox& mailbox, vector<SensorGroup>& sen
 void Core0Executor::initialize() {
     // Grab user data
     if(mUserData.readFromFlash()) {
-        DEBUG_PRINT("Flash contents:");
-        DEBUG_PRINT("  +- SSID: %s", mUserData.getSSID().c_str());
-        DEBUG_PRINT("  +- PASS: %s", mUserData.getPSK().c_str());
-        DEBUG_PRINT("  +- NAME: %s", mUserData.getHostName().c_str());
-        DEBUG_PRINT("  +- BRKR: %s", mUserData.getBrokerAddress().c_str());
-        DEBUG_PRINT("  +- Sensor Groups");
+        DEBUG_PRINT(0, "Flash contents:");
+        DEBUG_PRINT(0, "  +- SSID: %s", mUserData.getSSID().c_str());
+        DEBUG_PRINT(0, "  +- PASS: %s", mUserData.getPSK().c_str());
+        DEBUG_PRINT(0, "  +- NAME: %s", mUserData.getHostName().c_str());
+        DEBUG_PRINT(0, "  +- BRKR: %s", mUserData.getBrokerAddress().c_str());
+        DEBUG_PRINT(0, "  +- Sensor Groups");
         for(int i = 0; i < mSensorGroups.size(); ++i) {
-            DEBUG_PRINT("    [%d] GRPN: %s, GRPL: %s",
+            DEBUG_PRINT(0, "    [%d] GRPN: %s, GRPL: %s",
                 i,
                 mUserData.getSensorGroupName(i).c_str(),
                 mUserData.getSensorGroupLocation(i).c_str()
@@ -35,7 +35,7 @@ void Core0Executor::initialize() {
             mSensorGroups[i].setLocation(mUserData.getSensorGroupLocation(i).c_str());
         }
     } else {
-        DEBUG_PRINT("Could not read user data from flash memory")
+        DEBUG_PRINT(0, "Could not read user data from flash memory")
     }
 
     mOutgoingMQTTMessageBuffer.resize(mSensorGroups.size());
@@ -60,12 +60,11 @@ void Core0Executor::doLoop() {
     char controlTopic[MQTTMessage::MQTT_MAX_TOPIC_LENGTH];
 
     while(1) {
-        watchdog_update();
         absolute_time_t now = get_absolute_time();
 
         // Periodically send an update through the serial port just to show core0 is still functioning
         if(is_nil_time(pingTimeout) || absolute_time_diff_us(now, pingTimeout) <= 0) {
-            DEBUG_PRINT("- core0 status: %d bytes free", getFreeMemory());
+            DEBUG_PRINT(0, "Memory status: %d bytes free", getFreeMemory());
             pingTimeout = make_timeout_time_ms(STDIO_PING_TIMEOUT);
         }
 
@@ -80,13 +79,13 @@ void Core0Executor::doLoop() {
         if(mUserData.hasNetworkUserData() && !mNetworkController.isConnected()) {
             if(mWifiIndicator) mWifiIndicator->ledOff();
             
-            DEBUG_PRINT("Network is not connected, connecting....");
+            DEBUG_PRINT(0, "Network is not connected, connecting....");
             int connectResponse = mNetworkController.connectToWiFi(
                 mUserData.getSSID().c_str(),
                 mUserData.getPSK().c_str(),
                 mUserData.getHostName().c_str()
             );
-            DEBUG_PRINT("...connect %s (%d)", 
+            DEBUG_PRINT(0, "...connect %s (%d)", 
                 connectResponse ? "failed" : "succeeded",
                 connectResponse
             );
@@ -102,7 +101,7 @@ void Core0Executor::doLoop() {
 
             // If we aren't connected to the broker yet, connect and subscribe
             if(!mMQTTController.isConnected() && mUserData.hasMQTTUserData()) {
-                DEBUG_PRINT("Not connected to MQTT broker, opening connection...");
+                DEBUG_PRINT(0, "Not connected to MQTT broker, opening connection...");
 
                 // Lookup the broker's IP
                 brokerRequest.mResolvedAddress.addr = 0;
@@ -113,7 +112,7 @@ void Core0Executor::doLoop() {
                 if(brokerRequest.mResolvedAddress.addr) {
                     char ipString[16];
                     NetworkController::ipAddressToString(ipString, &brokerRequest.mResolvedAddress);
-                    DEBUG_PRINT("Broker resolved (IP: %s). Connecting to broker...", ipString);
+                    DEBUG_PRINT(0, "Broker resolved (IP: %s). Connecting to broker...", ipString);
 
                     mMQTTController.setBrokerParameters(
                         brokerRequest.mResolvedAddress,
@@ -123,20 +122,20 @@ void Core0Executor::doLoop() {
                         mUserData.getHostName().c_str()
                     );
 
-                    if(!mMQTTController.connectToBrokerBlocking(3500)) {
-                        DEBUG_PRINT("Broker connection failed");
+                    if(!mMQTTController.connectToBrokerBlocking(2000)) {
+                        DEBUG_PRINT(0, "Broker connection failed");
                     } else {
-                        DEBUG_PRINT("Broker connection succeeded. Subscribing to control topics")
+                        DEBUG_PRINT(0, "Broker connection succeeded. Subscribing to control topics")
                         for(auto& s : mSensorGroups) {
                             if(s.hasTopics()) {
                                 mMQTTController.subscribeToTopic(s.getControlTopic());
                             }
                         }
-                        DEBUG_PRINT("MQTT broker subscription complete");
+                        DEBUG_PRINT(0, "MQTT broker subscription complete");
                         mqttUpdateTimeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
                     }
                 } else {
-                    DEBUG_PRINT("Broker IP resolution failed");
+                    DEBUG_PRINT(0, "Broker IP resolution failed");
                 }
             }
 
@@ -177,9 +176,9 @@ void Core0Executor::transmitSensorData() {
     }
 
     if(mMailbox.latestSensorDataToJSON(mSensorGroups, mOutgoingMQTTMessageBuffer)) {
-        DEBUG_PRINT("* core0 publishing MQTT message *");
         for(auto& msg : mOutgoingMQTTMessageBuffer) {
             if(msg.mReadyToSend) {
+                DEBUG_PRINT(0, "Publishing MQTT message *");
                 mMQTTController.publishMessage(msg);
             }
         }

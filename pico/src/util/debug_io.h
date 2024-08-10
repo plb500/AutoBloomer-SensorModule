@@ -9,19 +9,23 @@ extern "C"
 #if DEBUG_PRINT_ON
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "pico/sync.h"
 #   define DEBUG_PRINT_BUF_SIZE                         (128)
 
-static char DEBUG_PRINT_BUF[DEBUG_PRINT_BUF_SIZE];
+extern mutex_t DEBUG_PRINT_MUTEX;
+extern char DEBUG_PRINT_BUF[DEBUG_PRINT_BUF_SIZE];
+extern const char* CORE_PREFIXES[2];
 
 // Initialize the debug logging system
 #   if LIB_PICO_STDIO_UART                                      
-#       define DEBUG_PRINT_INIT()                              {    \
-            gpio_set_function(PICO_DEFAULT_UART_TX_PIN, GPIO_FUNC_UART);   \
-            gpio_set_function(PICO_DEFAULT_UART_RX_PIN, GPIO_FUNC_UART);   \
-            uart_init(STDIO_UART, STDIO_UART_BAUDRATE);             \
-            uart_set_format (STDIO_UART, 8, 1, UART_PARITY_NONE);   \
-            uart_set_hw_flow(STDIO_UART, false, false);             \
-            stdio_init_all();                                       \
+#       define DEBUG_PRINT_INIT()                              {            \
+            mutex_init(&DEBUG_PRINT_MUTEX);                                 \
+            gpio_set_function(PICO_DEFAULT_UART_TX_PIN, GPIO_FUNC_UART);    \
+            gpio_set_function(PICO_DEFAULT_UART_RX_PIN, GPIO_FUNC_UART);    \
+            uart_init(STDIO_UART, STDIO_UART_BAUDRATE);                     \
+            uart_set_format (STDIO_UART, 8, 1, UART_PARITY_NONE);           \
+            uart_set_hw_flow(STDIO_UART, false, false);                     \
+            stdio_init_all();                                               \
         }
 #   else                                                           
 #       define DEBUG_PRINT_INIT() {                                 \
@@ -31,10 +35,16 @@ static char DEBUG_PRINT_BUF[DEBUG_PRINT_BUF_SIZE];
 
 // Print the supplied sformatted string to debug out UART
 #   if LIB_PICO_STDIO_UART                                      
-#       define DEBUG_PRINT(format, ...) {                                                       \
+#       define DEBUG_PRINT(core_num, format, ...) {                                             \
+            mutex_enter_blocking(&DEBUG_PRINT_MUTEX);                                           \
+                                                                                                \
+            const char* pfx = CORE_PREFIXES[core_num];                                          \
             snprintf(DEBUG_PRINT_BUF, DEBUG_PRINT_BUF_SIZE, format __VA_OPT__(,) __VA_ARGS__);  \
+            uart_puts(STDIO_UART, pfx);                                                         \
             uart_puts(STDIO_UART, DEBUG_PRINT_BUF);                                             \
             uart_puts(STDIO_UART, "\n");                                                        \
+                                                                                                \
+            mutex_exit(&DEBUG_PRINT_MUTEX);                                                     \
         }
 #   else
 #       define DEBUG_PRINT(format, ...) {                                                       \

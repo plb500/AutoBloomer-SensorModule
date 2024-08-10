@@ -51,7 +51,7 @@ void SCD30Sensor::doInitialization() {
 
     // Validate we can communicate with the SCD30
     mActive = !scd30_read_firmware_version(&firmwareMajor, &firmwareMinor);
-    DEBUG_PRINT("SCD30 firmware: 0x%0X-0x%0X", firmwareMajor, firmwareMinor);
+    DEBUG_PRINT(1, "SCD30 firmware: 0x%0X-0x%0X", firmwareMajor, firmwareMinor);
 
     startReadings();
 }
@@ -107,7 +107,7 @@ void SCD30Sensor::setTemperatureOffset(double offset) {
     // Pause readings while we set the offset (not sure if we need to do this but it seems like a good idea)
     scd30_stop_periodic_measurement();
 
-    DEBUG_PRINT(" -- Setting temperature offset to: %d", offsetInt);
+    DEBUG_PRINT(1, " -- Setting temperature offset to: %d", offsetInt);
     scd30_set_temperature_offset(offsetInt);
 
     // Restart readings
@@ -124,7 +124,7 @@ void SCD30Sensor::setForcedRecalibrationValue(uint16_t frc) {
     // Pause readings while we set the offset (not sure if we need to do this but it seems like a good idea)
     scd30_stop_periodic_measurement();
 
-    DEBUG_PRINT(" -- Setting FRC to: %d", frc);
+    DEBUG_PRINT(1, " -- Setting FRC to: %d", frc);
     scd30_force_recalibration(frc);
 
     // Restart readings
@@ -180,35 +180,35 @@ Sensor::SensorUpdateResponse SCD30Sensor::doUpdate(absolute_time_t currentTime, 
                 get<0>(response) = SENSOR_OK;
                 get<1>(response) = sizeof(float) * 3;
 
-                DEBUG_PRINT("+--------------------------------+");
-                DEBUG_PRINT("|             SCD30              |");
-                DEBUG_PRINT("|         SCD30 CO2: %7.2f PPM |", co2Reading);
-                DEBUG_PRINT("| SCD30 Temperature: %5.2f °C    |", temperatureReading);
-                DEBUG_PRINT("|    SCD30 Humidity: %5.2f%%      |", humidityReading);
-                DEBUG_PRINT("+--------------------------------+\n");
+                DEBUG_PRINT(1, "+--------------------------------+");
+                DEBUG_PRINT(1, "|             SCD30              |");
+                DEBUG_PRINT(1, "|         SCD30 CO2: %7.2f PPM |", co2Reading);
+                DEBUG_PRINT(1, "| SCD30 Temperature: %5.2f °C    |", temperatureReading);
+                DEBUG_PRINT(1, "|    SCD30 Humidity: %5.2f%%      |", humidityReading);
+                DEBUG_PRINT(1, "+--------------------------------+");
             } else {
                 // No data when we were told there was data available. This may indiciate a sensor issue
                 get<0>(response) = SENSOR_MALFUNCTIONING;
-                DEBUG_PRINT("+--------------------------------+");
-                DEBUG_PRINT("|             SCD30              |");
-                DEBUG_PRINT("|       * MALFUNCTION *          |");
-                DEBUG_PRINT("+--------------------------------+");
+                DEBUG_PRINT(1, "+--------------------------------+");
+                DEBUG_PRINT(1, "|             SCD30              |");
+                DEBUG_PRINT(1, "|       * MALFUNCTION *          |");
+                DEBUG_PRINT(1, "+--------------------------------+");
             }
         } else {
             // There was no data available. If this goes on too long it might indicate
             // an issue with the sensor
-            DEBUG_PRINT("+--------------------------------+");
-            DEBUG_PRINT("|             SCD30              |");
-            DEBUG_PRINT("|          * nothing *           |");
-            DEBUG_PRINT("+--------------------------------+");
+            DEBUG_PRINT(1, "+--------------------------------+");
+            DEBUG_PRINT(1, "|             SCD30              |");
+            DEBUG_PRINT(1, "|          * NO DATA *           |");
+            DEBUG_PRINT(1, "+--------------------------------+");
             get<0>(response) = SENSOR_OK_NO_DATA;
         }
     } else {
         // The actual data ready command failed, might be something up with the port
-        DEBUG_PRINT("+--------------------------------+");
-        DEBUG_PRINT("|             SCD30              |");
-        DEBUG_PRINT("|       * MALFUNCTION *          |");
-        DEBUG_PRINT("+--------------------------------+");
+        DEBUG_PRINT(1, "+--------------------------------+");
+        DEBUG_PRINT(1, "|             SCD30              |");
+        DEBUG_PRINT(1, "|       * MALFUNCTION *          |");
+        DEBUG_PRINT(1, "+--------------------------------+");
         get<0>(response) = SENSOR_MALFUNCTIONING;
     }
 
@@ -230,11 +230,15 @@ void SCD30Sensor::handleSetTemperatureOffsetCommand(const char *commandParam) {
     val = strtod(commandParam, &end);
     if(end == commandParam) {
         // Could not convert supplied value
-        DEBUG_PRINT("Conversion error while setting temperature offset.");
+        DEBUG_PRINT(1, "SCD30 - Conversion error while setting temperature offset.");
         return;
     }
 
-    DEBUG_PRINT("SETTING TEMPERATURE OFFSET (%f)", val);
+    DEBUG_PRINT(1, "+--------------------------------+");
+    DEBUG_PRINT(1, "|             SCD30              |");
+    DEBUG_PRINT(1, "|  Set temperature offset: %2dC   |");
+    DEBUG_PRINT(1, "+--------------------------------+");
+
     setTemperatureOffset(val);
 }
 
@@ -245,10 +249,14 @@ void SCD30Sensor::handleSetFRCCommand(const char *commandParam) {
     val = strtol(commandParam, &end, 10);
     if(end == commandParam) {
         // Could not convert supplied value
-        DEBUG_PRINT("Conversion error while setting FRC.");
+        DEBUG_PRINT(1, "SCD30 - Conversion error while setting FRC.");
         return;
     }
 
-    DEBUG_PRINT("SETTING FRC: %d", val);
+    DEBUG_PRINT(1, "+----------------------+");
+    DEBUG_PRINT(1, "|         SCD30        |");
+    DEBUG_PRINT(1, "|  Set FRC: %5dPPM   |");
+    DEBUG_PRINT(1, "+----------------------+");
+
     setForcedRecalibrationValue(val);
 }

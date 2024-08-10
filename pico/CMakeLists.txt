@@ -54,6 +54,8 @@ set(SensorPodController_sources
 
     src/userdata/user_data.cpp
 
+    src/util/debug_io.cpp
+
     src/main.cpp
 )
 

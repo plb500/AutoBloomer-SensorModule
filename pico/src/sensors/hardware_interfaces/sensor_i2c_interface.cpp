@@ -69,7 +69,7 @@ void I2CInterface::resetInterfaceWatchdog() {
 
 void I2CInterface::checkInterfaceWatchdog() {
     if(absolute_time_diff_us(mInterfaceResetTimeout, get_absolute_time()) > 0) {
-        DEBUG_PRINT("**** I2C interface timed out, resetting ****");
+        DEBUG_PRINT(1, "**** I2C interface timed out, resetting ****");
         resetSensorBus();
     }
 }

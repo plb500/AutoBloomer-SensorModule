@@ -40,17 +40,18 @@ void Core1Executor::doLoop() {
         absolute_time_t currentTime = get_absolute_time();
 
         // Check for sensor control messages
-        DEBUG_PRINT("core1 checkpoint - processing control commands");
+        DEBUG_PRINT(1, "Stage 1: Processing control commands");
         processSensorControlCommands();
 
         // Perform sensor hardware updates
-        DEBUG_PRINT("core1 checkpoint - updating sensors");
+        DEBUG_PRINT(1, "Stage 2: Updating sensors");
         for(auto i = mSensorGroups.begin(); i != mSensorGroups.end(); ++i) {
             i->update(currentTime);
         }
 
         // Package sensor data to core0
-        DEBUG_PRINT("core1 checkpoint - updating core0");
+        DEBUG_PRINT(1, "Stage 3: Updating Core 0");
+        DEBUG_PRINT(1, "");
         mMailbox.sendSensorDataToCore0(mSensorGroups);
 
         sleep_ms(500);
@@ -71,9 +72,9 @@ void Core1Executor::processSensorControlCommands() {
             }
 
             if(messageHandled) {
-                DEBUG_PRINT("Sensor control command (%d) handled", msgOpt->mCommand);
+                DEBUG_PRINT(1, "Sensor control command (%d) handled", msgOpt->mCommand);
             } else {
-                DEBUG_PRINT("Sensor control command (%d) went unhandled", msgOpt->mCommand);
+                DEBUG_PRINT(1, "Sensor control command (%d) went unhandled", msgOpt->mCommand);
             }
         }
     } while(msgOpt);

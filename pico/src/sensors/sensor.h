@@ -60,7 +60,7 @@ class Sensor {
         virtual void shutdown() = 0;                
 
         // (Optionally) respond to a sensor control command
-        bool handleSensorControlCommand(SensorControlMessage& message);
+        virtual bool handleSensorControlCommand(SensorControlMessage& message) { return false; }
 
         // The total size required to pack this sensor's raw data into a binary blob
         virtual constexpr uint16_t getRawDataSize() const { return 0; }
@@ -80,9 +80,6 @@ class Sensor {
 
         // Update the underlying sensor hardware, serializing any current data into the supplied buffer
         virtual SensorUpdateResponse doUpdate(absolute_time_t currentTime, uint8_t *dataStorageBuffer, size_t bufferSize) = 0;
-
-        virtual bool respondsToSensorControlCommand(uint32_t command) { return false; }
-        virtual void processSensorControlCommand(SensorControlMessage& message) {}
 
     private:
         inline void resetUpdateWatchdogTimer();

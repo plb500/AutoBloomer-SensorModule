@@ -108,19 +108,19 @@ Sensor::SensorUpdateResponse StemmaSoilSensor::doUpdate(absolute_time_t currentT
 
     uint16_t capValue = getCapacitiveValue();
     if(capValue != StemmaSoilSensor::STEMMA_SOIL_SENSOR_INVALID_READING) {
-        DEBUG_PRINT("+--------------------------------+");
-        DEBUG_PRINT("|      Stemma Soil Sensor        |");
-        DEBUG_PRINT("| Soil moisture: %4d            |", capValue);
-        DEBUG_PRINT("+--------------------------------+\n");
+        DEBUG_PRINT(1, "+--------------------------------+");
+        DEBUG_PRINT(1, "|      Stemma Soil Sensor        |");
+        DEBUG_PRINT(1, "| Soil moisture: %4d            |", capValue);
+        DEBUG_PRINT(1, "+--------------------------------+\n");
 
         memcpy(dataStorageBuffer, &capValue, sizeof(uint16_t));
         return make_tuple(SENSOR_OK, sizeof(uint16_t));
     } else {
         // Got an invalid reading, might be something up with the port
-        DEBUG_PRINT("+--------------------------------+");
-        DEBUG_PRINT("|      Stemma Soil Sensor        |");
-        DEBUG_PRINT("|       * MALFUNCTION *          |", capValue);
-        DEBUG_PRINT("+--------------------------------+\n");
+        DEBUG_PRINT(1, "+--------------------------------+");
+        DEBUG_PRINT(1, "|      Stemma Soil Sensor        |");
+        DEBUG_PRINT(1, "|       * MALFUNCTION *          |", capValue);
+        DEBUG_PRINT(1, "+--------------------------------+\n");
         return make_tuple(SENSOR_MALFUNCTIONING, 0);
     }
 

@@ -36,7 +36,10 @@ int DummySensor::serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* json
 
 bool DummySensor::handleSensorControlCommand(SensorControlMessage& message) {
     if(message.mCommand == 0x44434241) {        // "ABCD"
-        DEBUG_PRINT("HANDLING COMMAND");
+        DEBUG_PRINT(1, "+-------------------------+");
+        DEBUG_PRINT(1, "|      DUMMY SENSOR       |");
+        DEBUG_PRINT(1, "|     COMMAND HANDLED     |");
+        DEBUG_PRINT(1, "+-------------------------+");
         return true;
     }
 
@@ -56,11 +59,11 @@ Sensor::SensorUpdateResponse DummySensor::doUpdate(absolute_time_t currentTime, 
 
         int dataSize = (sizeof(int) + sizeof(float));
 
-        DEBUG_PRINT("+---------------------+");
-        DEBUG_PRINT("|     DUMMY VALUES    |");
-        DEBUG_PRINT("|   INT: 0x%08X   |", mDummyInt);
-        DEBUG_PRINT("| FLOAT: %12.2f |", mDummyFloat);
-        DEBUG_PRINT("+---------------------+");
+        DEBUG_PRINT(1, "+---------------------+");
+        DEBUG_PRINT(1, "|     DUMMY VALUES    |");
+        DEBUG_PRINT(1, "|   INT: 0x%08X   |", mDummyInt);
+        DEBUG_PRINT(1, "| FLOAT: %12.2f |", mDummyFloat);
+        DEBUG_PRINT(1, "+---------------------+");
         mNextUpdateTime = make_timeout_time_ms(UPDATE_TIME_MS);
 
         return make_tuple(SENSOR_OK, dataSize);

@@ -1,5 +1,6 @@
 #include "sonar_sensor.h"
 #include "uart_rx.pio.h"
+#include "util/debug_io.h"
 #include "pico/time.h"
 
 #include <tuple>
@@ -107,9 +108,19 @@ Sensor::SensorUpdateResponse SonarSensor::doUpdate(absolute_time_t currentTime, 
                 get<0>(response) = SENSOR_OK;
                 get<1>(response) = sizeof(uint16_t);
                 memcpy(dataStorageBuffer, &distance, sizeof(uint16_t));
+
+                DEBUG_PRINT(1, "+-------------------+");
+                DEBUG_PRINT(1, "|        SONAR      |");
+                DEBUG_PRINT(1, "|  Distance: %3dmm  |", distance);
+                DEBUG_PRINT(1, "+-------------------+");
             } else {
                 get<0>(response) = SENSOR_MALFUNCTIONING;
                 get<1>(response) = 0;
+
+                DEBUG_PRINT(1, "+-----------------+");
+                DEBUG_PRINT(1, "|      SONAR      |");
+                DEBUG_PRINT(1, "|  * CRC ERROR *  |");
+                DEBUG_PRINT(1, "+-----------------+");
             }
 
             mCurrentBufferPos = 0;

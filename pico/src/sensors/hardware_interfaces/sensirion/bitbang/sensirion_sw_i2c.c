@@ -129,19 +129,15 @@ int8_t sensirion_i2c_write(uint8_t address, const uint8_t* data,
     int8_t ret;
     uint16_t i;
 
-    DEBUG_PRINT("Enter sensirion_i2c_write");
-
     ret = sensirion_i2c_start();
     if (ret != NO_ERROR)
         return ret;
-    DEBUG_PRINT("I2C start complete [write]");
 
     ret = sensirion_i2c_write_byte(address << 1);
     if (ret != NO_ERROR) {
         sensirion_i2c_stop();
         return ret;
     }
-    DEBUG_PRINT("I2C write address 0x%0X complete [write]", address);
 
     for (i = 0; i < count; i++) {
         ret = sensirion_i2c_write_byte(data[i]);
@@ -150,7 +146,6 @@ int8_t sensirion_i2c_write(uint8_t address, const uint8_t* data,
             break;
         }
     }
-    DEBUG_PRINT("I2C write data complete [write] (response = %d)", ret);
     sensirion_i2c_stop();
     return ret;
 }
@@ -160,25 +155,20 @@ int8_t sensirion_i2c_read(uint8_t address, uint8_t* data, uint16_t count) {
     uint8_t send_ack;
     uint16_t i;
 
-    DEBUG_PRINT("Enter sensirion_i2c_read");
-
     ret = sensirion_i2c_start();
     if (ret != NO_ERROR)
         return ret;
-    DEBUG_PRINT("I2C start complete [read]");
 
     ret = sensirion_i2c_write_byte((address << 1) | 1);
     if (ret != NO_ERROR) {
         sensirion_i2c_stop();
         return ret;
     }
-    DEBUG_PRINT("I2C write address 0x%0X complete [read]", address);
 
     for (i = 0; i < count; i++) {
         send_ack = i < (count - 1); /* last byte must be NACK'ed */
         data[i] = sensirion_i2c_read_byte(send_ack);
     }
-    DEBUG_PRINT("I2C read data complete [read] (response = %d)", ret);
 
     sensirion_i2c_stop();
     return NO_ERROR;

@@ -175,10 +175,10 @@ void mqtt_publish_start_callback(void *arg, const char *topic, u32_t tot_len) {
 
     if(tot_len > MQTTMessage::MQTT_MAX_PAYLOAD_LENGTH) {
         // This is unfortunate - our payload is larger than our buffer
-        DEBUG_PRINT("Incoming publish is too large (%d bytes)", tot_len);
+        DEBUG_PRINT(0, "Incoming publish is too large (%d bytes)", tot_len);
         buffer.initialize(0);
     } else {
-        DEBUG_PRINT("Receiving control message (%s)", topic);
+        DEBUG_PRINT(0, "Receiving control message (%s)", topic);
         buffer.initialize(tot_len);
         buffer.setMessageTopic(topic);
     }
@@ -208,7 +208,7 @@ void mqtt_publish_data_callback(void *arg, const u8_t *data, u16_t len, u8_t fla
         }
     } else {
         // Payload would overflow buffer
-        DEBUG_PRINT("MQTT payload overflows buffer");
+        DEBUG_PRINT(0, "MQTT payload overflows buffer");
     }
 }
 
@@ -218,7 +218,7 @@ void mqtt_subscribe_request_callback(void *arg, err_t err) {
         return;
     }
 
-    DEBUG_PRINT("mqtt_sub_request_cb: err %d\n", err);
+    DEBUG_PRINT(0, "MQTT subscribe response (err %d)", err);
 }
 
 // Called when a local publish to a topic has been completed
