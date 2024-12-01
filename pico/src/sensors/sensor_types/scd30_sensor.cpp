@@ -234,10 +234,10 @@ void SCD30Sensor::handleSetTemperatureOffsetCommand(const char *commandParam) {
         return;
     }
 
-    DEBUG_PRINT(1, "+--------------------------------+");
-    DEBUG_PRINT(1, "|             SCD30              |");
-    DEBUG_PRINT(1, "|  Set temperature offset: %2dC   |");
-    DEBUG_PRINT(1, "+--------------------------------+");
+    DEBUG_PRINT(1, "+----------------------------------+");
+    DEBUG_PRINT(1, "|               SCD30              |");
+    DEBUG_PRINT(1, "|  Set temperature offset: %2.2fC  |");
+    DEBUG_PRINT(1, "+----------------------------------+");
 
     setTemperatureOffset(val);
 }

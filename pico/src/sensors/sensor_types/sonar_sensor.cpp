@@ -12,7 +12,8 @@ using std::make_tuple;
 using std::get;
 
 
-constexpr const char* DISTANCE_JSON_KEY               = "distance";
+constexpr const char* DISTANCE_JSON_KEY     = "distance";
+constexpr const char PACKET_HEADER          = 0xFF;
 
 
 SonarSensor::SonarSensor(
@@ -66,6 +67,7 @@ void SonarSensor::reset() {
 
 void SonarSensor::shutdown() {
     // Nothing to do here, either
+    gpio_put(mTXPin, 0);
 }
 
 int SonarSensor::serializeDataToJSON(uint8_t* data, uint8_t dataSize, char* jsonBuffer, int jsonBufferSize) {
@@ -91,7 +93,7 @@ Sensor::SensorUpdateResponse SonarSensor::doUpdate(absolute_time_t currentTime, 
     while(uart_rx_program_has_data(mPIOWrapper.mPIO, mStateMachineID)) {
         char c = uart_rx_program_getc(mPIOWrapper.mPIO, mStateMachineID);
         
-        if(c == 0xFF) {
+        if(c == PACKET_HEADER) {
             mCurrentBufferPos = 0;
         }
 
@@ -99,10 +101,10 @@ Sensor::SensorUpdateResponse SonarSensor::doUpdate(absolute_time_t currentTime, 
 
         if(mCurrentBufferPos >= SONAR_SENSOR_PACKET_SIZE) {
             // Full packet, compute checksum
-            char checksum = mPacketBuffer[0] + mPacketBuffer[1] + mPacketBuffer[2];
+            uint16_t checksum_16 = (mPacketBuffer[0] + mPacketBuffer[1] + mPacketBuffer[2]) & 0x00FF;
 
             // If checksum is valid calculate distance
-            if(checksum == mPacketBuffer[3]) {
+            if(((uint8_t) checksum_16) == mPacketBuffer[3]) {
                 uint16_t distance = ((mPacketBuffer[1] << 8) + mPacketBuffer[2]);
 
                 get<0>(response) = SENSOR_OK;
@@ -110,7 +112,7 @@ Sensor::SensorUpdateResponse SonarSensor::doUpdate(absolute_time_t currentTime, 
                 memcpy(dataStorageBuffer, &distance, sizeof(uint16_t));
 
                 DEBUG_PRINT(1, "+-------------------+");
-                DEBUG_PRINT(1, "|        SONAR      |");
+                DEBUG_PRINT(1, "|       SONAR       |");
                 DEBUG_PRINT(1, "|  Distance: %3dmm  |", distance);
                 DEBUG_PRINT(1, "+-------------------+");
             } else {
