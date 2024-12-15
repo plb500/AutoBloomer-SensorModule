@@ -17,7 +17,10 @@ void on_resolution_completed(const char *name, const ip_addr_t *ipaddr, void *ca
 }
 
 bool NetworkController::isConnected() {
-    return (cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA) == CYW43_LINK_UP);
+    return (
+        (cyw43_wifi_link_status(&cyw43_state, CYW43_ITF_STA) == CYW43_LINK_JOIN) &&
+        (cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA) == CYW43_LINK_UP)
+    );
 }
 
 void NetworkController::resolveHost(DNSRequest &request) {

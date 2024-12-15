@@ -70,79 +70,26 @@ void Core0Executor::doLoop() {
 
         // Process any incoming serial data
         if(mSerialController.updateUserData(mUserData)) {
-            // If user data has changed it's probably best to just reboot the chip
+            // If user data has changed it's probably best to just reboot the board
             stopCore1AndWriteUserData();
             softwareReset();
         }
 
         // Check to see if we need to (re)connect to the network
-        if(mUserData.hasNetworkUserData() && !mNetworkController.isConnected()) {
-            if(mWifiIndicator) mWifiIndicator->ledOff();
-            
-            DEBUG_PRINT(0, "Network is not connected, connecting....");
-            int connectResponse = mNetworkController.connectToWiFi(
-                mUserData.getSSID().c_str(),
-                mUserData.getPSK().c_str(),
-                mUserData.getHostName().c_str()
-            );
-            DEBUG_PRINT(0, "...connect %s (%d)", 
-                connectResponse ? "failed" : "succeeded",
-                connectResponse
-            );
-
-            if(!connectResponse) {
-                if(mWifiIndicator) mWifiIndicator->ledOn();
-                mMQTTController.initMQTTClient();
-            }
-        }
+        checkNetworkConnection();
 
         if(mNetworkController.isConnected()) {
             if(mWifiIndicator) mWifiIndicator->ledOn();
 
-            // If we aren't connected to the broker yet, connect and subscribe
-            if(!mMQTTController.isConnected() && mUserData.hasMQTTUserData()) {
-                DEBUG_PRINT(0, "Not connected to MQTT broker, opening connection...");
-
-                // Lookup the broker's IP
-                brokerRequest.mResolvedAddress.addr = 0;
-                brokerRequest.mHost = mUserData.getBrokerAddress().c_str();
-                mNetworkController.resolveHost(brokerRequest);
-
-                // If we have the broker's address, proceed with the connection
-                if(brokerRequest.mResolvedAddress.addr) {
-                    char ipString[16];
-                    NetworkController::ipAddressToString(ipString, &brokerRequest.mResolvedAddress);
-                    DEBUG_PRINT(0, "Broker resolved (IP: %s). Connecting to broker...", ipString);
-
-                    mMQTTController.setBrokerParameters(
-                        brokerRequest.mResolvedAddress,
-                        MQTT_PORT
-                    );
-                    mMQTTController.setClientParameters(
-                        mUserData.getHostName().c_str()
-                    );
-
-                    if(!mMQTTController.connectToBrokerBlocking(2000)) {
-                        DEBUG_PRINT(0, "Broker connection failed");
-                    } else {
-                        DEBUG_PRINT(0, "Broker connection succeeded. Subscribing to control topics")
-                        for(auto& s : mSensorGroups) {
-                            if(s.hasTopics()) {
-                                mMQTTController.subscribeToTopic(s.getControlTopic());
-                            }
-                        }
-                        DEBUG_PRINT(0, "MQTT broker subscription complete");
-                        mqttUpdateTimeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
-                    }
-                } else {
-                    DEBUG_PRINT(0, "Broker IP resolution failed");
-                }
+            // We may need to trigger a new MQTT connection, so check for that now
+            if(createMQTTConnection()) {
+                mqttUpdateTimeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
             }
 
             // If we are connected and it's time to publish sensor data, do so.
             if(
-                (is_nil_time(mqttUpdateTimeout) || absolute_time_diff_us(now, mqttUpdateTimeout) <= 0) && 
-                mMQTTController.isConnected()
+                mMQTTController.isConnected() &&
+                (is_nil_time(mqttUpdateTimeout) || absolute_time_diff_us(now, mqttUpdateTimeout) <= 0)
             ) {
                 transmitData();
                 mqttUpdateTimeout = make_timeout_time_ms(MQTT_UPDATE_CHECK_PERIOD_MS);
@@ -164,6 +111,72 @@ void Core0Executor::stopCore1AndWriteUserData() {
     multicore_lockout_start_blocking();
     mUserData.writeToFlash();
     multicore_lockout_end_blocking();
+}
+
+void Core0Executor::checkNetworkConnection() {
+    if(mUserData.hasNetworkUserData() && !mNetworkController.isConnected()) {
+        if(mWifiIndicator) mWifiIndicator->ledOff();
+        
+        DEBUG_PRINT(0, "Network is not connected, connecting....");
+        int connectResponse = mNetworkController.connectToWiFi(
+            mUserData.getSSID().c_str(),
+            mUserData.getPSK().c_str(),
+            mUserData.getHostName().c_str()
+        );
+        DEBUG_PRINT(0, "...connect %s (%d)", 
+            connectResponse ? "failed" : "succeeded",
+            connectResponse
+        );
+
+        if(!connectResponse) {
+            if(mWifiIndicator) mWifiIndicator->ledOn();
+            mMQTTController.initMQTTClient();
+        }
+    }
+}
+
+bool Core0Executor::createMQTTConnection() {
+    // If we aren't connected to the broker yet, connect and subscribe
+    if(!mMQTTController.isConnected() && mUserData.hasMQTTUserData()) {
+        DEBUG_PRINT(0, "Not connected to MQTT broker, opening connection...");
+
+        // Lookup the broker's IP
+        NetworkController::DNSRequest brokerRequest;
+        brokerRequest.mResolvedAddress.addr = 0;
+        brokerRequest.mHost = mUserData.getBrokerAddress().c_str();
+        mNetworkController.resolveHost(brokerRequest);
+
+        // If we have the broker's address, proceed with the connection
+        if(brokerRequest.mResolvedAddress.addr) {
+            char ipString[16];
+            NetworkController::ipAddressToString(ipString, &brokerRequest.mResolvedAddress);
+            DEBUG_PRINT(0, "Broker resolved (IP: %s). Connecting to broker...", ipString);
+
+            mMQTTController.setBrokerParameters(
+                brokerRequest.mResolvedAddress,
+                MQTT_PORT
+            );
+            mMQTTController.setClientParameters(
+                mUserData.getHostName().c_str()
+            );
+
+            if(!mMQTTController.connectToBrokerBlocking(2000)) {
+                DEBUG_PRINT(0, "Broker connection failed");
+            } else {
+                DEBUG_PRINT(0, "Broker connection succeeded. Subscribing to control topics")
+                for(auto& s : mSensorGroups) {
+                    if(s.hasTopics()) {
+                        mMQTTController.subscribeToTopic(s.getControlTopic());
+                    }
+                }
+                DEBUG_PRINT(0, "MQTT broker subscription complete");
+                return true;
+            }
+        } else {
+            DEBUG_PRINT(0, "Broker IP resolution failed");
+        }
+    }
+    return false;
 }
 
 void Core0Executor::transmitData() {

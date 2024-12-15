@@ -26,6 +26,9 @@ class Core0Executor {
         void softwareReset();
         void stopCore1AndWriteUserData();
         
+        void checkNetworkConnection();
+        bool createMQTTConnection();
+
         void transmitData();
         void transmitSensorData();
 

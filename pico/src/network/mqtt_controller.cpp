@@ -39,6 +39,10 @@ MQTTController::MQTTController(MulticoreMailbox& mailbox) :
 {}
 
 void MQTTController::initMQTTClient() {
+    if(mMQTTClient) {
+        mqtt_client_free(mMQTTClient);
+    }
+
     mMQTTClient = mqtt_client_new();
     mIncomingMessageBuffer.initialize(0);
 }
